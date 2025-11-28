@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useProfile } from "../../hooks/profile/useProfile";
 import ProfileShimmer from "../profile/ProfileShimmer";
+import useProfileUpload from "../../hooks/profile/useProfileUpload";
 import SecurityTab from "./SecurityTab";
 import {
   FiUser,
