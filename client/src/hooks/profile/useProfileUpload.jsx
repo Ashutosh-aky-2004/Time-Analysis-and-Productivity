@@ -25,9 +25,21 @@ export default function useProfileUpload() {
           },
         }
       );
-
+      const uploadedUrl = res.data.url;
       setUrl(res.data.url);
       setLoading(false);
+      if (!uploadedUrl) throw new Error("Upload failed");
+
+    // 2. Save the uploaded URL to user's profile in DB
+    await axios.put(
+      `${import.meta.env.VITE_API_URL}/profile/update-avatar`,
+      { avatar: uploadedUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
       return res.data.url;
     } catch (err) {
       console.error(err);

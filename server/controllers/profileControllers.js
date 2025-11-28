@@ -151,3 +151,20 @@ export const updatePassword = async (req, res) => {
     });
   }
 };
+
+
+export const updateProfileAvatar = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { avatar } = req.body;
+
+    if (!avatar) return res.status(400).json({ error: "No avatar URL provided" });
+
+    const user = await User.findById(userId).select("-password");
+    user.avatar = avatar;
+    await user.save();
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message+"Failed to update avatar" });
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useProfile } from "../../hooks/profile/useProfile";
 import ProfileShimmer from "../profile/ProfileShimmer";
+import useProfileUpload from "../../hooks/profile/useProfileUpload";
 import SecurityTab from "./SecurityTab";
 import {
   FiUser,
@@ -12,7 +13,6 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
-import axios from "axios";
 
 const TAB_LIST = [
   { id: "profile", label: "Profile", icon: FiUser },
@@ -22,51 +22,20 @@ const TAB_LIST = [
 
 export default function SettingsPage() {
   const { data: profileData, loading, updateProfile } = useProfile();
+  const { uploadProfilePic, loading: uploading, error: uploadError } = useProfileUpload();
   const [profile, setProfile] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [photo, setPhoto] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState(null);
   
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (profileData) {
       setProfile(profileData.user);
-      setPhoto(profileData.avatar || null);
+      setPhoto(profileData.user.avatar || null);
     }
   }, [profileData]);
-
-  const uploadProfilePic = async (file) => {
-    setUploading(true);
-    setUploadError(null);
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const token = localStorage.getItem("token"); 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/profile/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setUploading(false);
-      return res.data.url;
-    } catch (err) {
-      console.error(err);
-      setUploadError("Upload failed");
-      setUploading(false);
-      return null;
-    }
-  };
 
   if (loading || !profile) return <ProfileShimmer />;
 
@@ -84,7 +53,6 @@ export default function SettingsPage() {
       lastName,
       phoneNumber: profile.phone,
       bio: profile.bio,
-      
     };
 
     setEditing(false);
@@ -103,13 +71,14 @@ export default function SettingsPage() {
     const previewUrl = URL.createObjectURL(file);
     setPhoto(previewUrl);
 
-    // Upload to backend
+    // Upload to backend using custom hook
     const uploadedUrl = await uploadProfilePic(file);
     if (uploadedUrl) {
-      setPhoto(uploadedUrl);
+      setPhoto(uploadedUrl); // Use the actual uploaded URL
+
     } else {
       setPhoto(profileData?.avatar || null);
-      URL.revokeObjectURL(previewUrl);
+      URL.revokeObjectURL(previewUrl); // Clean up the preview URL
     }
   };
 
