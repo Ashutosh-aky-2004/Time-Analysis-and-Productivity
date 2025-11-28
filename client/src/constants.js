@@ -62,3 +62,12 @@ export const validateSignUp = ({
   setErrors(newErrors); 
   return isValid; 
 };
+
+export const strengthColors = [
+    "bg-gray-300",
+    "bg-red-500",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-green-500",
+    "bg-green-600",
+  ];

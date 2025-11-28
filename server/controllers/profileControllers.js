@@ -1,8 +1,9 @@
 import User from "../modal/User.js";
+import bcrypt from "bcryptjs";
 
 export const getProfileInfo = async (req, res) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
     const user = await User.findById(userId).select("-password");
     if (!user) {
@@ -25,6 +26,7 @@ export const getProfileInfo = async (req, res) => {
       joinDate: new Date(user.createdAt).toDateString(),
       hoursTracked: user.hoursTracked || 0,
       avatar: user.avatar || "",
+      
     };
 
     res.status(200).json({
@@ -60,11 +62,10 @@ export const updatePersonalDetails = async (req, res) => {
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
     if (bio) updateData.bio = bio;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updateData,
-      { new: true, runValidators: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -102,3 +103,51 @@ export const updatePersonalDetails = async (req, res) => {
   }
 };
 
+export const updatePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Both current and new password are required",
+      });
+    }
+
+    // fetch user
+    const user = await User.findById(userId).select("+password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // check current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // hash new password
+    user.password = newPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+};
