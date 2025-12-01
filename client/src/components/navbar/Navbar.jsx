@@ -1,18 +1,43 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { AiOutlineDashboard, AiOutlineClockCircle, AiOutlineHistory, AiOutlineBarChart, AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineDashboard,
+  AiOutlineClockCircle,
+  AiOutlineHistory,
+  AiOutlineBarChart,
+  AiOutlineUser,
+} from "react-icons/ai";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const profileRef = useRef(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
+  // Check token in localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+    setAuthChecked(true);
+  }, []);
+
+  // If not logged in, navigate to login
+  useEffect(() => {
+    if (authChecked && !isLoggedIn) {
+      navigate("/login");
+    }
+  }, [authChecked, isLoggedIn, navigate]);
   // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,9 +57,15 @@ const Navbar = () => {
     { name: "Track Time", icon: <AiOutlineClockCircle />, link: "/track-time" },
     { name: "History", icon: <AiOutlineHistory />, link: "/history" },
     { name: "Analytics", icon: <AiOutlineBarChart />, link: "/analytics" },
-    { name: "Profile", icon: <AiOutlineUser />, link: "/profile" },
   ];
 
+  const handleLogout = () => {
+    const token = localStorage.removeItem("token");
+    if (!token) {
+      setIsLoggedIn(false);
+    }
+    navigate("/login");
+  };
   return (
     <nav className="bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,12 +112,12 @@ const Navbar = () => {
                 >
                   PT
                 </button>
-                
+
                 {/* Dropdown Menu */}
-                <div 
+                <div
                   className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700 transition-all duration-200 ${
-                    isProfileOpen 
-                      ? "opacity-100 visible transform translate-y-0" 
+                    isProfileOpen
+                      ? "opacity-100 visible transform translate-y-0"
                       : "opacity-0 invisible transform -translate-y-2"
                   }`}
                 >
@@ -97,7 +128,7 @@ const Navbar = () => {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <AiOutlineUser className="mr-3" />
-                      Profile Settings
+                      Profile
                     </a>
                     <a
                       href="/productivity-goals"
@@ -108,10 +139,9 @@ const Navbar = () => {
                       Productivity Goals
                     </a>
                     <div className="border-t border-gray-100 dark:border-gray-700 my-1"></div>
-                    <a 
-                      href="/logout" 
-                      className="flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
-                      onClick={() => setIsProfileOpen(false)}
+                    <a
+                      className="flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer"
+                      onClick={handleLogout}
                     >
                       <FaTimes className="mr-3" />
                       Logout
@@ -124,7 +154,6 @@ const Navbar = () => {
 
           {/* Mobile Menu Button with Theme Toggle */}
           <div className="md:hidden flex items-center space-x-4">
-            
             {/* Theme Toggle for Mobile */}
             <button
               onClick={toggleTheme}
@@ -139,7 +168,7 @@ const Navbar = () => {
             </button>
 
             {/* Mobile Menu Button */}
-            <button 
+            <button
               onClick={toggleMenu}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
               aria-label="Toggle menu"
@@ -161,7 +190,9 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
             >
               <span className="text-lg">{item.icon}</span>
-              <span className="ml-3 text-gray-800 dark:text-gray-200">{item.name}</span>
+              <span className="ml-3 text-gray-800 dark:text-gray-200">
+                {item.name}
+              </span>
             </a>
           ))}
 
@@ -172,18 +203,22 @@ const Navbar = () => {
                 PT
               </div>
               <div>
-                <p className="font-medium text-gray-800 dark:text-gray-200">Productivity User</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">user@example.com</p>
+                <p className="font-medium text-gray-800 dark:text-gray-200">
+                  Productivity User
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  user@example.com
+                </p>
               </div>
             </div>
-            
+
             <a
               href="/profile-settings"
               className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-200"
               onClick={() => setIsOpen(false)}
             >
               <AiOutlineUser className="mr-3" />
-              Profile Settings
+              Profile
             </a>
             <a
               href="/productivity-goals"
@@ -193,10 +228,9 @@ const Navbar = () => {
               <AiOutlineBarChart className="mr-3" />
               Productivity Goals
             </a>
-            <a 
-              href="/logout" 
-              className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 transition-colors duration-200"
-              onClick={() => setIsOpen(false)}
+            <a
+              className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 transition-colors duration-200 cursor-pointer"
+              onClick={handleLogout}
             >
               <FaTimes className="mr-3" />
               Logout
