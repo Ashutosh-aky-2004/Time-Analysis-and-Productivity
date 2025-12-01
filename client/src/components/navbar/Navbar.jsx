@@ -10,8 +10,11 @@ import {
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import useNavbarDetails from "../../hooks/navbar/useNavbarDetails";
+import NavbarShimmer from "./NavbarShimmer";
 
 const Navbar = () => {
+  const { loading, details } = useNavbarDetails();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
@@ -66,6 +69,9 @@ const Navbar = () => {
     }
     navigate("/login");
   };
+  if (loading) {
+    return <NavbarShimmer />;
+  }
   return (
     <nav className="bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,44 +109,65 @@ const Navbar = () => {
                 )}
               </button>
               {/* Profile Dropdown - Click to open */}
+
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={toggleProfile}
-                  className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white hover:bg-purple-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                  aria-label="Open profile menu"
-                  aria-expanded={isProfileOpen}
+                  className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white hover:bg-purple-700 transition-colors duration-200"
                 >
-                  PT
+                  {loading ? (
+                    <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 animate-pulse rounded-full"></div>
+                  ) : details?.avatar ? (
+                    <img
+                      src={details.avatar}
+                      alt="Avatar"
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="font-semibold">{initials}</span>
+                  )}
                 </button>
 
-                {/* Dropdown Menu */}
                 <div
                   className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700 transition-all duration-200 ${
                     isProfileOpen
-                      ? "opacity-100 visible transform translate-y-0"
-                      : "opacity-0 invisible transform -translate-y-2"
+                      ? "opacity-100 visible translate-y-0"
+                      : "opacity-0 invisible -translate-y-2"
                   }`}
                 >
                   <div className="py-1">
+                    <div className="px-4 py-2 border-b dark:border-gray-700">
+                      {loading ? (
+                        <div className="h-4 w-24 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
+                      ) : (
+                        <p className="font-medium">
+                          {details?.firstName} {details?.lastName}
+                        </p>
+                      )}
+                    </div>
+
                     <a
-                      href="/profile-settings"
-                      className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
+                      href="/profile"
+                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <AiOutlineUser className="mr-3" />
                       Profile
                     </a>
+
                     <a
                       href="/productivity-goals"
-                      className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
+                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <AiOutlineBarChart className="mr-3" />
                       Productivity Goals
                     </a>
-                    <div className="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+
+                    <div className="border-t dark:border-gray-700 my-1"></div>
+
                     <a
-                      className="flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer"
+                      className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                       onClick={handleLogout}
                     >
                       <FaTimes className="mr-3" />
@@ -195,46 +222,43 @@ const Navbar = () => {
               </span>
             </a>
           ))}
-
+          <a
+                      href="/profile"
+                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <AiOutlineUser className="mr-3" />
+                      Profile
+                    </a>
           {/* Profile Section in Mobile Menu */}
-          <div className="border-t border-gray-100 dark:border-gray-700 pt-2">
-            <div className="px-4 py-3 flex items-center">
-              <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white mr-3">
-                PT
-              </div>
-              <div>
-                <p className="font-medium text-gray-800 dark:text-gray-200">
-                  Productivity User
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  user@example.com
-                </p>
-              </div>
+          <div className="px-4 py-3 flex items-center">
+            
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-white mr-3">
+              {details && details.avatar ? (
+                <img
+                  src={details.avatar}
+                  alt="User Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : details ? (
+                details.firstName[0].toUpperCase() +
+                details.lastName[0].toUpperCase()
+              ) : (
+                "PT"
+              )}
             </div>
 
-            <a
-              href="/profile-settings"
-              className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-200"
-              onClick={() => setIsOpen(false)}
-            >
-              <AiOutlineUser className="mr-3" />
-              Profile
-            </a>
-            <a
-              href="/productivity-goals"
-              className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-200"
-              onClick={() => setIsOpen(false)}
-            >
-              <AiOutlineBarChart className="mr-3" />
-              Productivity Goals
-            </a>
-            <a
-              className="flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 transition-colors duration-200 cursor-pointer"
-              onClick={handleLogout}
-            >
-              <FaTimes className="mr-3" />
-              Logout
-            </a>
+            <div>
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                {details
+                  ? details.firstName + " " + details.lastName
+                  : "Loading..."}
+              </p>
+
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {details ? details.email : "Loading..."}
+              </p>
+            </div>
           </div>
         </div>
       )}

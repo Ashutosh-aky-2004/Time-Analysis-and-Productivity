@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import navbarRoutes from "./routes/navbarRoutes.js";
 
 import protect from "./middleware/auth.js";
 
@@ -13,7 +14,7 @@ const app = express();
 connectDB();
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend URL
+    origin: "http://localhost:5173", 
     credentials: true,
   })
 );
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 app.use(protect);
+app.use("/api/navbar",navbarRoutes);
 app.use("/profile",profileRoutes);
 
 app.get("/api/serverStatus", (req, res) => {
