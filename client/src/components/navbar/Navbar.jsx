@@ -73,7 +73,7 @@ const Navbar = () => {
     return <NavbarShimmer />;
   }
   return (
-    <nav className="bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md transition-colors duration-200">
+    <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
@@ -124,7 +124,9 @@ const Navbar = () => {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="font-semibold">{initials}</span>
+                    <span className="font-semibold">
+                      U
+                    </span>
                   )}
                 </button>
 

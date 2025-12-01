@@ -27,6 +27,7 @@ export default function SettingsPage() {
     uploadProfilePic,
     loading: uploading,
     error: uploadError,
+    removeProfilePic,
   } = useProfileUpload();
   const [profile, setProfile] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
@@ -50,12 +51,9 @@ export default function SettingsPage() {
   };
 
   const saveProfile = () => {
-    const [firstName, ...rest] = profile.fullName.split(" ");
-    const lastName = rest.join(" ");
-
     const payload = {
-      firstName,
-      lastName,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
       phoneNumber: profile.phone,
       bio: profile.bio,
     };
@@ -86,7 +84,12 @@ export default function SettingsPage() {
     }
   };
 
-  const removePhoto = () => setPhoto(null);
+  const handleRemovePhoto = async () => {
+    const success = await removeProfilePic();
+    if (success) {
+      setPhoto("");
+    }
+  };
 
   return (
     <>
@@ -154,10 +157,10 @@ export default function SettingsPage() {
 
                 {photo && (
                   <button
-                    onClick={removePhoto}
-                    disabled={!editing}
+                    onClick={handleRemovePhoto}
+                    disabled={!editing || uploading}
                     className={`px-3 py-2 rounded-lg border text-xs sm:text-sm transition shrink-0 ${
-                      !editing
+                      !editing || uploading
                         ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
                         : "bg-gray-100 dark:bg-red-500 border-gray-200 dark:border-red-600 hover:bg-red-600"
                     }`}
@@ -265,25 +268,50 @@ export default function SettingsPage() {
               {activeTab === "profile" && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold mb-2">
-                        Full name
-                      </label>
-                      <input
-                        value={profile.fullName}
-                        onChange={(e) =>
-                          updateField("fullName", e.target.value)
-                        }
-                        disabled={!editing}
-                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {/* First Name */}
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">
+                          First Name
+                        </label>
+                        <input
+                          value={profile.firstName ||""}
+                          onChange={(e) =>
+                            updateField("firstName", e.target.value)
+                          }
+                          disabled={!editing}
+                          className="w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-700 
+                 dark:text-white dark:border-gray-600 
+                 disabled:opacity-70 disabled:cursor-not-allowed
+                 transition-colors"
+                        />
+                      </div>
+
+                      {/* Last Name */}
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">
+                          Last Name
+                        </label>
+                        <input
+                          value={profile.lastName ||""}
+                          onChange={(e) =>
+                            updateField("lastName", e.target.value)
+                          }
+                          disabled={!editing}
+                          className="w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-700 
+                 dark:text-white dark:border-gray-600 
+                 disabled:opacity-70 disabled:cursor-not-allowed 
+                 transition-colors"
+                        />
+                      </div>
                     </div>
+
                     <div>
                       <label className="block text-sm font-semibold mb-2">
                         Phone
                       </label>
                       <input
-                        value={profile.phone}
+                        value={profile.phone ||""}
                         onChange={(e) => updateField("phone", e.target.value)}
                         disabled={!editing}
                         className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
@@ -295,7 +323,7 @@ export default function SettingsPage() {
                       </label>
                       <textarea
                         rows="4"
-                        value={profile.bio}
+                        value={profile.bio ||""}
                         onChange={(e) => updateField("bio", e.target.value)}
                         disabled={!editing}
                         className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors resize-none"

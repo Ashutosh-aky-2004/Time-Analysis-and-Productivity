@@ -1,5 +1,6 @@
 import express from "express";
 import { 
+  deleteProfilePic,
   getProfileInfo, 
   updatePassword, 
   updatePersonalDetails, 
@@ -17,5 +18,6 @@ router.put("/update-avatar", updateProfileAvatar);
 router.get("/details", getProfileInfo);
 router.put("/update-profile-data-personal-details", updatePersonalDetails);
 router.put("/update-password", updatePassword);
+router.delete("/remove-avatar",deleteProfilePic)
 
 export default router;

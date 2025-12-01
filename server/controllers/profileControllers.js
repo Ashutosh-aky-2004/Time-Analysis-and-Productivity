@@ -1,5 +1,5 @@
 import User from "../modal/User.js";
-import bcrypt from "bcryptjs";
+import { deleteAvatar } from "../helper/cloudinaryDeleteAvatar.js";
 
 export const getProfileInfo = async (req, res) => {
   try {
@@ -16,6 +16,8 @@ export const getProfileInfo = async (req, res) => {
     // Profile structure
     const profile = {
       fullName: `${user.firstName} ${user.lastName}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       phone: user.phoneNumber || "",
       bio: user.bio || "",
@@ -166,5 +168,22 @@ export const updateProfileAvatar = async (req, res) => {
     res.json({ success: true, user });
   } catch (err) {
     res.status(500).json({ error: err.message+"Failed to update avatar" });
+  }
+}
+
+export const deleteProfilePic = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user.avatar) return res.status(400).json({ message: "No avatar found" });
+
+    await deleteAvatar(user.avatar);
+
+    user.avatar = null;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Avatar removed" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
   }
 }

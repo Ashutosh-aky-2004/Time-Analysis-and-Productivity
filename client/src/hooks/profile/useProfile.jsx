@@ -21,7 +21,6 @@ export function useProfile() {
       });
       setData(res.data);
     } catch (err) {
-      console.error(err);
       toast.error("Failed to fetch profile data");
     } finally {
       setLoading(false);
@@ -30,14 +29,12 @@ export function useProfile() {
 
   const updateProfile = async (payload) => {
     try {
-      console.log(payload)
       const res = await axios.put(`${API_URL}/profile/update-profile-data-personal-details`, payload, {
         headers: getAuthHeaders(),
       });
       setData(res.data);
       toast.success("Profile updated successfully");
     } catch (err) {
-      console.error(err);
       toast.error("Failed to update profile");
     }
   };
