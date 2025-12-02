@@ -4,6 +4,7 @@ import SignUp from "../pages/SignUp";
 import Profile from "../components/profile/Profile";
 import LandingPage from "../pages/LandingPage";
 import ProtectedRoute from "./ProtectedRoute";
+import LandingPageProject from "../components/projects/LandingPageProject";
 
 const AppRoutes = () => {
   return (
@@ -36,7 +37,7 @@ const AppRoutes = () => {
           path="/projects"
           element={
             <ProtectedRoute>
-              <Profile />
+              <LandingPageProject />
             </ProtectedRoute>
           }
         />
