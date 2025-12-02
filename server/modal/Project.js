@@ -55,15 +55,8 @@ const projectSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  
+},{timestamps: true});
 
 // Middleware to calculate total duration
 projectSchema.pre('save', function(next) {
