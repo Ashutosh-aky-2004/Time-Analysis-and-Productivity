@@ -69,29 +69,55 @@ export const deleteProject = async (req, res) => {
       !project.managingUserId.includes(req.user.id) &&
       project.projectStartedBy.toString() !== req.user.id.toString()
     ) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "You are not authorized to delete this project",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this project",
+      });
     }
 
     // Soft delete
     project.archived = true;
     await project.save();
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Project archived successfully",
-        project,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Project archived successfully",
+      project,
+    });
   } catch (error) {
     console.error("Delete Project Error:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
-export const getAllUserProjects = () => {};
+export const getAllUserProjects = async (req, res) => {
+  try {
+    const userId = req.user.id; // assuming authentication middleware sets req.user
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Find all projects where the user is a managing user, team member, or projectStartedBy
+    const projects = await Project.find({
+      $or: [
+        { managingUserId: userId },
+        { teamMembers: userId },
+        { projectStartedBy: userId },
+      ],
+    })
+      .populate("teamMembers", "name email") // populate some user fields
+      .populate("projectStartedBy", "name email");
+    // .populate("tasks"); // populate tasks
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Project Fetched Successfully",
+        projects,
+      });
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

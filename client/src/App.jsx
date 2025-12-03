@@ -3,12 +3,13 @@ import { ThemeProvider } from "./context/ThemeContext";
 import AppRoutes from "./routes/AppRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ProjectProvider } from "./context/projects/ProjectContext";
+import { Provider } from "react-redux";
+import {store} from "./redux/store"; 
 
 const App = () => {
   return (
-    <ThemeProvider>
-      <ProjectProvider>
+    <Provider store={store}>
+      <ThemeProvider>
         <AppRoutes /> {/* router paths are present inside this folder*/}
         <ToastContainer
           position="top-right"
@@ -22,8 +23,8 @@ const App = () => {
           pauseOnHover
           theme="colored"
         />
-      </ProjectProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Provider>
   );
 };
 
