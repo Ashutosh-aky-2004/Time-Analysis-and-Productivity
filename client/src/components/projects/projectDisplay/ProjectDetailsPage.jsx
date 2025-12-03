@@ -20,7 +20,7 @@ import {
 import { createSelector } from "@reduxjs/toolkit";
 
 const ProjectDetailsPage = () => {
-  const { projectID } = useParams(); // ✅ Ensure this comes first
+  const { projectID } = useParams(); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isDark } = useTheme();
