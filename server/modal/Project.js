@@ -1,83 +1,53 @@
+// models/Project.js
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    teamMembers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    suspendedMembers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    removedMembers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    tasks: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
+    name: { type: String, required: true },
+
+    teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    suspendedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    removedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    invitedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+
     managingUserId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    startDate: {
-      type: Date,
-      default: Date.now,
-    },
-    endDate: {
-      type: Date,
-    },
-    invitedMembers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    totalDuration: {
-      type: Number, // in minutes
-      default: 0,
-    },
+
     projectStartedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    completed: {
-      type: Boolean,
-      default: false,
-    },
+
+    startDate: { type: Date, default: Date.now },
+    endDate: { type: Date },
+
+    totalDuration: { type: Number, default: 0 }, // minutes
+
+    completed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-// Middleware to calculate total duration
+// Update total duration
 projectSchema.pre("save", function (next) {
-  if (this.startDate && this.endDate) {
-    const duration = this.endDate - this.startDate;
-    this.totalDuration = Math.round(duration / (1000 * 60)); // Convert to minutes
+  if (this.isModified("startDate") || this.isModified("endDate")) {
+    if (this.startDate && this.endDate) {
+      const duration = this.endDate - this.startDate;
+      this.totalDuration = Math.round(duration / (1000 * 60));
+    }
   }
-  this.updatedAt = Date.now();
   next();
 });
 
-// Static method to get project name
+// Fixed static method
 projectSchema.statics.getProjectName = async function (projectId) {
-  const project = await this.findOne({ projectId });
+  const project = await this.findById(projectId);
   return project ? project.name : null;
 };
 

@@ -5,6 +5,7 @@ import Profile from "../components/profile/Profile";
 import LandingPage from "../pages/LandingPage";
 import ProtectedRoute from "./ProtectedRoute";
 import LandingPageProject from "../components/projects/LandingPageProject";
+import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDetailsPage";
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <LandingPageProject />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/project-details/:projectID"
+          element={
+            <ProtectedRoute>
+              <ProjectDetailsPage />
             </ProtectedRoute>
           }
         />
