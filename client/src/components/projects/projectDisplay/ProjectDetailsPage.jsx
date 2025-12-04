@@ -193,7 +193,7 @@ const ProjectDetailsPage = () => {
   return (
     <div
       className={`min-h-screen ${
-        isDark ? "bg-gray-950" : "bg-gray-50"
+        isDark ? "bg-gray-950" : "bg-blue-900"
       } transition-colors duration-200`}
     >
       <div className="max-w-7xl mx-auto px-4 py-8">

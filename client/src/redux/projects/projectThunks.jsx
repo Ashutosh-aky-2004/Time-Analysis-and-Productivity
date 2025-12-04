@@ -32,9 +32,14 @@ export const deleteProject = createAsyncThunk(
   "projects/deleteProject",
   async (projectId) => {
     const token = localStorage.getItem("token");
-    await axios.delete(`${API}/delete-project/${projectId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return projectId; 
+    const res = await axios.patch(
+      `${API}/delete-project/${projectId}`,
+      { archived: true },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    return projectId;
   }
 );
