@@ -21,7 +21,7 @@ const projectSlice = createSlice({
     },
     updateProject: (state, action) => {
       const { id, data } = action.payload;
-      const index = state.projects.findIndex((p) => p._id === id); // assuming _id is used
+      const index = state.projects.findIndex((p) => p._id === id); 
       if (index !== -1) {
         state.projects[index] = { ...state.projects[index], ...data };
       }

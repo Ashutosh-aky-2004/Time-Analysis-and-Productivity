@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { FiEye, FiTrash2 } from "react-icons/fi"; 
+import { FiEye, FiTrash2 } from "react-icons/fi";
 import { BsFolder } from "react-icons/bs";
 
 import { deleteProject } from "../../../redux/projects/projectThunks";
@@ -12,7 +12,7 @@ const ProjectCard = ({ project }) => {
   const handleDelete = (e) => {
     e.stopPropagation();
     if (window.confirm(`Are you sure you want to delete "${project.name}"?`)) {
-      dispatch(deleteProject(project._id)); // assuming project._id
+      dispatch(deleteProject(project._id));
     }
   };
 
@@ -25,11 +25,13 @@ const ProjectCard = ({ project }) => {
               <BsFolder className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
+
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {project.name}
               </h3>
+
               <span
                 className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                   project.progress === "in-progress"
@@ -40,6 +42,7 @@ const ProjectCard = ({ project }) => {
                 {project.progress}
               </span>
             </div>
+
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Managed by {project.manager}
             </p>
@@ -54,6 +57,7 @@ const ProjectCard = ({ project }) => {
             <FiEye className="w-4 h-4" />
             View
           </Link>
+
           <button
             onClick={handleDelete}
             className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
@@ -104,6 +108,7 @@ const ProjectCard = ({ project }) => {
             <p className="font-semibold text-gray-900 dark:text-white">
               {project.teamMembers?.length || 0} active
             </p>
+
             {project.suspendedMembers?.length > 0 && (
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {project.suspendedMembers.length} suspended
@@ -115,12 +120,13 @@ const ProjectCard = ({ project }) => {
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
               Progress
             </p>
+
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
                 className={`h-2 rounded-full ${
                   project.progress === "completed"
-                    ? "bg-green-500 dark:bg-green-400 w-full"
-                    : "bg-blue-500 dark:bg-blue-400 w-3/4"
+                    ? "w-full bg-green-500 dark:bg-green-400"
+                    : "w-3/4 bg-blue-500 dark:bg-blue-400"
                 }`}
               ></div>
             </div>

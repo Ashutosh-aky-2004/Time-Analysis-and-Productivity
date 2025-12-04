@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import ProjectCard from "./ProjectCard";
-import { HiOutlineInbox } from "react-icons/hi"; 
+import { HiOutlineInbox } from "react-icons/hi";
 
 const ProjectCards = () => {
   const { projects, filters } = useSelector((state) => state.project);

@@ -11,7 +11,6 @@ export const getProjects = createAsyncThunk(
     const res = await axios.get(`${API}/get-all-user-project`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(res.data);
     return res.data.projects;
   }
 );
