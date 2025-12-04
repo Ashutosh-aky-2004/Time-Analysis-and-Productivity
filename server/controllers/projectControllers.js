@@ -4,28 +4,45 @@ import Project from "../modal/Project.js";
 export const addProject = async (req, res) => {
   try {
     const creatorId = req.user.id; // from JWT
-    console.log(creatorId);
+
     const {
       name,
       description,
-      projectAvatar,
       color,
       tags,
       priority,
       managingUserId,
+      startDate: startDateStr,
+      endDate: endDateStr
     } = req.body;
 
     if (!name) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Project name is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Project name is required",
+      });
     }
 
-    // Default managingUserId to creator if not provided
-    const managerId = managingUserId || creatorId;
+    if (!endDateStr) {
+      return res.status(400).json({
+        success: false,
+        message: "End date is required for project duration calculation",
+      });
+    }
 
-    // Initialize teamMembers with creator
-    const teamMembers = [creatorId];
+    // Convert UI date strings to Date objects
+    const startDate = startDateStr ? new Date(startDateStr) : new Date(); // default to now
+    const endDate = new Date(endDateStr);
+
+    // Ensure endDate is after startDate
+    if (endDate <= startDate) {
+      return res.status(400).json({
+        success: false,
+        message: "End date must be after start date",
+      });
+    }
+
+    const managerIds = managingUserId ? [managingUserId] : [creatorId];
 
     // Create project document
     const newProject = new Project({
@@ -35,9 +52,11 @@ export const addProject = async (req, res) => {
       color,
       tags,
       priority,
-      managingUserId: managerId,
+      managingUserId: managerIds,
       projectStartedBy: creatorId,
-      teamMembers,
+      teamMembers: [creatorId],
+      startDate,
+      endDate
     });
 
     const savedProject = await newProject.save();
@@ -47,11 +66,16 @@ export const addProject = async (req, res) => {
       message: "Project created successfully",
       project: savedProject,
     });
+
   } catch (error) {
     console.error("Add Project Error:", error);
-    return res.status(500).json({ success: false, message: "Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
+
 
 export const deleteProject = async (req, res) => {
   try {
@@ -92,7 +116,7 @@ export const deleteProject = async (req, res) => {
 
 export const getAllUserProjects = async (req, res) => {
   try {
-    const userId = req.user.id; // assuming authentication middleware sets req.user
+    const userId = req.user.id; 
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -105,17 +129,15 @@ export const getAllUserProjects = async (req, res) => {
         { projectStartedBy: userId },
       ],
     })
-      .populate("teamMembers", "name email") // populate some user fields
-      .populate("projectStartedBy", "name email");
-    // .populate("tasks"); // populate tasks
+      .populate("teamMembers", "firstName lastName email _id")
+      .populate("projectStartedBy", "firstName lastName email _id")
+      .populate("managingUserId", "firstName lastName email _id");
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Project Fetched Successfully",
-        projects,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Project Fetched Successfully",
+      projects,
+    });
   } catch (error) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ message: "Server error" });

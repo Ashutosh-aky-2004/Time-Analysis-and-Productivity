@@ -1,16 +1,22 @@
-// models/Project.js
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String, default: "" },
-    projectAvatar: { type: String, default: "" },
-    color: { type: String, default: "#007bff" },
-    status:{ type: String, enum: ["In Progress", "Started", "Completed"], default: "Started" },
+    
+    status: {
+      type: String,
+      enum: ["In Progress", "Started", "Completed"],
+      default: "Started",
+    },
     tags: [{ type: String }],
     archived: { type: Boolean, default: false },
-    priority: { type: String, enum: ["low", "medium", "high", "critical"], default: "medium" },
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high", "critical"],
+      default: "medium",
+    },
 
     teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     suspendedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
@@ -19,11 +25,13 @@ const projectSchema = new mongoose.Schema(
 
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 
-    managingUserId: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    }],
+    managingUserId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    ],
 
     projectStartedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -32,7 +40,7 @@ const projectSchema = new mongoose.Schema(
     },
 
     startDate: { type: Date, default: Date.now },
-    endDate: { type: Date },
+    endDate: { type: Date, required: true },
 
     totalDuration: { type: Number, default: 0 }, // minutes
     completed: { type: Boolean, default: false },
