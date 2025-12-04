@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { updateProject } from "../../../redux/projects/projectSlice";
 import { useTheme } from "../../../context/ThemeContext";
@@ -18,6 +18,7 @@ import {
   FaRegLightbulb,
 } from "react-icons/fa";
 import { createSelector } from "@reduxjs/toolkit";
+import { formatDateTime } from "../../../constants";
 
 const ProjectDetailsPage = () => {
   const { projectID } = useParams(); 
@@ -75,7 +76,10 @@ const ProjectDetailsPage = () => {
     );
   }
 
-  if (!project) return <div className="p-6">Project not found</div>;
+  if (!project) {
+  return <Navigate to="/projects" replace />;
+}
+
 
   const handleSaveChanges = () => {
     dispatch(updateProject({ id: project._id, data: editedProject }));
@@ -171,13 +175,13 @@ const ProjectDetailsPage = () => {
                       className="w-full text-2xl font-bold bg-gray-50 dark:bg-gray-800 border rounded-lg px-4 py-2 mb-3"
                     />
                   ) : (
-                    <h1 className="text-3xl font-bold mb-3">{project.title}</h1>
+                    <h1 className="text-3xl font-bold mb-3">{project.name}</h1>
                   )}
 
                   <div className="flex items-center gap-4 flex-wrap">
                     <span
                       className={`px-3 py-1 text-sm font-medium rounded-full ${
-                        project.progress === "in-progress"
+                        project.status === "in-progress"
                           ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
                           : "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
                       }`}
@@ -185,7 +189,7 @@ const ProjectDetailsPage = () => {
                       {project.progress === "in-progress" ? "In Progress" : "Completed"}
                     </span>
                     <span className="text-gray-600 dark:text-gray-400">
-                      Created {project.createdAt || "N/A"}
+                      Created {formatDateTime(project.createdAt)}
                     </span>
                   </div>
                 </div>

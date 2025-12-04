@@ -71,3 +71,18 @@ export const strengthColors = [
     "bg-green-500",
     "bg-green-600",
   ];
+
+export function formatDateTime(isoString) {
+  const date = new Date(isoString);
+
+  if (isNaN(date)) return "Invalid Date";
+
+  return date.toLocaleString("en-IN", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
