@@ -139,3 +139,35 @@ export const getUserRole = (project, currentUserId) => {
   
   return "viewer";
 };
+
+// Helper function for priority button styles
+export const getPriorityButtonStyle = (priority, isActive) => {
+  if (isActive) {
+    switch (priority) {
+      case "low":
+        return "bg-green-600 text-white";
+      case "medium":
+        return "bg-yellow-600 text-white";
+      case "high":
+        return "bg-orange-600 text-white";
+      case "critical":
+        return "bg-red-600 text-white";
+      default:
+        return "bg-blue-600 text-white";
+    }
+  } else {
+    switch (priority) {
+      case "low":
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50";
+      case "medium":
+        return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/50";
+      case "high":
+        return "bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50";
+      case "critical":
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50";
+      default:
+        return "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600";
+    }
+  }
+};
+
