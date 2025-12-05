@@ -15,6 +15,9 @@ const initialState = {
     sortBy: "newest",
     status: "all",
     search: "",
+    priority: "all", 
+    tag: "",
+    search: "",
   },
 };
 

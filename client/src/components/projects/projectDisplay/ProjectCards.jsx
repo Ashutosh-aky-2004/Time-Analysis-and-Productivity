@@ -1,37 +1,57 @@
-// components/ProjectCards.jsx
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import ProjectCard from "./ProjectCard";
 import { HiOutlineInbox } from "react-icons/hi";
 
 const ProjectCards = () => {
-  // Get currentUserId from Redux state
-  const { projects, filters, currentUserId } = useSelector((state) => ({
-    projects: state.project.projects,
-    filters: state.project.filters,
-    currentUserId: state.project.currentUserId 
-  }));
+  const projects = useSelector((state) => state.project.projects);
+  const filters = useSelector((state) => state.project.filters);
+  const currentUserId = useSelector((state) => state.project.currentUserId);
 
   const filteredProjects = useMemo(() => {
     let result = [...projects];
 
+    // 1. Search filter
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
       result = result.filter(
         (project) =>
           project.name.toLowerCase().includes(searchTerm) ||
-          project.description.toLowerCase().includes(searchTerm) ||
-          (project.managingUserName &&
-            project.managingUserName.toLowerCase().includes(searchTerm))
+          project.description?.toLowerCase().includes(searchTerm) ||
+          (project.tags?.some(tag => 
+            tag.toLowerCase().includes(searchTerm)
+          )) ||
+          // Search in manager names
+          (project.managingUserId?.some(manager => 
+            manager?.firstName?.toLowerCase().includes(searchTerm) ||
+            manager?.lastName?.toLowerCase().includes(searchTerm) ||
+            manager?.email?.toLowerCase().includes(searchTerm)
+          ))
       );
     }
 
+    // 2. Status filter - UPDATED to match your schema
     if (filters.status !== "all") {
       result = result.filter(
-        (project) => project.status.toLowerCase() === filters.status
+        (project) => project.status?.toLowerCase() === filters.status.toLowerCase()
       );
     }
 
+    // 3. Priority filter - NEW
+    if (filters.priority !== "all") {
+      result = result.filter(
+        (project) => project.priority?.toLowerCase() === filters.priority.toLowerCase()
+      );
+    }
+
+    // 4. Tag filter (if you implement it)
+    if (filters.tag) {
+      result = result.filter(
+        (project) => project.tags?.includes(filters.tag)
+      );
+    }
+
+    // 5. Sorting
     result.sort((a, b) => {
       switch (filters.sortBy) {
         case "newest":
@@ -39,9 +59,15 @@ const ProjectCards = () => {
         case "oldest":
           return new Date(a.createdAt) - new Date(b.createdAt);
         case "duration":
-          return b.totalDuration - a.totalDuration;
-        case "name":
-          return a.name.localeCompare(b.name);
+          return (b.totalDuration || 0) - (a.totalDuration || 0);
+        case "name-asc":
+          return (a.name || "").localeCompare(b.name || "");
+        case "name-desc":
+          return (b.name || "").localeCompare(a.name || "");
+        case "priority":
+          // Custom priority order: critical > high > medium > low
+          const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+          return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
         default:
           return 0;
       }
@@ -70,7 +96,7 @@ const ProjectCards = () => {
         <ProjectCard 
           key={project._id || project.id} 
           project={project} 
-          currentUserId={currentUserId} 
+          currentUserId={currentUserId}
         />
       ))}
     </div>
