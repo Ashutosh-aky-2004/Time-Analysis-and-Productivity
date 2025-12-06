@@ -2,17 +2,18 @@ import express from "express";
 import {
   createQuickTask,
   createTask,
+  updateTask,
 } from "../controllers/taskController.js";
 
 const router = express.Router();
 
 router.post("/", createTask);
 router.post("/quick", createQuickTask);
-
+router.put("/:taskId", updateTask);
 
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
-// ⬜ PUT /api/tasks/:id       - Update task
+
 // ⬜ DELETE /api/tasks/:id    - Delete task
 // ⬜ PUT /api/tasks/:id/status - Update status
 
