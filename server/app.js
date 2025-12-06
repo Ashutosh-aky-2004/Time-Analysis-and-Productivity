@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import navbarRoutes from "./routes/navbarRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
 import protect from "./middleware/auth.js";
 
@@ -27,6 +28,7 @@ app.use(protect);
 app.use("/api/navbar",navbarRoutes);
 app.use("/profile",profileRoutes);
 app.use("/api/projects",projectRoutes);
+app.use("/api/tasks",taskRoutes);
 
 app.get("/api/serverStatus", (req, res) => {
   res.send("Server is running...");
