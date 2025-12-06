@@ -452,7 +452,7 @@ export const deleteSubtask = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error deleting subtask",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+
     });
   }
 };
@@ -614,7 +614,6 @@ export const logSubtaskHours = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error logging hours",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

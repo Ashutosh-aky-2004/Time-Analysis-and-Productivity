@@ -270,50 +270,13 @@ export const createQuickTask = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error creating task",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
 
-//get all the task for the user
 
-// export const getTasks = async (req, res) => {
-//   try {
-//     const userId = req.user._id;
+// Get all tasks for the logged-in user
 
-//     // Get tasks where user is:
-//     // 1. Assigned to task
-//     // 2. Assigned to any subtask
-//     // 3. Created the task
-//     // 4. Is manager/creator of project
-//     const tasks = await Task.find({
-//       $or: [
-//         { assignedTo: userId },
-//         { "subtasks.assignedTo": userId },
-//         { createdBy: userId },
-//       ],
-//     })
-//       .populate("projectId", "name")
-//       .populate("assignedTo", "firstName lastName")
-//       .sort({ createdAt: -1 })
-//       .limit(50);
-
-//     res.json({
-//       success: true,
-//       count: tasks.length,
-//       data: tasks,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//     });
-//   }
-// };
-
-// @desc    Get all tasks for the logged-in user
-// @route   GET /api/tasks
-// @access  Private
 export const getTasks = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -665,7 +628,6 @@ export const updateTaskStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error updating task status",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
@@ -735,7 +697,7 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error deleting task",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      
     });
   }
 };

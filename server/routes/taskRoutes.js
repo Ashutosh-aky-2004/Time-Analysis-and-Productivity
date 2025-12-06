@@ -13,10 +13,17 @@ import {
   logSubtaskHours,
   updateSubtask,
 } from "../controllers/subTaskControllers.js";
-import { addComment ,addReply} from "../controllers/commentControllers.js";
+import {
+  addComment,
+  addCommentReaction,
+  addReply,
+  addReplyReaction,
+  getSubtaskComments,
+} from "../controllers/commentControllers.js";
 
 const router = express.Router();
 
+// task creation API
 router.post("/", createTask);
 router.post("/quick", createQuickTask);
 router.put("/:taskId", updateTask);
@@ -32,11 +39,22 @@ router.post("/:taskId/subtasks/:subtaskId/time", logSubtaskHours);
 
 // task comment API
 router.post("/:taskId/subtasks/:subtaskId/comments", addComment);
-router.post("/:taskId/subtasks/:subtaskId/comments/:commentId/replies", addReply);
+router.post(
+  "/:taskId/subtasks/:subtaskId/comments/:commentId/replies",
+  addReply
+);
+router.get("/:taskId/subtasks/:subtaskId/comments", getSubtaskComments);
+router.post(
+  "/:taskId/subtasks/:subtaskId/comments/:commentId/reactions",
+  addCommentReaction
+);
+router.post(
+  "/:taskId/subtasks/:subtaskId/comments/:commentId/replies/:replyId/reactions",
+  addReplyReaction
+);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
-
 
 export default router;
