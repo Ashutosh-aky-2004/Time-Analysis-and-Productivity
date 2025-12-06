@@ -6,18 +6,13 @@ export const addSubtask = async (req, res) => {
   try {
     const { taskId } = req.params;
     const userId = req.user.id;
-    const { 
-      title, 
-      description, 
-      assignedTo, 
-      estimatedHours 
-    } = req.body;
+    const { title, description, assignedTo, estimatedHours } = req.body;
 
     // 1. Validate required fields
-    if (!title || title.trim() === '') {
+    if (!title || title.trim() === "") {
       return res.status(400).json({
         success: false,
-        message: "Subtask title is required"
+        message: "Subtask title is required",
       });
     }
 
@@ -26,7 +21,7 @@ export const addSubtask = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found"
+        message: "Task not found",
       });
     }
 
@@ -35,38 +30,41 @@ export const addSubtask = async (req, res) => {
     if (!project) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "Project not found",
       });
     }
 
     // 4. Check permissions
     // Who can add subtasks?
     // - Project creator
-    // - Project managers  
+    // - Project managers
     // - Task creator
     const isCreator = project.projectStartedBy.toString() === userId.toString();
-    const isManager = project.managingUserId.some(manager =>
-      manager._id ? manager._id.toString() === userId.toString() : manager.toString() === userId.toString()
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
     );
     const isTaskCreator = task.createdBy.toString() === userId.toString();
 
     if (!isCreator && !isManager && !isTaskCreator) {
       return res.status(403).json({
         success: false,
-        message: "Only project creator, managers, or task creator can add subtasks"
+        message:
+          "Only project creator, managers, or task creator can add subtasks",
       });
     }
 
     // 5. Validate assignee (if provided)
     if (assignedTo) {
-      const isValidAssignee = project.teamMembers.some(member =>
-        member.toString() === assignedTo
+      const isValidAssignee = project.teamMembers.some(
+        (member) => member.toString() === assignedTo
       );
-      
+
       if (!isValidAssignee) {
         return res.status(400).json({
           success: false,
-          message: "Assignee must be a team member of the project"
+          message: "Assignee must be a team member of the project",
         });
       }
     }
@@ -74,19 +72,19 @@ export const addSubtask = async (req, res) => {
     // 6. Create subtask object
     const newSubtask = {
       title: title.trim(),
-      description: description?.trim() || '',
+      description: description?.trim() || "",
       assignedTo: assignedTo || null,
       estimatedHours: estimatedHours || 0,
-      status: 'todo',
+      status: "todo",
       order: task.subtasks.length, // Add to end
       createdAt: new Date(),
       updatedAt: new Date(),
-      comments: []
+      comments: [],
     };
 
     // 7. Add to task's subtasks array
     task.subtasks.push(newSubtask);
-    
+
     // 8. Update task's estimated hours if subtask has hours
     if (estimatedHours > 0) {
       task.estimatedHours = (task.estimatedHours || 0) + estimatedHours;
@@ -109,17 +107,16 @@ export const addSubtask = async (req, res) => {
           assignedTo: createdSubtask.assignedTo,
           estimatedHours: createdSubtask.estimatedHours,
           status: createdSubtask.status,
-          order: createdSubtask.order
+          order: createdSubtask.order,
         },
         task: {
           _id: task._id,
           title: task.title,
           totalSubtasks: task.subtasks.length,
-          estimatedHours: task.estimatedHours
-        }
-      }
+          estimatedHours: task.estimatedHours,
+        },
+      },
     });
-
   } catch (error) {
     console.error("Error adding subtask:", error);
     res.status(500).json({
@@ -141,7 +138,7 @@ export const updateSubtask = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found"
+        message: "Task not found",
       });
     }
 
@@ -150,7 +147,7 @@ export const updateSubtask = async (req, res) => {
     if (!subtask) {
       return res.status(404).json({
         success: false,
-        message: "Subtask not found"
+        message: "Subtask not found",
       });
     }
 
@@ -159,7 +156,7 @@ export const updateSubtask = async (req, res) => {
     if (!project) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "Project not found",
       });
     }
 
@@ -170,11 +167,14 @@ export const updateSubtask = async (req, res) => {
     // - Task creator
     // - Subtask assignee
     const isCreator = project.projectStartedBy.toString() === userId.toString();
-    const isManager = project.managingUserId.some(manager =>
-      manager._id ? manager._id.toString() === userId.toString() : manager.toString() === userId.toString()
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
     );
     const isTaskCreator = task.createdBy.toString() === userId.toString();
-    const isSubtaskAssignee = subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
+    const isSubtaskAssignee =
+      subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
 
     const canUpdateAll = isCreator || isManager || isTaskCreator;
     const canUpdateAssigned = isSubtaskAssignee;
@@ -182,29 +182,31 @@ export const updateSubtask = async (req, res) => {
     if (!canUpdateAll && !canUpdateAssigned) {
       return res.status(403).json({
         success: false,
-        message: "You don't have permission to update this subtask"
+        message: "You don't have permission to update this subtask",
       });
     }
 
     // 5. Define allowed fields for each role
     const allowedFieldsForAll = [
-      'title', 'description', 'assignedTo', 'estimatedHours', 'order'
+      "title",
+      "description",
+      "assignedTo",
+      "estimatedHours",
+      "order",
     ];
 
-    const allowedFieldsForAssignee = [
-      'status', 'loggedHours', 'workNotes'
-    ];
+    const allowedFieldsForAssignee = ["status", "loggedHours", "workNotes"];
 
     // 6. Filter updates based on permissions
     const filteredUpdates = {};
     const originalEstimatedHours = subtask.estimatedHours || 0;
-    
-    Object.keys(updates).forEach(key => {
+
+    Object.keys(updates).forEach((key) => {
       if (canUpdateAll && allowedFieldsForAll.includes(key)) {
         filteredUpdates[key] = updates[key];
       } else if (canUpdateAssigned && allowedFieldsForAssignee.includes(key)) {
         filteredUpdates[key] = updates[key];
-      } else if (key === 'status' && canUpdateAssigned) {
+      } else if (key === "status" && canUpdateAssigned) {
         // Assignee can update their own subtask status
         filteredUpdates[key] = updates[key];
       }
@@ -212,20 +214,20 @@ export const updateSubtask = async (req, res) => {
 
     // 7. Validate assignee (if being updated)
     if (filteredUpdates.assignedTo) {
-      const isValidAssignee = project.teamMembers.some(member =>
-        member.toString() === filteredUpdates.assignedTo
+      const isValidAssignee = project.teamMembers.some(
+        (member) => member.toString() === filteredUpdates.assignedTo
       );
-      
+
       if (!isValidAssignee) {
         return res.status(400).json({
           success: false,
-          message: "Assignee must be a team member of the project"
+          message: "Assignee must be a team member of the project",
         });
       }
     }
 
     // 8. Apply updates to subtask
-    Object.keys(filteredUpdates).forEach(key => {
+    Object.keys(filteredUpdates).forEach((key) => {
       subtask[key] = filteredUpdates[key];
     });
 
@@ -234,9 +236,9 @@ export const updateSubtask = async (req, res) => {
     subtask.updatedAt = new Date();
 
     // Auto-set completedAt for subtask completion
-    if (filteredUpdates.status === 'completed' && !subtask.completedAt) {
+    if (filteredUpdates.status === "completed" && !subtask.completedAt) {
       subtask.completedAt = new Date();
-    } else if (filteredUpdates.status !== 'completed' && subtask.completedAt) {
+    } else if (filteredUpdates.status !== "completed" && subtask.completedAt) {
       subtask.completedAt = null;
     }
 
@@ -244,7 +246,7 @@ export const updateSubtask = async (req, res) => {
     if (filteredUpdates.estimatedHours !== undefined) {
       const newEstimatedHours = filteredUpdates.estimatedHours || 0;
       const hoursDifference = newEstimatedHours - originalEstimatedHours;
-      
+
       if (hoursDifference !== 0) {
         task.estimatedHours = (task.estimatedHours || 0) + hoursDifference;
       }
@@ -252,14 +254,18 @@ export const updateSubtask = async (req, res) => {
 
     // 11. Auto-update task status based on subtasks
     if (filteredUpdates.status) {
-      const allSubtasksCompleted = task.subtasks.every(st => st.status === 'completed');
-      const someSubtasksCompleted = task.subtasks.some(st => st.status === 'completed');
-      
+      const allSubtasksCompleted = task.subtasks.every(
+        (st) => st.status === "completed"
+      );
+      const someSubtasksCompleted = task.subtasks.some(
+        (st) => st.status === "completed"
+      );
+
       if (allSubtasksCompleted) {
-        task.status = 'completed';
+        task.status = "completed";
         task.completedAt = task.completedAt || new Date();
-      } else if (someSubtasksCompleted && task.status === 'todo') {
-        task.status = 'in-progress';
+      } else if (someSubtasksCompleted && task.status === "todo") {
+        task.status = "in-progress";
       }
     }
 
@@ -281,18 +287,17 @@ export const updateSubtask = async (req, res) => {
           status: subtask.status,
           completedAt: subtask.completedAt,
           order: subtask.order,
-          updatedAt: subtask.updatedAt
+          updatedAt: subtask.updatedAt,
         },
         task: {
           _id: task._id,
           title: task.title,
           status: task.status,
           estimatedHours: task.estimatedHours,
-          completionPercentage: task.completionPercentage || 0
-        }
-      }
+          completionPercentage: task.completionPercentage || 0,
+        },
+      },
     });
-
   } catch (error) {
     console.error("Error updating subtask:", error);
     res.status(500).json({
@@ -313,7 +318,7 @@ export const deleteSubtask = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found"
+        message: "Task not found",
       });
     }
 
@@ -322,7 +327,7 @@ export const deleteSubtask = async (req, res) => {
     if (!subtask) {
       return res.status(404).json({
         success: false,
-        message: "Subtask not found"
+        message: "Subtask not found",
       });
     }
 
@@ -331,7 +336,7 @@ export const deleteSubtask = async (req, res) => {
     if (!project) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "Project not found",
       });
     }
 
@@ -339,15 +344,18 @@ export const deleteSubtask = async (req, res) => {
     // Only project creator, managers, or task creator can delete subtasks
     // (Assigned users CANNOT delete subtasks)
     const isCreator = project.projectStartedBy.toString() === userId.toString();
-    const isManager = project.managingUserId.some(manager =>
-      manager._id ? manager._id.toString() === userId.toString() : manager.toString() === userId.toString()
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
     );
     const isTaskCreator = task.createdBy.toString() === userId.toString();
 
     if (!isCreator && !isManager && !isTaskCreator) {
       return res.status(403).json({
         success: false,
-        message: "Only project creator, managers, or task creator can delete subtasks"
+        message:
+          "Only project creator, managers, or task creator can delete subtasks",
       });
     }
 
@@ -357,7 +365,7 @@ export const deleteSubtask = async (req, res) => {
       estimatedHours: subtask.estimatedHours || 0,
       loggedHours: subtask.loggedHours || 0,
       hasComments: subtask.comments && subtask.comments.length > 0,
-      commentCount: subtask.comments ? subtask.comments.length : 0
+      commentCount: subtask.comments ? subtask.comments.length : 0,
     };
 
     // 6. Remove subtask from array
@@ -365,35 +373,45 @@ export const deleteSubtask = async (req, res) => {
 
     // 7. Update task's estimated hours (subtract deleted subtask's hours)
     if (deletedSubtask.estimatedHours > 0) {
-      task.estimatedHours = Math.max(0, (task.estimatedHours || 0) - deletedSubtask.estimatedHours);
+      task.estimatedHours = Math.max(
+        0,
+        (task.estimatedHours || 0) - deletedSubtask.estimatedHours
+      );
     }
 
     // 8. Update task's logged hours (subtract deleted subtask's logged hours)
     if (deletedSubtask.loggedHours > 0) {
-      task.loggedHours = Math.max(0, (task.loggedHours || 0) - deletedSubtask.loggedHours);
+      task.loggedHours = Math.max(
+        0,
+        (task.loggedHours || 0) - deletedSubtask.loggedHours
+      );
     }
 
     // 9. Recalculate task status based on remaining subtasks
     if (task.subtasks.length === 0) {
       // No subtasks left, task status depends on its own status
-      if (task.status === 'completed') {
+      if (task.status === "completed") {
         // Keep as completed
       } else {
-        task.status = 'todo';
+        task.status = "todo";
       }
     } else {
       // Check if all remaining subtasks are completed
-      const allCompleted = task.subtasks.every(st => st.status === 'completed');
-      const someCompleted = task.subtasks.some(st => st.status === 'completed');
-      
+      const allCompleted = task.subtasks.every(
+        (st) => st.status === "completed"
+      );
+      const someCompleted = task.subtasks.some(
+        (st) => st.status === "completed"
+      );
+
       if (allCompleted) {
-        task.status = 'completed';
+        task.status = "completed";
         task.completedAt = task.completedAt || new Date();
-      } else if (someCompleted && task.status === 'todo') {
-        task.status = 'in-progress';
+      } else if (someCompleted && task.status === "todo") {
+        task.status = "in-progress";
         task.completedAt = null;
-      } else if (!someCompleted && task.status !== 'todo') {
-        task.status = 'todo';
+      } else if (!someCompleted && task.status !== "todo") {
+        task.status = "todo";
         task.completedAt = null;
       }
     }
@@ -416,7 +434,7 @@ export const deleteSubtask = async (req, res) => {
           estimatedHours: deletedSubtask.estimatedHours,
           loggedHours: deletedSubtask.loggedHours,
           hadComments: deletedSubtask.hasComments,
-          commentCount: deletedSubtask.commentCount
+          commentCount: deletedSubtask.commentCount,
         },
         task: {
           _id: task._id,
@@ -425,17 +443,16 @@ export const deleteSubtask = async (req, res) => {
           estimatedHours: task.estimatedHours,
           loggedHours: task.loggedHours,
           status: task.status,
-          completionPercentage: task.completionPercentage || 0
-        }
-      }
+          completionPercentage: task.completionPercentage || 0,
+        },
+      },
     });
-
   } catch (error) {
     console.error("Error deleting subtask:", error);
     res.status(500).json({
       success: false,
       message: "Server error deleting subtask",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
@@ -448,10 +465,10 @@ export const logSubtaskHours = async (req, res) => {
     const { hours, notes } = req.body;
 
     // 1. Validate input
-    if (!hours || typeof hours !== 'number' || hours <= 0) {
+    if (!hours || typeof hours !== "number" || hours <= 0) {
       return res.status(400).json({
         success: false,
-        message: "Valid hours (number > 0) is required"
+        message: "Valid hours (number > 0) is required",
       });
     }
 
@@ -460,7 +477,7 @@ export const logSubtaskHours = async (req, res) => {
     if (hours > MAX_HOURS_PER_ENTRY) {
       return res.status(400).json({
         success: false,
-        message: `Cannot log more than ${MAX_HOURS_PER_ENTRY} hours at once`
+        message: `Cannot log more than ${MAX_HOURS_PER_ENTRY} hours at once`,
       });
     }
 
@@ -469,7 +486,7 @@ export const logSubtaskHours = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found"
+        message: "Task not found",
       });
     }
 
@@ -478,19 +495,20 @@ export const logSubtaskHours = async (req, res) => {
     if (!subtask) {
       return res.status(404).json({
         success: false,
-        message: "Subtask not found"
+        message: "Subtask not found",
       });
     }
 
     // 4. Check permissions
     // ONLY the assigned user can log hours to their own subtask
     // (Trust-based system - user reports their own work)
-    const isAssigned = subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
-    
+    const isAssigned =
+      subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
+
     if (!isAssigned) {
       return res.status(403).json({
         success: false,
-        message: "Only the assigned user can log hours to this subtask"
+        message: "Only the assigned user can log hours to this subtask",
       });
     }
 
@@ -500,12 +518,14 @@ export const logSubtaskHours = async (req, res) => {
 
     // 6. Update subtask hours
     subtask.loggedHours = previousSubtaskHours + hours;
-    
+
     // 7. Update subtask work notes (append or replace)
-    if (notes && notes.trim() !== '') {
-      if (subtask.workNotes && subtask.workNotes.trim() !== '') {
+    if (notes && notes.trim() !== "") {
+      if (subtask.workNotes && subtask.workNotes.trim() !== "") {
         // Append to existing notes
-        subtask.workNotes = `${subtask.workNotes}\n\n${new Date().toLocaleDateString()}: ${notes.trim()}`;
+        subtask.workNotes = `${
+          subtask.workNotes
+        }\n\n${new Date().toLocaleDateString()}: ${notes.trim()}`;
       } else {
         // Set new notes
         subtask.workNotes = `${new Date().toLocaleDateString()}: ${notes.trim()}`;
@@ -513,8 +533,8 @@ export const logSubtaskHours = async (req, res) => {
     }
 
     // 8. Update subtask status if it was "todo"
-    if (subtask.status === 'todo' && hours > 0) {
-      subtask.status = 'in-progress';
+    if (subtask.status === "todo" && hours > 0) {
+      subtask.status = "in-progress";
     }
 
     // 9. Update subtask updatedAt
@@ -524,14 +544,17 @@ export const logSubtaskHours = async (req, res) => {
     task.loggedHours = previousTaskHours + hours;
 
     // 11. Update task status if needed
-    if (task.status === 'todo' && hours > 0) {
-      task.status = 'in-progress';
+    if (task.status === "todo" && hours > 0) {
+      task.status = "in-progress";
     }
 
     // 12. Calculate efficiency score (optional analytics)
-    const efficiencyScore = subtask.estimatedHours > 0 
-      ? Math.round((subtask.estimatedHours / (subtask.loggedHours || 1)) * 100) 
-      : null;
+    const efficiencyScore =
+      subtask.estimatedHours > 0
+        ? Math.round(
+            (subtask.estimatedHours / (subtask.loggedHours || 1)) * 100
+          )
+        : null;
 
     // 13. Save the task
     await task.save();
@@ -545,8 +568,8 @@ export const logSubtaskHours = async (req, res) => {
           subtaskId: subtask._id,
           hoursLogged: hours,
           totalSubtaskHours: subtask.loggedHours,
-          notes: notes || '',
-          loggedAt: new Date()
+          notes: notes || "",
+          loggedAt: new Date(),
         },
         subtask: {
           _id: subtask._id,
@@ -556,40 +579,183 @@ export const logSubtaskHours = async (req, res) => {
           loggedHours: subtask.loggedHours,
           status: subtask.status,
           workNotes: subtask.workNotes,
-          updatedAt: subtask.updatedAt
+          updatedAt: subtask.updatedAt,
         },
         task: {
           _id: task._id,
           title: task.title,
           loggedHours: task.loggedHours,
-          status: task.status
+          status: task.status,
         },
         analytics: {
           hoursAdded: hours,
           totalTaskHours: task.loggedHours,
           efficiencyScore: efficiencyScore,
-          efficiencyMessage: efficiencyScore ? 
-            (efficiencyScore > 100 ? `${efficiencyScore - 100}% ahead of estimate` :
-             efficiencyScore < 100 ? `${100 - efficiencyScore}% behind estimate` :
-             "Right on estimate!") : "No estimate to compare"
-        }
-      }
+          efficiencyMessage: efficiencyScore
+            ? efficiencyScore > 100
+              ? `${efficiencyScore - 100}% ahead of estimate`
+              : efficiencyScore < 100
+              ? `${100 - efficiencyScore}% behind estimate`
+              : "Right on estimate!"
+            : "No estimate to compare",
+        },
+      },
     });
-
   } catch (error) {
     console.error("Error logging subtask hours:", error);
-    
-    if (error.name === 'CastError') {
+
+    if (error.name === "CastError") {
       return res.status(400).json({
         success: false,
-        message: "Invalid ID format"
+        message: "Invalid ID format",
       });
     }
 
     res.status(500).json({
       success: false,
       message: "Server error logging hours",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+// @desc    Add comment to a subtask
+// @route   POST /api/tasks/:taskId/subtasks/:subtaskId/comments
+// @access  Private (Project team members only)
+export const addComment = async (req, res) => {
+  try {
+    const { taskId, subtaskId } = req.params;
+    const userId = req.user._id;
+    const { text, mentions } = req.body;
+
+    // 1. Validate input
+    if (!text || text.trim() === "") {
+      return res.status(400).json({
+        success: false,
+        message: "Comment text is required",
+      });
+    }
+
+    // 2. Find the task
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    // 3. Find the subtask
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) {
+      return res.status(404).json({
+        success: false,
+        message: "Subtask not found",
+      });
+    }
+
+    // 4. Get project for permission check
+    const project = await Project.findById(task.projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    // 5. Check if user is project team member
+    const isTeamMember = project.teamMembers.some(
+      (member) => member.toString() === userId.toString()
+    );
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
+    );
+    const isCreator = project.projectStartedBy.toString() === userId.toString();
+
+    if (!isTeamMember && !isManager && !isCreator) {
+      return res.status(403).json({
+        success: false,
+        message: "Only project team members can add comments",
+      });
+    }
+
+    // 6. Validate mentions (if provided)
+    const validMentions = [];
+    if (mentions && Array.isArray(mentions)) {
+      for (const mentionedUserId of mentions) {
+        const isValidMention = project.teamMembers.some(
+          (member) => member.toString() === mentionedUserId
+        );
+
+        if (isValidMention) {
+          validMentions.push(mentionedUserId);
+        }
+        // Silently ignore invalid mentions (don't fail the request)
+      }
+    }
+
+    // 7. Create comment object
+    const newComment = {
+      user: userId,
+      text: text.trim(),
+      createdAt: new Date(),
+      replies: [],
+      reactions: [],
+      mentions: validMentions,
+      isPinned: false,
+    };
+
+    // 8. Add comment to subtask
+    if (!subtask.comments) {
+      subtask.comments = [];
+    }
+    subtask.comments.push(newComment);
+
+    // 9. Update subtask updatedAt
+    subtask.updatedAt = new Date();
+
+    // 10. Save the task
+    await task.save();
+
+    // 11. Get the created comment (last in array)
+    const createdComment = subtask.comments[subtask.comments.length - 1];
+
+    // 12. Return success response
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      data: {
+        comment: {
+          _id: createdComment._id,
+          user: userId,
+          text: createdComment.text,
+          mentions: createdComment.mentions,
+          createdAt: createdComment.createdAt,
+          replyCount: 0,
+          reactionCount: 0,
+        },
+        subtask: {
+          _id: subtask._id,
+          title: subtask.title,
+          totalComments: subtask.comments.length,
+        },
+        task: {
+          _id: task._id,
+          title: task.title,
+        },
+        notification:
+          validMentions.length > 0
+            ? `Comment posted. ${validMentions.length} user(s) mentioned.`
+            : "Comment posted successfully.",
+      },
+    });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error adding comment",
     });
   }
 };

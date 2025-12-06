@@ -8,6 +8,7 @@ import {
   getTasks,
 } from "../controllers/taskController.js";
 import {
+  addComment,
   addSubtask,
   deleteSubtask,
   logSubtaskHours,
@@ -23,11 +24,12 @@ router.put("/:taskId/status", updateTaskStatus);
 router.delete("/:taskId", deleteTask);
 
 // Sub Task api
+router.get("/", getTasks);
 router.post("/:taskId/subtasks", addSubtask);
 router.put("/:taskId/subtasks/:subtaskId", updateSubtask);
 router.delete("/:taskId/subtasks/:subtaskId", deleteSubtask);
 router.post("/:taskId/subtasks/:subtaskId/time", logSubtaskHours);
-router.get("/", getTasks);
+router.post("/:taskId/subtasks/:subtaskId/comments", addComment);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
