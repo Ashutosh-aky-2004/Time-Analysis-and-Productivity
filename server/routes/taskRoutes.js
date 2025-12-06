@@ -8,12 +8,12 @@ import {
   getTasks,
 } from "../controllers/taskController.js";
 import {
-  addComment,
   addSubtask,
   deleteSubtask,
   logSubtaskHours,
   updateSubtask,
 } from "../controllers/subTaskControllers.js";
+import { addComment ,addReply} from "../controllers/commentControllers.js";
 
 const router = express.Router();
 
@@ -23,19 +23,20 @@ router.put("/:taskId", updateTask);
 router.put("/:taskId/status", updateTaskStatus);
 router.delete("/:taskId", deleteTask);
 
-// Sub Task api
+// Sub Task API
 router.get("/", getTasks);
 router.post("/:taskId/subtasks", addSubtask);
 router.put("/:taskId/subtasks/:subtaskId", updateSubtask);
 router.delete("/:taskId/subtasks/:subtaskId", deleteSubtask);
 router.post("/:taskId/subtasks/:subtaskId/time", logSubtaskHours);
+
+// task comment API
 router.post("/:taskId/subtasks/:subtaskId/comments", addComment);
+router.post("/:taskId/subtasks/:subtaskId/comments/:commentId/replies", addReply);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
 
-// option 2
-// ⬜ POST /api/tasks/:taskId/subtasks/:subtaskId/comments - Add comment
 
 export default router;
