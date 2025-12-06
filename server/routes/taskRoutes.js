@@ -1,5 +1,8 @@
 import express from "express";
-import { createQuickTask, createTask } from "../controllers/taskController.js";
+import {
+  createQuickTask,
+  createTask,
+} from "../controllers/taskController.js";
 
 const router = express.Router();
 
@@ -15,7 +18,7 @@ router.post("/quick", createQuickTask);
 
 // option 2
 // ⬜ POST /api/tasks/:taskId/subtasks       - Add subtask
-// ⬜ PUT /api/tasks/:taskId/subtasks/:subtaskId  - Update subtask  
+// ⬜ PUT /api/tasks/:taskId/subtasks/:subtaskId  - Update subtask
 // ⬜ DELETE /api/tasks/:taskId/subtasks/:subtaskId - Remove subtask
 // ⬜ POST /api/tasks/:taskId/subtasks/:subtaskId/comments - Add comment
 // ⬜ POST /api/tasks/:taskId/subtasks/:subtaskId/time     - Log hours

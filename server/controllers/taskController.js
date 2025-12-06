@@ -275,13 +275,12 @@ export const createQuickTask = async (req, res) => {
   }
 };
 
-
 //get all the task for the user
 
 export const getTasks = async (req, res) => {
   try {
     const userId = req.user._id;
-    
+
     // Get tasks where user is:
     // 1. Assigned to task
     // 2. Assigned to any subtask
@@ -291,24 +290,23 @@ export const getTasks = async (req, res) => {
       $or: [
         { assignedTo: userId },
         { "subtasks.assignedTo": userId },
-        { createdBy: userId }
-      ]
+        { createdBy: userId },
+      ],
     })
-    .populate('projectId', 'name')
-    .populate('assignedTo', 'firstName lastName')
-    .sort({ createdAt: -1 })
-    .limit(50);
+      .populate("projectId", "name")
+      .populate("assignedTo", "firstName lastName")
+      .sort({ createdAt: -1 })
+      .limit(50);
 
     res.json({
       success: true,
       count: tasks.length,
-      data: tasks
+      data: tasks,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error",
     });
   }
 };
