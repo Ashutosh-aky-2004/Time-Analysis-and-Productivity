@@ -6,7 +6,10 @@ import {
   updateTask,
   updateTaskStatus,
 } from "../controllers/taskController.js";
-import { addSubtask } from "../controllers/subTaskControllers.js";
+import {
+  addSubtask,
+  updateSubtask,
+} from "../controllers/subTaskControllers.js";
 
 const router = express.Router();
 
@@ -18,6 +21,7 @@ router.delete("/:taskId", deleteTask);
 
 // Sub Task api
 router.post("/:taskId/subtasks", addSubtask);
+router.put("/:taskId/subtasks/:subtaskId", updateSubtask);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
