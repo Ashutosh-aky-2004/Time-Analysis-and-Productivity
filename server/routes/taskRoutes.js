@@ -8,6 +8,7 @@ import {
 } from "../controllers/taskController.js";
 import {
   addSubtask,
+  deleteSubtask,
   updateSubtask,
 } from "../controllers/subTaskControllers.js";
 
@@ -22,13 +23,14 @@ router.delete("/:taskId", deleteTask);
 // Sub Task api
 router.post("/:taskId/subtasks", addSubtask);
 router.put("/:taskId/subtasks/:subtaskId", updateSubtask);
+router.delete("/:taskId/subtasks/:subtaskId", deleteSubtask);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
 
 // option 2
-// ⬜ PUT /api/tasks/:taskId/subtasks/:subtaskId  - Update subtask
+
 // ⬜ DELETE /api/tasks/:taskId/subtasks/:subtaskId - Remove subtask
 // ⬜ POST /api/tasks/:taskId/subtasks/:subtaskId/comments - Add comment
 // ⬜ POST /api/tasks/:taskId/subtasks/:subtaskId/time     - Log hours

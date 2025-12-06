@@ -130,7 +130,6 @@ export const addSubtask = async (req, res) => {
 };
 
 // Update a subtask
-
 export const updateSubtask = async (req, res) => {
   try {
     const { taskId, subtaskId } = req.params;
@@ -299,6 +298,144 @@ export const updateSubtask = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error updating subtask",
+    });
+  }
+};
+
+// Delete a subtask
+export const deleteSubtask = async (req, res) => {
+  try {
+    const { taskId, subtaskId } = req.params;
+    const userId = req.user.id;
+
+    // 1. Find the task
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found"
+      });
+    }
+
+    // 2. Find the subtask
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) {
+      return res.status(404).json({
+        success: false,
+        message: "Subtask not found"
+      });
+    }
+
+    // 3. Get project for permission check
+    const project = await Project.findById(task.projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found"
+      });
+    }
+
+    // 4. Check permissions
+    // Only project creator, managers, or task creator can delete subtasks
+    // (Assigned users CANNOT delete subtasks)
+    const isCreator = project.projectStartedBy.toString() === userId.toString();
+    const isManager = project.managingUserId.some(manager =>
+      manager._id ? manager._id.toString() === userId.toString() : manager.toString() === userId.toString()
+    );
+    const isTaskCreator = task.createdBy.toString() === userId.toString();
+
+    if (!isCreator && !isManager && !isTaskCreator) {
+      return res.status(403).json({
+        success: false,
+        message: "Only project creator, managers, or task creator can delete subtasks"
+      });
+    }
+
+    // 5. Store subtask info before deletion
+    const deletedSubtask = {
+      title: subtask.title,
+      estimatedHours: subtask.estimatedHours || 0,
+      loggedHours: subtask.loggedHours || 0,
+      hasComments: subtask.comments && subtask.comments.length > 0,
+      commentCount: subtask.comments ? subtask.comments.length : 0
+    };
+
+    // 6. Remove subtask from array
+    task.subtasks.pull(subtaskId);
+
+    // 7. Update task's estimated hours (subtract deleted subtask's hours)
+    if (deletedSubtask.estimatedHours > 0) {
+      task.estimatedHours = Math.max(0, (task.estimatedHours || 0) - deletedSubtask.estimatedHours);
+    }
+
+    // 8. Update task's logged hours (subtract deleted subtask's logged hours)
+    if (deletedSubtask.loggedHours > 0) {
+      task.loggedHours = Math.max(0, (task.loggedHours || 0) - deletedSubtask.loggedHours);
+    }
+
+    // 9. Recalculate task status based on remaining subtasks
+    if (task.subtasks.length === 0) {
+      // No subtasks left, task status depends on its own status
+      if (task.status === 'completed') {
+        // Keep as completed
+      } else {
+        task.status = 'todo';
+      }
+    } else {
+      // Check if all remaining subtasks are completed
+      const allCompleted = task.subtasks.every(st => st.status === 'completed');
+      const someCompleted = task.subtasks.some(st => st.status === 'completed');
+      
+      if (allCompleted) {
+        task.status = 'completed';
+        task.completedAt = task.completedAt || new Date();
+      } else if (someCompleted && task.status === 'todo') {
+        task.status = 'in-progress';
+        task.completedAt = null;
+      } else if (!someCompleted && task.status !== 'todo') {
+        task.status = 'todo';
+        task.completedAt = null;
+      }
+    }
+
+    // 10. Reorder remaining subtasks (fix gaps)
+    task.subtasks.forEach((st, index) => {
+      st.order = index;
+    });
+
+    // 11. Save the task
+    await task.save();
+
+    // 12. Return success response
+    res.status(200).json({
+      success: true,
+      message: "Subtask deleted successfully",
+      data: {
+        deletedSubtask: {
+          title: deletedSubtask.title,
+          estimatedHours: deletedSubtask.estimatedHours,
+          loggedHours: deletedSubtask.loggedHours,
+          hadComments: deletedSubtask.hasComments,
+          commentCount: deletedSubtask.commentCount
+        },
+        task: {
+          _id: task._id,
+          title: task.title,
+          remainingSubtasks: task.subtasks.length,
+          estimatedHours: task.estimatedHours,
+          loggedHours: task.loggedHours,
+          status: task.status,
+          completionPercentage: task.completionPercentage || 0
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Error deleting subtask:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error deleting subtask",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
