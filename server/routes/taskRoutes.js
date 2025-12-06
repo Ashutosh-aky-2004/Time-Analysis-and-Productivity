@@ -2,6 +2,7 @@ import express from "express";
 import {
   createQuickTask,
   createTask,
+  deleteTask,
   updateTask,
   updateTaskStatus,
 } from "../controllers/taskController.js";
@@ -12,13 +13,11 @@ router.post("/", createTask);
 router.post("/quick", createQuickTask);
 router.put("/:taskId", updateTask);
 router.put("/:taskId/status", updateTaskStatus);
-
+router.delete("/:taskId", deleteTask);
 
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
 
-// ⬜ DELETE /api/tasks/:id    - Delete task
-// ⬜ PUT /api/tasks/:id/status - Update status
 
 // option 2
 // ⬜ POST /api/tasks/:taskId/subtasks       - Add subtask

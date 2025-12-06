@@ -496,7 +496,7 @@ export const updateTaskStatus = async (req, res) => {
 
     // Find the task
     const task = await Task.findById(taskId);
-    console.log(status)
+    console.log(status);
     if (!task) {
       return res.status(404).json({
         success: false,
@@ -577,6 +577,76 @@ export const updateTaskStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error updating task status",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+// Delete a task
+export const deleteTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const userId = req.user.id;
+
+    // Find the task
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    // Get project for permission check
+    const project = await Project.findById(task.projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    // Only project creator or managers can delete tasks
+    const isCreator = project.projectStartedBy.toString() === userId.toString();
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
+    );
+
+    if (!isCreator && !isManager) {
+      return res.status(403).json({
+        success: false,
+        message: "Only project creator or managers can delete tasks",
+      });
+    }
+
+    // Check if task has logged hours (optional warning)
+    const hasLoggedHours =
+      task.loggedHours > 0 || task.subtasks.some((st) => st.loggedHours > 0);
+
+    // Delete the task
+    await Task.findByIdAndDelete(taskId);
+
+    // Remove task from project's tasks array
+    project.tasks = project.tasks.filter((t) => t.toString() !== taskId);
+    await project.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Task deleted successfully",
+      data: {
+        deletedTaskId: taskId,
+        warning: hasLoggedHours
+          ? "Task had logged hours. This data has been permanently deleted."
+          : undefined,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error deleting task",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
