@@ -2,12 +2,16 @@ import express from "express";
 import {
   addProject,
   deleteProject,
-  getAllUserProjects,getProjectTasks,restoreProject
+  getAllUserProjects,
+  getProjectTasks,
+  restoreProject,
 } from "../controllers/projectControllers.js";
+import { getProjectFullDetails } from "../controllers/projectDataControllers.js";
 
 const router = express.Router();
 
 router.get("/get-all-user-project", getAllUserProjects);
+router.get("/get-all-project-details/:projectId", getProjectFullDetails);
 
 // get project task
 router.get("/:projectId/tasks", getProjectTasks);
