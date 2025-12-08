@@ -6,6 +6,8 @@ import { getRandomQuote } from "../constants";
 import { useEffect, useState } from "react";
 import useLogin from "../hooks/auth/useLogin";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../redux/auth/authSlice";
 
 const Login = () => {
   const [quote, setQuote] = useState("");
@@ -14,6 +16,8 @@ const Login = () => {
 
   const { login, loading } = useLogin();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     let quote = getRandomQuote();
@@ -26,16 +30,25 @@ const Login = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in both email and password");
-      return;
-    }
-    const success = await login({ email, password });
-    if (success) {
-      navigate("/dashboard"); // redirect on successful login
-    }
-  };
+  e.preventDefault();
+  if (!email || !password) {
+    toast.error("Please fill in both email and password");
+    return;
+  }
+
+  const res = await login({ email, password });
+
+  if (res) {
+    dispatch(
+      setAuth({
+        user: res.user,
+        token: res.token,
+      })
+    );
+
+    navigate("/dashboard");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex flex-col md:flex-row transition-colors duration-300">
