@@ -6,6 +6,7 @@ import LandingPage from "../pages/LandingPage";
 import ProtectedRoute from "./ProtectedRoute";
 import LandingPageProject from "../components/projects/LandingPageProject";
 import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDetailsPage";
+import { ProjectProvider } from "../context/project/ProjectContext";
 
 const AppRoutes = () => {
   return (
@@ -46,7 +47,9 @@ const AppRoutes = () => {
           path="/project-details/:projectID"
           element={
             <ProtectedRoute>
-              <ProjectDetailsPage />
+              <ProjectProvider>
+                <ProjectDetailsPage />
+              </ProjectProvider>
             </ProtectedRoute>
           }
         />
