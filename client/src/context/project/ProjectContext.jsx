@@ -2,7 +2,7 @@ import React, { createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useProjectDetails } from "../../hooks/projects/useProjectDetails";
 
-const ProjectContext = createContext();
+export const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
   const { projectID } = useParams();

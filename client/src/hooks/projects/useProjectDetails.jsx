@@ -24,7 +24,7 @@ export function useProjectDetails(projectId) {
           headers: getAuthHeaders(),
         }
       );
-      setProject(res.data);
+      setProject(res.data.projects[0]);
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch project details");
