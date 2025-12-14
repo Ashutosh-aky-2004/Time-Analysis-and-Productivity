@@ -53,8 +53,4 @@ router.post(
   addReplyReaction
 );
 
-// pending works
-// ⬜ GET /api/tasks           - Get all tasks (with filters)
-// ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
-
 export default router;
