@@ -17,6 +17,7 @@ import { formatDateTime } from "../../../constants";
 import CreateTaskModal from "../task/CreateTaskModal";
 import TaskModalDetails from "../task/TaskModalDetails";
 import ProjectDetailsShimmer from "./ProjectDetailsShimmer";
+import TeamMembers from "./TeamMembers";
 
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
@@ -126,7 +127,6 @@ const ProjectDetailsPage = () => {
 
   const activeMembers = project.teamMembers || [];
   const suspendedMembers = project.suspendedMembers || [];
-  const invitedMembers = project.invitedMembers || [];
 
   return (
     <div
@@ -405,63 +405,9 @@ const ProjectDetailsPage = () => {
             </div>
 
             {/* Team Members */}
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-                Team Members
-              </h2>
-              <div className="flex border-b border-gray-200 dark:border-gray-700 mb-4">
-                <button
-                  onClick={() => setActiveTab("active")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "active"
-                      ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  }`}
-                >
-                  Active ({activeMembers.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab("suspended")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "suspended"
-                      ? "text-yellow-600 dark:text-yellow-400 border-b-2 border-yellow-600 dark:border-yellow-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  }`}
-                >
-                  Suspended ({suspendedMembers.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab("invited")}
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === "invited"
-                      ? "text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  }`}
-                >
-                  Invited ({invitedMembers.length})
-                </button>
-              </div>
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {activeTab === "active" && activeMembers.length === 0 && (
-                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
-                    No active members
-                  </p>
-                )}
-                {activeTab === "suspended" && suspendedMembers.length === 0 && (
-                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
-                    No suspended members
-                  </p>
-                )}
-                {activeTab === "invited" && invitedMembers.length === 0 && (
-                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
-                    No invited members
-                  </p>
-                )}
-              </div>
-              <button className="w-full mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
-                <FaUserPlus /> Invite Member
-              </button>
-            </div>
+            
+            <TeamMembers/>
+            
           </div>
         </div>
       </div>

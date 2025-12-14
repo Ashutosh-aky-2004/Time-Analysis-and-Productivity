@@ -24,7 +24,8 @@ export const getProjectFullDetails = async (req, res) => {
     if (!project) {
       return res.status(404).json({ success: false, message: "Project not found" });
     }
-
+    // adding the current user id to the project array
+    project.currentUserId = currentUserId;
     // Fetch tasks and populate subtasks, comments, replies, and reactions
     const tasks = await Task.find({ projectId: project._id })
       .populate("createdBy", "_id firstName lastName email avatar")
@@ -64,7 +65,7 @@ export const getProjectFullDetails = async (req, res) => {
       success: true,
       message: "Project Fetched Successfully",
       projects: [project],
-      currentUserId,
+      
     });
   } catch (error) {
     console.error("Error fetching project details:", error);
