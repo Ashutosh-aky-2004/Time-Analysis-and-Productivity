@@ -141,15 +141,39 @@ const ProjectDetailsPage = () => {
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
       case "low":
-        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
+        return `
+        bg-green-100 dark:bg-green-950
+        text-green-900 dark:text-green-300
+        border border-green-400 dark:border-green-700
+      `;
+
       case "medium":
-        return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300";
+        return `
+        bg-yellow-100 dark:bg-yellow-950
+        text-yellow-900 dark:text-yellow-300
+        border border-yellow-400 dark:border-yellow-700
+      `;
+
       case "high":
-        return "bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300";
+        return `
+        bg-orange-200 dark:bg-orange-950
+        text-orange-900 dark:text-orange-300
+        border border-orange-500 dark:border-orange-700
+      `;
+
       case "critical":
-        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
+        return `
+        bg-red-200 dark:bg-red-950
+        text-red-900 dark:text-red-300
+        border border-red-600 dark:border-red-700
+      `;
+
       default:
-        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
+        return `
+        bg-gray-100 dark:bg-gray-800
+        text-gray-900 dark:text-gray-300
+        border border-gray-300 dark:border-gray-600
+      `;
     }
   };
 
@@ -347,7 +371,9 @@ const ProjectDetailsPage = () => {
                   {project.tasks.map((task) => (
                     <div
                       key={task._id}
-                      className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 cursor-pointer hover:shadow"
+                      className={`p-4 rounded-lg border ${getPriorityColor(
+                        task.priority
+                      )}`}
                       onClick={() => {
                         setSelectedTask(task);
                         setShowTaskDetails(true);
