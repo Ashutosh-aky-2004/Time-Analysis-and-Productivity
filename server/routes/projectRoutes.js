@@ -7,7 +7,10 @@ import {
   restoreProject,
 } from "../controllers/projectControllers.js";
 import { getProjectFullDetails } from "../controllers/projectDataControllers.js";
-import { getProjectMembers } from "../controllers/projectMembersController.js";
+import {
+  addProjectMember,
+  getProjectMembers,
+} from "../controllers/projectMembersController.js";
 
 const router = express.Router();
 
@@ -24,6 +27,8 @@ router.patch("/restore-project/:projectId", restoreProject);
 
 // Get all members of a project
 router.get("/:projectId/members", getProjectMembers);
+router.post("/:projectId/members", addProjectMember);
+router.put("/:projectId/members/suspend");
 
 // // Manager actions
 // router.post("/add", addMember);

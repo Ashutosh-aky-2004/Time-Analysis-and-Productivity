@@ -39,3 +39,54 @@ export const getProjectMembers = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const addProjectMember = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { userId } = req.body; // ID of the member to add
+
+    const currentUserId = req.user.id;
+
+    const project = await Project.findById(projectId)
+      .populate("managingUserId", "_id")
+      .populate("teamMembers", "_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Check if current user is a manager
+    const isManager = project.managingUserId.some(
+      (user) => user._id.toString() === currentUserId.toString()
+    );
+
+    if (!isManager) {
+      return res.status(403).json({ message: "Not authorized Contact Managers" });
+    }
+
+    // Check if user exists
+    const user = await User.findById(userId).select('-password');
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Add user to teamMembers if not already present
+    if (project.teamMembers.some((u) => u._id.toString() === userId.toString())) {
+      return res.status(400).json({ message: "User already in project" });
+    }
+
+    // Remove from suspended/removed if present
+    project.suspendedMembers = project.suspendedMembers.filter(
+      (u) => u.toString() !== userId.toString()
+    );
+    project.removedMembers = project.removedMembers.filter(
+      (u) => u.toString() !== userId.toString()
+    );
+
+    project.teamMembers.push(userId);
+    await project.save();
+
+    res.status(200).json({ message: "Member added successfully", member: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
