@@ -15,7 +15,7 @@ import {
   FaTasks,
 } from "react-icons/fa";
 import { ThemeContext } from "../../../context/ThemeContext";
-import { ProjectContext } from "../../../context/project/ProjectContext"; 
+import { ProjectContext } from "../../../context/project/ProjectContext";
 import { formatDateTime } from "../../../constants";
 import CreateTaskModal from "../task/CreateTaskModal";
 import ProjectDetailsShimmer from "./ProjectDetailsShimmer";
@@ -56,11 +56,15 @@ const ProjectDetailsPage = () => {
   }, [project]);
 
   if (loading) {
-    return <ProjectDetailsShimmer/>;
+    return <ProjectDetailsShimmer />;
   }
 
   if (!project) {
-    return <div className="text-center mt-24 text-gray-500 dark:text-gray-400">Project not found</div>;
+    return (
+      <div className="text-center mt-24 text-gray-500 dark:text-gray-400">
+        Project not found
+      </div>
+    );
   }
 
   const handleSaveChanges = () => {
@@ -80,7 +84,8 @@ const ProjectDetailsPage = () => {
       id: comments.length + 1,
       author: "You",
       role: "Viewer",
-      avatar: "https://ui-avatars.com/api/?name=You&background=6366f1&color=fff",
+      avatar:
+        "https://ui-avatars.com/api/?name=You&background=6366f1&color=fff",
       content: newComment,
       timestamp: "Just now",
       likes: 0,
@@ -94,7 +99,11 @@ const ProjectDetailsPage = () => {
     setComments(
       comments.map((c) =>
         c.id === id
-          ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 }
+          ? {
+              ...c,
+              liked: !c.liked,
+              likes: c.liked ? c.likes - 1 : c.likes + 1,
+            }
           : c
       )
     );
@@ -160,10 +169,13 @@ const ProjectDetailsPage = () => {
   const activeMembers = project.teamMembers || [];
   const suspendedMembers = project.suspendedMembers || [];
   const invitedMembers = project.invitedMembers || [];
-  console.log(project)
 
   return (
-    <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-blue-50"} transition-colors duration-200`}>
+    <div
+      className={`min-h-screen ${
+        isDark ? "bg-gray-950" : "bg-blue-50"
+      } transition-colors duration-200`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
@@ -176,7 +188,9 @@ const ProjectDetailsPage = () => {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Project Header */}
-            <div className={`bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6`}>
+            <div
+              className={`bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6`}
+            >
               <div className="flex justify-between items-start mb-6">
                 <div className="flex-1">
                   {isEditing ? (
@@ -184,7 +198,10 @@ const ProjectDetailsPage = () => {
                       type="text"
                       value={editedProject.name}
                       onChange={(e) =>
-                        setEditedProject({ ...editedProject, name: e.target.value })
+                        setEditedProject({
+                          ...editedProject,
+                          name: e.target.value,
+                        })
                       }
                       className="w-full text-2xl font-bold bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 mb-3 text-gray-900 dark:text-white"
                     />
@@ -194,14 +211,25 @@ const ProjectDetailsPage = () => {
                     </h1>
                   )}
                   <div className="flex items-center gap-4 flex-wrap">
-                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(project.status)}`}>
+                    <span
+                      className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
+                        project.status
+                      )}`}
+                    >
                       {project.status || "Started"}
                     </span>
-                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(project.priority)}`}>
+                    <span
+                      className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(
+                        project.priority
+                      )}`}
+                    >
                       {project.priority || "Medium"} Priority
                     </span>
                     <span className="text-gray-700 dark:text-gray-300">
-                      Created {project.createdAt ? formatDateTime(project.createdAt) : "N/A"}
+                      Created{" "}
+                      {project.createdAt
+                        ? formatDateTime(project.createdAt)
+                        : "N/A"}
                     </span>
                   </div>
                 </div>
@@ -209,32 +237,54 @@ const ProjectDetailsPage = () => {
                   onClick={() => setIsEditing(!isEditing)}
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
-                  {isEditing ? <><FaTimes /> Cancel Edit</> : <><FaEdit /> Edit Project</>}
+                  {isEditing ? (
+                    <>
+                      <FaTimes /> Cancel Edit
+                    </>
+                  ) : (
+                    <>
+                      <FaEdit /> Edit Project
+                    </>
+                  )}
                 </button>
               </div>
 
               {/* Description */}
               <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Description</h2>
+                <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                  Description
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editedProject.description}
-                    onChange={(e) => setEditedProject({ ...editedProject, description: e.target.value })}
+                    onChange={(e) =>
+                      setEditedProject({
+                        ...editedProject,
+                        description: e.target.value,
+                      })
+                    }
                     rows="4"
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white"
                   />
                 ) : (
-                  <p className="text-gray-700 dark:text-gray-300">{project.description || "No description provided"}</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    {project.description || "No description provided"}
+                  </p>
                 )}
               </div>
 
               {/* Tags */}
               {project.tags && project.tags.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Tags</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                    Tags
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag, index) => (
-                      <span key={index} className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
+                      <span
+                        key={index}
+                        className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -245,31 +295,105 @@ const ProjectDetailsPage = () => {
               {/* Progress Bar */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-900 dark:text-white">Project Progress</span>
-                  <span className="text-gray-900 dark:text-white font-medium">{Math.round(progress)}%</span>
+                  <span className="text-gray-900 dark:text-white">
+                    Project Progress
+                  </span>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {Math.round(progress)}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div className="h-2 rounded-full bg-blue-600 dark:bg-blue-500" style={{ width: `${progress}%` }} />
+                  <div
+                    className="h-2 rounded-full bg-blue-600 dark:bg-blue-500"
+                    style={{ width: `${progress}%` }}
+                  />
                 </div>
               </div>
 
               {isEditing && (
                 <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-800">
-                  <button onClick={handleSaveChanges} className="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                  <button
+                    onClick={handleSaveChanges}
+                    className="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  >
                     <FaCheck /> Save Changes
                   </button>
-                  <button onClick={handleCancelEdit} className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                  <button
+                    onClick={handleCancelEdit}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
                     Cancel
                   </button>
                 </div>
               )}
             </div>
-
             {/* Task Section */}
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Tasks</h2>
-                <button onClick={() => setShowTaskModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Tasks
+                </h2>
+                <button
+                  onClick={() => setShowTaskModal(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                >
+                  <FaPlus /> Create Task
+                </button>
+              </div>
+
+              {/* Tasks List OR Empty State */}
+              {project.tasks && project.tasks.length > 0 ? (
+                <div className="space-y-3">
+                  {project.tasks.map((task) => (
+                    <div
+                      key={task._id}
+                      className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 cursor-pointer hover:shadow"
+                      onClick={() => {
+                        setSelectedTask(task);
+                        setShowTaskDetails(true);
+                      }}
+                    >
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          {task.title}
+                        </h3>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {task.status}
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        {task.description || "No description"}
+                      </p>
+
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        <span>Priority: {task.priority}</span>
+                        <span>
+                          Logged: {task.loggedHours || 0}h /{" "}
+                          {task.estimatedHours || 0}h
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <FaTasks className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No tasks yet. Create your first task!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Task Section */}
+            {/* <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Tasks
+                </h2>
+                <button
+                  onClick={() => setShowTaskModal(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                >
                   <FaPlus /> Create Task
                 </button>
               </div>
@@ -277,12 +401,14 @@ const ProjectDetailsPage = () => {
                 <FaTasks className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p>No tasks yet. Create your first task!</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Comments Section */}
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Comments</h3>
+                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                  Comments
+                </h3>
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
@@ -294,7 +420,11 @@ const ProjectDetailsPage = () => {
                   <button
                     onClick={handleAddComment}
                     disabled={!newComment.trim()}
-                    className={`px-4 py-2 rounded-lg text-white ${newComment.trim() ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"}`}
+                    className={`px-4 py-2 rounded-lg text-white ${
+                      newComment.trim()
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
+                    }`}
                   >
                     Post Comment
                   </button>
@@ -302,21 +432,46 @@ const ProjectDetailsPage = () => {
               </div>
               <div className="space-y-4">
                 {comments.map((c) => (
-                  <div key={c.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
+                  <div
+                    key={c.id}
+                    className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4"
+                  >
                     <div className="flex gap-3 items-start">
-                      <img src={c.avatar} alt={c.author} className="w-10 h-10 rounded-full" />
+                      <img
+                        src={c.avatar}
+                        alt={c.author}
+                        className="w-10 h-10 rounded-full"
+                      />
                       <div className="flex-1">
                         <div className="flex justify-between">
                           <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white">{c.author}</h4>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{c.role} • {c.timestamp}</span>
+                            <h4 className="font-semibold text-gray-900 dark:text-white">
+                              {c.author}
+                            </h4>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {c.role} • {c.timestamp}
+                            </span>
                           </div>
                           {c.author === "You" && (
-                            <button onClick={() => setComments(comments.filter((x) => x.id !== c.id))} className="text-red-500 hover:text-red-700"><FaTrash /></button>
+                            <button
+                              onClick={() =>
+                                setComments(
+                                  comments.filter((x) => x.id !== c.id)
+                                )
+                              }
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <FaTrash />
+                            </button>
                           )}
                         </div>
-                        <p className="mt-2 text-gray-700 dark:text-gray-300">{c.content}</p>
-                        <button onClick={() => handleLikeComment(c.id)} className="flex items-center gap-1 mt-2 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        <p className="mt-2 text-gray-700 dark:text-gray-300">
+                          {c.content}
+                        </p>
+                        <button
+                          onClick={() => handleLikeComment(c.id)}
+                          className="flex items-center gap-1 mt-2 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                        >
                           {c.liked ? "❤️" : "🤍"} {c.likes}
                         </button>
                       </div>
@@ -331,45 +486,118 @@ const ProjectDetailsPage = () => {
           <div className="space-y-6">
             {/* Project Info Card */}
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Project Details</h2>
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                Project Details
+              </h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Project Manager</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{project.projectStartedBy ? `${project.projectStartedBy.firstName} ${project.projectStartedBy.lastName}` : "Not assigned"}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Project Manager
+                  </p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {project.projectStartedBy
+                      ? `${project.projectStartedBy.firstName} ${project.projectStartedBy.lastName}`
+                      : "Not assigned"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Start Date</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{project.startDate ? formatDateTime(project.startDate) : "Not set"}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Start Date
+                  </p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {project.startDate
+                      ? formatDateTime(project.startDate)
+                      : "Not set"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">End Date</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{project.endDate ? formatDateTime(project.endDate) : "Not set"}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    End Date
+                  </p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {project.endDate
+                      ? formatDateTime(project.endDate)
+                      : "Not set"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Duration</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{project.totalDuration ? `${Math.floor(project.totalDuration / 60)} hours` : "N/A"}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Duration
+                  </p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {project.totalDuration
+                      ? `${Math.floor(project.totalDuration / 60)} hours`
+                      : "N/A"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Tasks</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{project.tasks?.length || 0}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Total Tasks
+                  </p>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {project.tasks?.length || 0}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Team Members */}
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Team Members</h2>
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                Team Members
+              </h2>
               <div className="flex border-b border-gray-200 dark:border-gray-700 mb-4">
-                <button onClick={() => setActiveTab("active")} className={`px-4 py-2 text-sm font-medium ${activeTab === "active" ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>Active ({activeMembers.length})</button>
-                <button onClick={() => setActiveTab("suspended")} className={`px-4 py-2 text-sm font-medium ${activeTab === "suspended" ? "text-yellow-600 dark:text-yellow-400 border-b-2 border-yellow-600 dark:border-yellow-400" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>Suspended ({suspendedMembers.length})</button>
-                <button onClick={() => setActiveTab("invited")} className={`px-4 py-2 text-sm font-medium ${activeTab === "invited" ? "text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>Invited ({invitedMembers.length})</button>
+                <button
+                  onClick={() => setActiveTab("active")}
+                  className={`px-4 py-2 text-sm font-medium ${
+                    activeTab === "active"
+                      ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  Active ({activeMembers.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab("suspended")}
+                  className={`px-4 py-2 text-sm font-medium ${
+                    activeTab === "suspended"
+                      ? "text-yellow-600 dark:text-yellow-400 border-b-2 border-yellow-600 dark:border-yellow-400"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  Suspended ({suspendedMembers.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab("invited")}
+                  className={`px-4 py-2 text-sm font-medium ${
+                    activeTab === "invited"
+                      ? "text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  Invited ({invitedMembers.length})
+                </button>
               </div>
               <div className="space-y-3 max-h-96 overflow-y-auto">
-                {activeTab === "active" && activeMembers.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 py-4">No active members</p>}
-                {activeTab === "suspended" && suspendedMembers.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 py-4">No suspended members</p>}
-                {activeTab === "invited" && invitedMembers.length === 0 && <p className="text-center text-gray-500 dark:text-gray-400 py-4">No invited members</p>}
+                {activeTab === "active" && activeMembers.length === 0 && (
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    No active members
+                  </p>
+                )}
+                {activeTab === "suspended" && suspendedMembers.length === 0 && (
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    No suspended members
+                  </p>
+                )}
+                {activeTab === "invited" && invitedMembers.length === 0 && (
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    No invited members
+                  </p>
+                )}
               </div>
-              <button className="w-full mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-700 dark:text-gray-300"><FaUserPlus /> Invite Member</button>
+              <button className="w-full mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
+                <FaUserPlus /> Invite Member
+              </button>
             </div>
           </div>
         </div>
