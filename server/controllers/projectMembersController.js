@@ -149,3 +149,58 @@ export const suspendProjectMember = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const revokeProjectMember = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { memberId } = req.body;
+    const currentUserId = req.user.id; 
+
+    if (!memberId) {
+      return res.status(400).json({ message: "memberId is required" });
+    }
+
+    // Fetch project
+    const project = await Project.findById(projectId)
+      .populate("teamMembers", "_id firstName lastName email")
+      .populate("suspendedMembers", "_id firstName lastName email")
+      .populate("managingUserId", "_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Check if current user is manager
+    const isManager = project.managingUserId.some(
+      (u) => u._id.toString() === currentUserId.toString()
+    );
+    if (!isManager) {
+      return res
+        .status(403)
+        .json({ message: "Only managers can revoke members" });
+    }
+
+    // Check if the member is actually suspended
+    const suspendedIndex = project.suspendedMembers.findIndex(
+      (u) => u._id.toString() === memberId.toString()
+    );
+    if (suspendedIndex === -1) {
+      return res.status(400).json({ message: "User is not suspended" });
+    }
+
+    // Move member from suspendedMembers to teamMembers
+    const revokedMember = project.suspendedMembers[suspendedIndex];
+    project.suspendedMembers.splice(suspendedIndex, 1);
+    project.teamMembers.push(revokedMember._id);
+
+    await project.save();
+
+    res.status(200).json({
+      message: "Member successfully revoked",
+      revokedMember,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

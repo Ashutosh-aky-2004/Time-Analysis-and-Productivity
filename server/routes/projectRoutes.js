@@ -30,6 +30,7 @@ router.patch("/restore-project/:projectId", restoreProject);
 router.get("/:projectId/members", getProjectMembers);
 router.post("/:projectId/members", addProjectMember);
 router.put("/:projectId/members/suspend",suspendProjectMember);
+router.put("/:projectId/members/revoke", revokeProjectMember);
 
 // // Manager actions
 // router.post("/add", addMember);

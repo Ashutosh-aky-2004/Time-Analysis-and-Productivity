@@ -3,6 +3,7 @@ import { FaTrash, FaUndo, FaUserPlus, FaUserSlash } from "react-icons/fa";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import ViewAllMembersModal from "./ViewAllMembersModal";
 import { useSuspendMember } from "../../../hooks/projects/membersActions/useSuspendMember";
+import { useRevokeMember } from "../../../hooks/projects/membersActions/useRevokeMember";
 
 const MAX_VISIBLE = 1; //currently for the ui checking i have kept it as 1 later i will make it 4
 
@@ -17,7 +18,7 @@ const TeamMembers = () => {
     loading: suspending,
     error: suspendError,
   } = useSuspendMember();
-
+  const { revokeMember } = useRevokeMember();
   const activeMembers = project.teamMembers || [];
   const suspendedMembers = project.suspendedMembers || [];
   const currentUserId = project.currentUserId;
@@ -27,16 +28,18 @@ const TeamMembers = () => {
   );
 
   /* ---------------- ACTION HANDLERS ---------------- */
-const handleSuspend = async (memberId) => {
-  try {
-    await suspendMember(memberId);
-    setConfirmData(null); // close confirmation modal
-  } catch (err) {
-    console.error("Failed to suspend member:", err);
-  }
-};
+  const handleSuspend = async (memberId) => {
+    try {
+      await suspendMember(memberId);
+      setConfirmData(null); // close confirmation modal
+    } catch (err) {
+      console.error("Failed to suspend member:", err);
+    }
+  };
   const handleRemove = (id) => console.log("Remove:", id);
-  const handleRevoke = (id) => console.log("Revoke:", id);
+  const handleRevoke = async (id) => {
+    await revokeMember(id);
+  };
 
   const openConfirm = (type, memberId) => {
     setConfirmData({ type, memberId });
