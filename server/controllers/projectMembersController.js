@@ -102,13 +102,12 @@ export const addProjectMember = async (req, res) => {
 export const suspendProjectMember = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const { userId } = req.body; // ID of the member to suspend
-
+    const { userId } = req.body;
     const currentUserId = req.user.id;
 
     const project = await Project.findById(projectId)
       .populate("managingUserId", "_id")
-      .populate("teamMembers", "_id");
+      .populate("teamMembers", "_id firstName lastName email");
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -124,25 +123,24 @@ export const suspendProjectMember = async (req, res) => {
     }
 
     // Check if user is part of teamMembers
-    if (
-      !project.teamMembers.some((u) => u._id.toString() === userId.toString())
-    ) {
+    const memberIndex = project.teamMembers.findIndex(
+      (u) => u._id.toString() === userId.toString()
+    );
+    if (memberIndex === -1) {
       return res.status(400).json({ message: "User is not an active member" });
     }
 
     // Move user from teamMembers to suspendedMembers
-    project.teamMembers = project.teamMembers.filter(
-      (u) => u._id.toString() !== userId.toString()
-    );
-    if (!project.suspendedMembers.includes(userId)) {
-      project.suspendedMembers.push(userId);
-    }
+    const suspendedMember = project.teamMembers[memberIndex];
+    project.teamMembers.splice(memberIndex, 1);
+    project.suspendedMembers.push(suspendedMember);
 
     await project.save();
 
     res.status(200).json({
       success: true,
       message: "Member suspended successfully",
+      suspendedMember,
     });
   } catch (error) {
     console.error(error);
@@ -154,7 +152,7 @@ export const revokeProjectMember = async (req, res) => {
   try {
     const { projectId } = req.params;
     const { memberId } = req.body;
-    const currentUserId = req.user.id; 
+    const currentUserId = req.user.id;
 
     if (!memberId) {
       return res.status(400).json({ message: "memberId is required" });

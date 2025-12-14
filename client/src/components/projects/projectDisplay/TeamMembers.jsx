@@ -12,7 +12,7 @@ const TeamMembers = () => {
   const [showAllModal, setShowAllModal] = useState(false);
   const [confirmData, setConfirmData] = useState(null);
 
-  const { project } = useContext(ProjectContext);
+  const { project,setProject } = useContext(ProjectContext);
   const {
     suspendMember,
     loading: suspending,
@@ -36,10 +36,18 @@ const TeamMembers = () => {
       console.error("Failed to suspend member:", err);
     }
   };
+
   const handleRemove = (id) => console.log("Remove:", id);
-  const handleRevoke = async (id) => {
-    await revokeMember(id);
-  };
+
+  const handleRevoke = async (memberId) => {
+  try {
+    await revokeMember(memberId); 
+    setConfirmData(null); 
+  } catch (err) {
+    console.error("Failed to revoke member:", err);
+  }
+};
+
 
   const openConfirm = (type, memberId) => {
     setConfirmData({ type, memberId });
@@ -125,6 +133,7 @@ const TeamMembers = () => {
   /* ---------------- MEMBERS TO SHOW ---------------- */
   const visibleActive = activeMembers.slice(0, MAX_VISIBLE);
   const visibleSuspended = suspendedMembers.slice(0, MAX_VISIBLE);
+  console.log(visibleSuspended)
 
   const showViewAll =
     (activeTab === "active" && activeMembers.length > MAX_VISIBLE) ||
