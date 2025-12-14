@@ -1,4 +1,6 @@
 // ProjectDetailsPage.jsx
+// todo -> work on the add modal for the user for a project also, soft delete feature for the user 
+
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {

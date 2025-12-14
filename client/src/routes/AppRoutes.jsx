@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import LandingPageProject from "../components/projects/LandingPageProject";
 import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDetailsPage";
 import { ProjectProvider } from "../context/project/ProjectContext";
+import Navbar from "../components/navbar/Navbar";
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
           path="/projects"
           element={
             <ProtectedRoute>
+              <Navbar/>
               <LandingPageProject />
             </ProtectedRoute>
           }
@@ -48,6 +50,7 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <ProjectProvider>
+                <Navbar/>
                 <ProjectDetailsPage />
               </ProjectProvider>
             </ProtectedRoute>
