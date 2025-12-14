@@ -7,7 +7,7 @@ import {
 
 const TaskModalDetails = ({ isOpen, onClose, task }) => {
   if (!isOpen || !task) return null;
-
+  console.log(task)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-3xl p-6 relative overflow-y-auto max-h-[90vh]">
