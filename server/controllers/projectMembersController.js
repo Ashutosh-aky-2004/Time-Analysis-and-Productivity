@@ -140,8 +140,6 @@ export const suspendProjectMember = async (req, res) => {
 
     await project.save();
 
-    const suspendedUser = await User.findById(userId);
-
     res.status(200).json({
       success: true,
       message: "Member suspended successfully",
