@@ -25,6 +25,7 @@ const ProjectDetailsPage = () => {
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
   const { project, loading } = useContext(ProjectContext);
+  console.log(project)
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({});
   const [showTaskModal, setShowTaskModal] = useState(false);

@@ -9,6 +9,7 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 
+
 const CreateTaskModal = ({
   project,
   activeMembers = [],
@@ -52,7 +53,7 @@ const CreateTaskModal = ({
   };
 
   // Initialize with project ID and suggested due date
-  useEffect(() => {
+   useEffect(() => {
     if (project?._id) {
       const date = new Date();
       date.setDate(date.getDate() + 7);
