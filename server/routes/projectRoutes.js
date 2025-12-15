@@ -18,7 +18,7 @@ import {
 const router = express.Router();
 
 // get all the user list for the create task
-router.get("get-all-users", getAllUsers);
+router.get("get-all-users-for-task-list-assingment", getAllUsers);
 
 router.get("/get-all-user-project", getAllUserProjects);
 router.get("/get-all-project-details/:projectId", getProjectFullDetails);
