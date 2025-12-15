@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 
-const useUpdateTaskStatus = () => {
+export const useUpdateTaskStatus = () => {
   const { setProject } = useContext(ProjectContext);
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(false);
@@ -12,9 +12,9 @@ const useUpdateTaskStatus = () => {
     try {
       setLoading(true);
       setError(null);
-
+      const token = localStorage.getItem("token");
       const res = await axios.put(
-        `${API_URL}/tasks/${taskId}/status`,
+        `${API_URL}/api/tasks/${taskId}/status`,
         {
           status,
         },
@@ -59,5 +59,3 @@ const useUpdateTaskStatus = () => {
     error,
   };
 };
-
-export default useUpdateTaskStatus;

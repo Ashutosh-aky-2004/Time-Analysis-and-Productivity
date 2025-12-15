@@ -399,8 +399,8 @@ const TaskList = () => {
       </div>
       {showEditTaskModal && (
         <EditTask
+          taskIdToEdit={taskToEdit._id}
           isOpen={showEditTaskModal}
-          task={taskToEdit}
           onClose={() => {
             setShowEditTaskModal(false);
             setTaskToEdit(null);

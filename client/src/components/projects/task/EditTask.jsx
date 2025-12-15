@@ -1,20 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaSave } from "react-icons/fa";
+import { ProjectContext } from "../../../context/project/ProjectContext";
+import { useUpdateTask } from "../../../hooks/projects/task/useUpdateTask";
+import { useUpdateTaskStatus } from "../../../hooks/projects/task/useUpdateTaskStatus";
 
-const EditTask = ({ isOpen, onClose, task }) => {
-  if (!isOpen || !task) return null;
+const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
+  const { project, setProject } = useContext(ProjectContext);
+  const selectedTask = project?.tasks?.find((t) => t._id === taskIdToEdit);
+  const { updateTask, loading: updatingTask } = useUpdateTask();
+  const { updateTaskStatus, loading: updatingStatus } = useUpdateTaskStatus();
+
+  // If modal closed OR no task selected → render nothing
+  if (!isOpen || !selectedTask) return null;
 
   // UI-only local state
   const [formData, setFormData] = useState({
-    title: task.title || "",
-    description: task.description || "",
-    priority: task.priority || "medium",
-    estimatedHours: task.estimatedHours || 0,
-    loggedHours: task.loggedHours || 0,
-    status: task.status || "todo",
-    workDescription: task.workDescription || "",
+    title: "",
+    description: "",
+    priority: "medium",
+    estimatedHours: 0,
+    loggedHours: 0,
+    status: "todo",
+    workDescription: "",
   });
+
+  // 🔥 Populate form when selectedTask changes
+  useEffect(() => {
+    if (selectedTask) {
+      setFormData({
+        title: selectedTask.title || "",
+        description: selectedTask.description || "",
+        priority: selectedTask.priority || "medium",
+        estimatedHours: selectedTask.estimatedHours || 0,
+        loggedHours: selectedTask.loggedHours || 0,
+        status: selectedTask.status || "todo",
+        workDescription: selectedTask.workDescription || "",
+      });
+    }
+  }, [selectedTask]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +46,30 @@ const EditTask = ({ isOpen, onClose, task }) => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSave = async () => {
+    if (!selectedTask) return;
+
+    // check if ONLY status changed
+    const isStatusOnlyChange =
+      formData.status !== selectedTask.status &&
+      Object.keys(formData).every(
+        (key) => key === "status" || formData[key] === selectedTask[key]
+      );
+
+    try {
+      if (isStatusOnlyChange) {
+        await updateTaskStatus(selectedTask._id, formData.status);
+      } else {
+        await updateTask(selectedTask._id, formData);
+      }
+
+      onClose();
+    } catch (err) {
+      // error already handled in hooks
+      console.error("Save failed");
+    }
   };
 
   return (
@@ -58,7 +106,7 @@ const EditTask = ({ isOpen, onClose, task }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -72,7 +120,7 @@ const EditTask = ({ isOpen, onClose, task }) => {
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -160,15 +208,23 @@ const EditTask = ({ isOpen, onClose, task }) => {
         <div className="flex justify-end gap-3 px-6 py-4 border-t dark:border-gray-700">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
           >
             Cancel
           </button>
           <button
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
+            onClick={handleSave}
+            disabled={updatingTask || updatingStatus}
+            className={`px-5 py-2 rounded-lg flex items-center gap-2 text-white
+    ${
+      updatingTask || updatingStatus
+        ? "bg-blue-400 cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700"
+    }
+  `}
           >
             <FaSave />
-            Save Changes
+            {updatingTask || updatingStatus ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 
-const useUpdateTask = () => {
+export const useUpdateTask = () => {
   const { project, setProject } = useContext(ProjectContext);
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,8 @@ const useUpdateTask = () => {
       setLoading(true);
       setError(null);
       const token = localStorage.getItem("token");
-      const res = await axios.put(`${API_URL}/tasks/${taskId}`, updates, {
+
+      const res = await axios.put(`${API_URL}/api/tasks/${taskId}`, updates, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
           "Content-Type": "application/json",
@@ -48,4 +49,4 @@ const useUpdateTask = () => {
   };
 };
 
-export default useUpdateTask;
+
