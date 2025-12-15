@@ -5,6 +5,7 @@ import {
   getAllUserProjects,
   getProjectTasks,
   restoreProject,
+  getAllUsers,
 } from "../controllers/projectControllers.js";
 import { getProjectFullDetails } from "../controllers/projectDataControllers.js";
 import {
@@ -15,6 +16,9 @@ import {
 } from "../controllers/projectMembersController.js";
 
 const router = express.Router();
+
+// get all the user list for the create task
+router.get("get-all-users", getAllUsers);
 
 router.get("/get-all-user-project", getAllUserProjects);
 router.get("/get-all-project-details/:projectId", getProjectFullDetails);
@@ -30,7 +34,7 @@ router.patch("/restore-project/:projectId", restoreProject);
 // Get all members of a project
 router.get("/:projectId/members", getProjectMembers);
 router.post("/:projectId/members", addProjectMember);
-router.put("/:projectId/members/suspend",suspendProjectMember);
+router.put("/:projectId/members/suspend", suspendProjectMember);
 router.put("/:projectId/members/revoke", revokeProjectMember);
 
 // // Manager actions

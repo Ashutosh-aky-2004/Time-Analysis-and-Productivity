@@ -1,5 +1,6 @@
 import Task from "../modal/Task.js";
 import Project from "../modal/Project.js";
+import User from "../modal/User.js";
 export const addProject = async (req, res) => {
   try {
     const creatorId = req.user.id; // from JWT
@@ -164,7 +165,6 @@ export const restoreProject = async (req, res) => {
   }
 };
 
-
 //Get all tasks for a specific project
 export const getProjectTasks = async (req, res) => {
   try {
@@ -180,9 +180,7 @@ export const getProjectTasks = async (req, res) => {
     }
 
     // 2. Get all tasks for this project sorted in the order in which newest first
-    const tasks = await Task.find({ projectId })
-      .sort({ createdAt: -1 }) 
-      .lean();
+    const tasks = await Task.find({ projectId }).sort({ createdAt: -1 }).lean();
 
     // 3. Calculate simple stats
     const totalTasks = tasks.length;
@@ -211,6 +209,25 @@ export const getProjectTasks = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error fetching tasks",
+      error: error.message,
+    });
+  }
+};
+
+// get all the user detail for the create task modal here the data will be use to assign the task to the user
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("_id firstName lastName avatar");
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve users",
       error: error.message,
     });
   }
