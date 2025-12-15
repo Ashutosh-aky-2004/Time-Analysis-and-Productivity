@@ -19,6 +19,7 @@ import CreateTaskModal from "../task/CreateTaskModal";
 import TaskModalDetails from "../task/TaskModalDetails";
 import ProjectDetailsShimmer from "./ProjectDetailsShimmer";
 import TeamMembers from "./TeamMembers";
+import TaskList from "./TaskList";
 
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
@@ -53,6 +54,13 @@ const ProjectDetailsPage = () => {
         Project not found
       </div>
     );
+  const handleDeleteTask = (taskId) => {
+    // setProject((prevProject) => ({
+    //   ...prevProject,
+    //   tasks: prevProject.tasks.filter((t) => t._id !== taskId),
+    // }));
+    // Optionally call API to delete from backend
+  };
 
   const handleSaveChanges = () => {
     console.log("Save Project:", editedProject);
@@ -284,40 +292,89 @@ const ProjectDetailsPage = () => {
 
               {/* Task list */}
               {project.tasks && project.tasks.length > 0 ? (
-                <div className="space-y-3">
-                  {project.tasks.map((task) => (
-                    <div
-                      key={task._id}
-                      className={`p-4 rounded-lg border cursor-pointer ${getPriorityColor(
-                        task.priority
-                      )}`}
-                      onClick={() => {
-                        setSelectedTask(task);
-                        setShowSubTaskModal(true);
-                      }}
-                    >
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {task.title}
-                        </h3>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {task.status}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        {task.description || "No description"}
-                      </p>
-                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
-                        <span>Priority: {task.priority}</span>
-                        <span>
-                          Logged: {task.loggedHours || 0}h /{" "}
-                          {task.estimatedHours || 0}h
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <>
+                  <TaskList />
+                </>
               ) : (
+                // <div className="space-y-3">
+                //   {project.tasks.map((task) => (
+                //     <div
+                //       key={task._id}
+                //       className={`p-4 rounded-lg border cursor-pointer ${getPriorityColor(
+                //         task.priority
+                //       )}`}
+                //       onClick={() => {
+                //         setSelectedTask(task);
+                //         setShowSubTaskModal(true);
+                //       }}
+                //     >
+                //       <div className="flex justify-between items-center">
+                //         <h3 className="font-semibold text-gray-900 dark:text-white">
+                //           {task.title}
+                //         </h3>
+                //         <span className="text-sm text-gray-500 dark:text-gray-400">
+                //           {task.status}
+                //         </span>
+                //       </div>
+                //       <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                //         {task.description || "No description"}
+                //       </p>
+                //       <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                //         <span>Priority: {task.priority}</span>
+                //         <span>
+                //           Logged: {task.loggedHours || 0}h /{" "}
+                //           {task.estimatedHours || 0}h
+                //         </span>
+                //       </div>
+                //     </div>
+                //   ))}
+                // </div>
+                // <div className="space-y-3">
+                //   {project.tasks.map((task) => (
+                //     <div
+                //       key={task._id}
+                //       className={`p-4 rounded-lg border cursor-pointer ${getPriorityColor(
+                //         task.priority
+                //       )} relative`} // make it relative for absolute button positioning if needed
+                //       onClick={() => {
+                //         setSelectedTask(task);
+                //         setShowSubTaskModal(true);
+                //       }}
+                //     >
+                //       <div className="flex justify-between items-center">
+                //         <h3 className="font-semibold text-gray-900 dark:text-white">
+                //           {task.title}
+                //         </h3>
+                //         <span className="text-sm text-gray-500 dark:text-gray-400">
+                //           {task.status}
+                //         </span>
+                //       </div>
+                //       <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                //         {task.description || "No description"}
+                //       </p>
+                //       <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                //         <span>Priority: {task.priority}</span>
+                //         <span>
+                //           Logged: {task.loggedHours || 0}h /{" "}
+                //           {task.estimatedHours || 0}h
+                //         </span>
+                //       </div>
+
+                //       {/* Delete button */}
+                //       <button
+                //         type="button"
+                //         onClick={(e) => {
+                //           e.stopPropagation(); // Prevent opening task modal
+                //           handleDeleteTask(task._id); // define this function
+                //         }}
+                //         className="absolute top-2 right-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+                //         aria-label="Delete Task"
+                //       >
+                //         <FaTrash className="w-4 h-4" />
+                //       </button>
+                //     </div>
+                //   ))}
+                // </div>
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <FaTasks className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>No tasks yet. Create your first task!</p>
