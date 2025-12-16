@@ -9,6 +9,7 @@ import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDet
 import { ProjectProvider } from "../context/project/ProjectContext";
 import { UserProvider } from "../context/user/UserContext";
 import Navbar from "../components/navbar/Navbar";
+import ProjectAnalysisPage from "../components/projects/analysis/ProjectAnalysisPage";
 
 const AppRoutes = () => {
   return (
@@ -54,6 +55,19 @@ const AppRoutes = () => {
                 <UserProvider>
                   <Navbar/>
                   <ProjectDetailsPage />
+                </UserProvider>
+              </ProjectProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/project-details/:projectID/analysis"
+          element={
+            <ProtectedRoute>
+               <ProjectProvider>
+                <UserProvider>
+                  <Navbar/>
+                  <ProjectAnalysisPage />
                 </UserProvider>
               </ProjectProvider>
             </ProtectedRoute>

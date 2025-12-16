@@ -11,6 +11,7 @@ import {
   FaUserPlus,
   FaPlus,
   FaTasks,
+  FaChartBar,
 } from "react-icons/fa";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { ProjectContext } from "../../../context/project/ProjectContext";
@@ -144,15 +145,21 @@ const ProjectDetailsPage = () => {
                     </span>
                   </div>
                 </div>
-                {/* Only show edit button if user is manager */
-                project.managingUserId?.some(u => u._id === project.currentUserId) && (
+                {/* Only show edit button if user is manager */}
+                   <button
+                    onClick={() => navigate(`/project-details/${project._id}/analysis`)}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-800 dark:text-blue-300 mr-3"
+                  >
+                     <FaChartBar /> Analysis
+                  </button>
+                  {project.managingUserId?.some(u => u._id === project.currentUserId) && (
                    <button
                     onClick={() => setShowEditModal(true)}
                     className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                      <FaEdit /> Edit Project
                   </button>
-                )}
+                  )}
               </div>
 
               <div className="mb-6">
