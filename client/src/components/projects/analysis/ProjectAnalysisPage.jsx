@@ -16,6 +16,41 @@ const ProjectAnalysisPage = () => {
   const { isDark } = useContext(ThemeContext);
   const { loading, error, analysisData } = useProjectAnalysisContext();
 
+  // State for Efficiency Chart (must be before any conditional returns)
+  const [filterMember, setFilterMember] = React.useState("all");
+  const [sortOption, setSortOption] = React.useState("logged-desc");
+
+  // Derived Data for Efficiency Chart
+  const filteredEfficiencyData = React.useMemo(() => {
+    const taskEfficiency = analysisData?.taskEfficiency;
+    if (!taskEfficiency) return [];
+
+    let data = [...taskEfficiency];
+
+    // Filter
+    if (filterMember !== "all") {
+        data = data.filter(t => t.assignee === filterMember);
+    }
+
+    // Sort
+    data.sort((a, b) => {
+        const loggedA = a["Logged Hours"] || 0;
+        const loggedB = b["Logged Hours"] || 0;
+        const estA = a["Estimated Hours"] || 0;
+        const estB = b["Estimated Hours"] || 0;
+
+        switch (sortOption) {
+            case "logged-asc": return loggedA - loggedB;
+            case "estimated-desc": return estB - estA;
+            case "efficiency-worst": return (loggedB - estB) - (loggedA - estA);
+            case "logged-desc": default: return loggedB - loggedA;
+        }
+    });
+
+    // Limit to top 15 to avoid overcrowding if showing all, unless filtered specific member
+    return filterMember === "all" ? data.slice(0, 15) : data;
+  }, [analysisData?.taskEfficiency, filterMember, sortOption]);
+
   if (loading) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-gray-950 text-white" : "bg-gray-50 text-gray-900"}`}>
@@ -140,11 +175,41 @@ const ProjectAnalysisPage = () => {
 
             {/* Task Efficiency */}
             <div className={`p-6 rounded-xl shadow-sm border md:col-span-2 min-w-0 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
-                <h3 className="text-lg font-semibold mb-4">Time Efficiency (Top Active Tasks)</h3>
-                {taskEfficiency?.length > 0 ? (
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold">Time Efficiency</h3>
+                    
+                    {/* Filters & Sort */}
+                    <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
+                         {/* Filter by Member */}
+                         <select
+                            className={`px-3 py-1.5 rounded-lg border text-sm ${isDark ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-gray-50 border-gray-300 text-gray-700"}`}
+                            value={filterMember}
+                            onChange={(e) => setFilterMember(e.target.value)}
+                        >
+                            <option value="all">All Members</option>
+                            {[...new Set(analysisData?.taskEfficiency?.map(t => t.assignee).filter(Boolean))].map(member => (
+                                <option key={member} value={member}>{member}</option>
+                            ))}
+                        </select>
+
+                        {/* Sort By */}
+                        <select
+                            className={`px-3 py-1.5 rounded-lg border text-sm ${isDark ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-gray-50 border-gray-300 text-gray-700"}`}
+                            value={sortOption}
+                            onChange={(e) => setSortOption(e.target.value)}
+                        >
+                            <option value="logged-desc">Most Logged Hours</option>
+                            <option value="logged-asc">Least Logged Hours</option>
+                            <option value="estimated-desc">Most Estimated Hours</option>
+                            <option value="efficiency-worst">Least Efficient (Over Budget)</option>
+                        </select>
+                    </div>
+                </div>
+
+                {filteredEfficiencyData?.length > 0 ? (
                 <div className="h-[400px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={taskEfficiency}>
+                        <BarChart data={filteredEfficiencyData}>
                             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#e5e7eb"} vertical={false} />
                             <XAxis dataKey="name" stroke={isDark ? "#9ca3af" : "#4b5563"} />
                             <YAxis stroke={isDark ? "#9ca3af" : "#4b5563"} />

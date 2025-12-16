@@ -1,4 +1,3 @@
-// controllers/projectController.js
 import Project from "../modal/Project.js";
 import Task from "../modal/Task.js";
 
@@ -157,16 +156,17 @@ export const getProjectAnalytics = async (req, res) => {
     const activeTasks = tasks
         .filter(t => t.loggedHours > 0 || t.estimatedHours > 0);
     
-    // Top 10 most efficient/active for chart
+    // Top most efficient/active for chart (Return ALL for client-side filtering)
     const taskEfficiency = activeTasks
         .map(t => ({
             name: t.title.length > 20 ? t.title.substring(0, 20) + '...' : t.title,
+            fullTitle: t.title,
             "Logged Hours": t.loggedHours || 0,
             "Estimated Hours": t.estimatedHours || 0,
-            status: t.status
+            status: t.status,
+            assignee: t.assignedTo ? `${t.assignedTo.firstName} ${t.assignedTo.lastName}` : "Unassigned"
         }))
-        .sort((a, b) => b["Logged Hours"] - a["Logged Hours"])
-        .slice(0, 10);
+        .sort((a, b) => b["Logged Hours"] - a["Logged Hours"]);
 
     // 5. Advanced Insights
     
