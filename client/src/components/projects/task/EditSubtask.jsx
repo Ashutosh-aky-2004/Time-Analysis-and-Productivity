@@ -19,6 +19,7 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
     title: "",
     estimatedHours: 0,
     assignedTo: "",
+    status: "todo",
   });
 
   const [logData, setLogData] = useState({
@@ -33,6 +34,7 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
         title: subtaskToEdit.title || "",
         estimatedHours: subtaskToEdit.estimatedHours || 0,
         assignedTo: subtaskToEdit.assignedTo || "",
+        status: subtaskToEdit.status || "todo",
       });
       // Reset log data
       setLogData({
@@ -217,6 +219,26 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                        {member.firstName} {member.lastName} ({member.email})
                     </option>
                   ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                  Status
+                </label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleDetailsChange}
+                  className={`w-full px-3 py-2 rounded-lg border ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
+                      : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                >
+                  <option value="todo">Todo</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
                 </select>
               </div>
 
