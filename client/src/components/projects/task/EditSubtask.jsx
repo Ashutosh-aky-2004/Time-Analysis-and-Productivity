@@ -171,10 +171,22 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+                <div className="p-6">
           {activeTab === "details" ? (
             <form onSubmit={handleUpdateSubmit} className="space-y-4">
-              <div>
+              {(() => {
+                  const parentTask = project?.tasks?.find(t => t._id === parentTaskId);
+                  const currentUserId = String(project?.currentUserId);
+                  const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+                  const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                  const isTaskCreator = parentTask && String(parentTask.createdBy?._id || parentTask.createdBy) === currentUserId;
+                  const isAssigned = String(subtaskToEdit.assignedTo?._id || subtaskToEdit.assignedTo) === currentUserId;
+                  
+                  const canUpdate = isProjectCreator || isManager || isTaskCreator || isAssigned;
+
+                  return (
+                    <>
+                    <div>
                 <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                   Title
                 </label>
@@ -183,11 +195,12 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="title"
                   value={formData.title}
                   onChange={handleDetailsChange}
+                  disabled={!canUpdate}
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                   placeholder="Subtask title"
                   required
                 />
@@ -202,13 +215,14 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="estimatedHours"
                   value={formData.estimatedHours}
                   onChange={handleDetailsChange}
+                  disabled={!canUpdate}
                   min="0"
                   step="0.5"
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                 />
               </div>
 
@@ -220,11 +234,12 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="assignedTo"
                   value={formData.assignedTo}
                   onChange={handleDetailsChange}
+                  disabled={!canUpdate}
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                 >
                   <option value="">Unassigned</option>
                   {allMembers.map((member) => (
@@ -243,17 +258,21 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="status"
                   value={formData.status}
                   onChange={handleDetailsChange}
+                  disabled={!canUpdate}
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                 >
                   <option value="todo">Todo</option>
                   <option value="in-progress">In Progress</option>
                   <option value="completed">Completed</option>
                 </select>
               </div>
+              </>
+                  );
+              })()}
 
               <div className="pt-2 flex justify-between gap-3">
                 {(() => {
@@ -313,6 +332,18 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
             </form>
           ) : (
             <form onSubmit={handleLogSubmit} className="space-y-4">
+              {(() => {
+                  const parentTask = project?.tasks?.find(t => t._id === parentTaskId);
+                  const currentUserId = String(project?.currentUserId);
+                  const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+                  const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                  const isTaskCreator = parentTask && String(parentTask.createdBy?._id || parentTask.createdBy) === currentUserId;
+                  const isAssigned = String(subtaskToEdit.assignedTo?._id || subtaskToEdit.assignedTo) === currentUserId;
+                  
+                  const canLog = isProjectCreator || isManager || isTaskCreator || isAssigned;
+
+                  return (
+                    <>
               <div className={`p-3 rounded-lg text-sm mb-4 ${
                 isDark ? "bg-blue-900/30 text-blue-300" : "bg-blue-50 text-blue-700"
               }`}>
@@ -328,13 +359,14 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="hours"
                   value={logData.hours}
                   onChange={handleLogChange}
+                  disabled={!canLog}
                   min="0.1"
                   step="0.1"
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                   required
                 />
               </div>
@@ -347,12 +379,13 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   name="notes"
                   value={logData.notes}
                   onChange={handleLogChange}
+                  disabled={!canLog}
                   rows="3"
                   className={`w-full px-3 py-2 rounded-lg border ${
                     isDark
                       ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
                       : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors resize-none`}
+                  } focus:ring-1 focus:ring-blue-500 outline-none transition-colors resize-none disabled:opacity-60 disabled:cursor-not-allowed`}
                   placeholder="Describe your work..."
                 />
               </div>
@@ -369,13 +402,17 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                 </button>
                 <button
                   type="submit"
-                  disabled={logging}
+                  disabled={logging || !canLog}
+                  title={canLog ? "Log Time" : "You do not have permission to log time"}
                   className="px-4 py-2 rounded-lg text-sm font-medium bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {logging ? <FaSpinner className="animate-spin" /> : <FaClock />}
                   Log Time
                 </button>
               </div>
+                    </>
+                  );
+              })()}
             </form>
           )}
         </div>

@@ -97,6 +97,17 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
 
         {/* Body */}
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+          {(() => {
+              const currentUserId = String(project?.currentUserId);
+              const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+              const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+              const isTaskCreator = String(selectedTask.createdBy?._id || selectedTask.createdBy) === currentUserId;
+              const isAssigned = String(selectedTask.assignedTo?._id || selectedTask.assignedTo) === currentUserId;
+              
+              const canUpdate = isProjectCreator || isManager || isTaskCreator || isAssigned;
+
+              return (
+                <>
           {/* Title */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
@@ -106,7 +117,8 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
+              disabled={!canUpdate}
+              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -119,8 +131,9 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              disabled={!canUpdate}
               rows={3}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -134,7 +147,8 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
                 name="priority"
                 value={formData.priority}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                disabled={!canUpdate}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -151,7 +165,8 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                disabled={!canUpdate}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <option value="todo">Todo</option>
                 <option value="in-progress">In Progress</option>
@@ -171,7 +186,8 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
                 name="estimatedHours"
                 value={formData.estimatedHours}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                disabled={!canUpdate}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -184,7 +200,8 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
                 name="loggedHours"
                 value={formData.loggedHours}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                disabled={!canUpdate}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -198,20 +215,22 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
               name="workDescription"
               value={formData.workDescription}
               onChange={handleChange}
+              disabled={!canUpdate}
               rows={2}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
-        </div>
-
+        
         {/* Footer */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t dark:border-gray-700">
+        <div className="flex justify-end gap-3 px-6 py-4 border-t dark:border-gray-700 mt-6 -mx-6 -mb-6 bg-gray-50 dark:bg-gray-900/50 rounded-b-2xl">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
+            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
           >
-            Cancel
+            {canUpdate ? "Cancel" : "Close"}
           </button>
+          
+          {canUpdate && (
           <button
             onClick={handleSave}
             disabled={updatingTask || updatingStatus}
@@ -226,6 +245,11 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
             <FaSave />
             {updatingTask || updatingStatus ? "Saving..." : "Save Changes"}
           </button>
+          )}
+        </div>
+        </>
+        );
+      })()}
         </div>
       </div>
     </div>

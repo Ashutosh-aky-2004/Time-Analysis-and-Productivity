@@ -231,8 +231,13 @@ export const updateSubtask = async (req, res) => {
     }
 
     // 8. Apply updates to subtask
+    // 8. Apply updates to subtask
     Object.keys(filteredUpdates).forEach((key) => {
-      subtask[key] = filteredUpdates[key];
+      if (key === "assignedTo" && filteredUpdates[key] === "") {
+        subtask[key] = null;
+      } else {
+        subtask[key] = filteredUpdates[key];
+      }
     });
 
     // 9. Handle special cases

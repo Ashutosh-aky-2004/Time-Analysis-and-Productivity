@@ -283,7 +283,6 @@ const TaskList = () => {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
-                    {canEditTask && (
                       <button
                         onClick={() => {
                           setTaskToEdit(task);
@@ -294,11 +293,10 @@ const TaskList = () => {
                             ? "hover:bg-gray-700 text-blue-400 hover:text-blue-300"
                             : "hover:bg-gray-100 text-blue-600 hover:text-blue-800"
                         }`}
-                        title="Edit Task"
+                        title="View/Edit Task"
                       >
                         <FaEdit />
                       </button>
-                    )}
                     {(() => {
                       const canDeleteTask = isProjectCreator || isManager;
                       
@@ -360,14 +358,16 @@ const TaskList = () => {
                         Subtasks:
                       </span>
                       {(() => {
-                        return canAddSubtask && (
+                        return (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setParentTaskId(task._id);
                               setShowAddSubtaskModal(true);
                             }}
-                            className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                            disabled={!canAddSubtask}
+                            title={canAddSubtask ? "Add Subtask" : "You do not have permission to add subtasks"}
+                            className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:text-gray-400 dark:disabled:text-gray-600"
                           >
                             <FaPlus /> Add New
                           </button>
@@ -386,15 +386,11 @@ const TaskList = () => {
                           <div
                             key={subtask._id || subIndex}
                             onClick={() => {
-                              if (canEditSubtask) {
                                 setSubtaskToEdit(subtask);
                                 setParentTaskId(task._id);
                                 setShowEditSubtaskModal(true);
-                              }
                             }}
-                            className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                              canEditSubtask ? "cursor-pointer" : "cursor-default"
-                            } ${
+                            className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
                               isDark
                                 ? "bg-gray-900/50 border-gray-800 hover:border-gray-600 hover:bg-gray-800"
                                 : "bg-gray-50 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50"
