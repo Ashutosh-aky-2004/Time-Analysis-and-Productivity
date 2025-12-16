@@ -117,9 +117,11 @@ const ProjectAnalysisPage = () => {
                                 ))}
                             </Pie>
                             <Tooltip 
-                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: isDark ? '#fff' : '#000' }}
+                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb' }}
+                                itemStyle={{ color: isDark ? '#e5e7eb' : '#374151' }}
+                                labelStyle={{ color: isDark ? '#f3f4f6' : '#1f2937' }}
                             />
-                            <Legend />
+                            <Legend wrapperStyle={{ color: isDark ? '#e5e7eb' : '#374151' }} />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
@@ -138,7 +140,9 @@ const ProjectAnalysisPage = () => {
                              <YAxis dataKey="name" type="category" stroke={isDark ? "#9ca3af" : "#4b5563"} width={80} />
                              <Tooltip 
                                 cursor={{fill: isDark ? '#374151' : '#e5e7eb', opacity: 0.1}}
-                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: isDark ? '#fff' : '#000' }}
+                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb' }}
+                                itemStyle={{ color: isDark ? '#e5e7eb' : '#374151' }}
+                                labelStyle={{ color: isDark ? '#f3f4f6' : '#1f2937' }}
                              />
                              <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                 {priorityDistribution?.map((entry, index) => (
@@ -163,9 +167,11 @@ const ProjectAnalysisPage = () => {
                             <YAxis stroke={isDark ? "#9ca3af" : "#4b5563"} />
                             <Tooltip 
                                 cursor={{fill: isDark ? '#374151' : '#e5e7eb', opacity: 0.1}}
-                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: isDark ? '#fff' : '#000' }}
+                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb' }}
+                                itemStyle={{ color: isDark ? '#e5e7eb' : '#374151' }}
+                                labelStyle={{ color: isDark ? '#f3f4f6' : '#1f2937' }}
                             />
-                            <Legend />
+                            <Legend wrapperStyle={{ color: isDark ? '#e5e7eb' : '#374151' }} />
                             <Bar dataKey="Tasks" fill="#8884d8" radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
@@ -215,9 +221,11 @@ const ProjectAnalysisPage = () => {
                             <YAxis stroke={isDark ? "#9ca3af" : "#4b5563"} />
                             <Tooltip 
                                 cursor={{fill: isDark ? '#374151' : '#e5e7eb', opacity: 0.1}}
-                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb', color: isDark ? '#fff' : '#000' }}
+                                contentStyle={{ backgroundColor: isDark ? '#1f2937' : '#fff', borderColor: isDark ? '#374151' : '#e5e7eb' }}
+                                itemStyle={{ color: isDark ? '#e5e7eb' : '#374151' }}
+                                labelStyle={{ color: isDark ? '#f3f4f6' : '#1f2937' }}
                             />
-                            <Legend />
+                            <Legend wrapperStyle={{ color: isDark ? '#e5e7eb' : '#374151' }} />
                             <Bar dataKey="Estimated Hours" fill="#82ca9d" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="Logged Hours" fill="#8884d8" radius={[4, 4, 0, 0]} />
                         </BarChart>
