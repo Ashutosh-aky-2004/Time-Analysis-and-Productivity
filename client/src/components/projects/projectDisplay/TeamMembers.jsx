@@ -92,22 +92,48 @@ const TeamMembers = () => {
   /* ---------------- MEMBER CARD ---------------- */
   const MemberCard = ({ member, type, showActions = true }) => {
     const isSelf = member._id === currentUserId;
+    const isMemberManager = project.managingUserId?.some(
+      (manager) => manager._id === member._id
+    );
 
     return (
-      <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-        <img
-          src={
-            member.avatar ||
-            `https://ui-avatars.com/api/?name=${member.firstName}&background=random`
-          }
-          alt={member.firstName}
-          className="w-10 h-10 rounded-full object-cover"
-        />
+      <div
+        className={`flex items-center gap-3 p-3 rounded-lg border transition ${
+          isMemberManager
+            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-500/50"
+            : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+        }`}
+      >
+        <div className="relative">
+          <img
+            src={
+              member.avatar ||
+              `https://ui-avatars.com/api/?name=${member.firstName}&background=random`
+            }
+            alt={member.firstName}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          {isMemberManager && (
+            <div
+              className="absolute -bottom-1 -right-1 bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-gray-900"
+              title="Project Manager"
+            >
+              PM
+            </div>
+          )}
+        </div>
 
         <div className="flex-1">
-          <p className="font-medium text-gray-900 dark:text-white">
-            {member.firstName} {member.lastName}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="font-medium text-gray-900 dark:text-white">
+              {member.firstName} {member.lastName}
+            </p>
+            {isMemberManager && (
+              <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
+                Manager
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {member.email}
           </p>

@@ -232,3 +232,39 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
+
+export const updateProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { name, description, color, tags, priority, status, startDate, endDate, managingUserId } = req.body;
+
+    // Find and update
+    let project = await Project.findById(projectId);
+    project.name = name;
+    project.description = description;
+    project.color = color;
+    project.tags = tags;
+    project.priority = priority;
+    project.status = status;
+    project.startDate = startDate;
+    project.endDate = endDate;
+    project.managingUserId = managingUserId;
+    await project.save();
+
+    //  Populate user data before sending response
+    project = await Project.findById(projectId)
+      .populate("managingUserId", "firstName lastName email _id")
+      .populate("projectStartedBy", "firstName lastName email _id")
+      .populate("teamMembers", "firstName lastName email _id");
+
+    return res.status(200).json({
+      success: true,
+      message: "Project updated successfully",
+      project,
+      currentUserId: req.user.id,
+    });
+  } catch (error) {
+    console.error("Update Project Error:", error);
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+};

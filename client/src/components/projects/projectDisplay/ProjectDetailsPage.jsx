@@ -20,31 +20,18 @@ import TaskModalDetails from "../task/TaskModalDetails";
 import ProjectDetailsShimmer from "./ProjectDetailsShimmer";
 import TeamMembers from "./TeamMembers";
 import TaskList from "./TaskList";
+import EditProjectModal from "./EditProjectModal";
 
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
   const { project, loading, setProject } = useContext(ProjectContext);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedProject, setEditedProject] = useState({});
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSubTaskModal, setShowSubTaskModal] = useState(false);
 
-  // Initialize edited project
-  useEffect(() => {
-    if (!project) return;
 
-    setEditedProject({
-      name: project.name || "",
-      description: project.description || "",
-      status: project.status || "Started",
-      priority: project.priority || "medium",
-      startDate: project.startDate || "",
-      endDate: project.endDate || "",
-      tags: project.tags || [],
-    });
-  }, [project]);
 
   if (loading) return <ProjectDetailsShimmer />;
 
@@ -54,7 +41,7 @@ const ProjectDetailsPage = () => {
         Project not found
       </div>
     );
-  const handleDeleteTask = (taskId) => {
+  const handleDeleteTask = (_taskId) => {
     // setProject((prevProject) => ({
     //   ...prevProject,
     //   tasks: prevProject.tasks.filter((t) => t._id !== taskId),
@@ -62,15 +49,7 @@ const ProjectDetailsPage = () => {
     // Optionally call API to delete from backend
   };
 
-  const handleSaveChanges = () => {
-    console.log("Save Project:", editedProject);
-    setIsEditing(false);
-  };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditedProject({ ...project });
-  };
 
   const handleCreateTask = (newTask) => {
     setSelectedTask(newTask);
@@ -138,23 +117,9 @@ const ProjectDetailsPage = () => {
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex-1">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={editedProject.name}
-                      onChange={(e) =>
-                        setEditedProject({
-                          ...editedProject,
-                          name: e.target.value,
-                        })
-                      }
-                      className="w-full text-2xl font-bold bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 mb-3 text-gray-900 dark:text-white"
-                    />
-                  ) : (
-                    <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">
-                      {project.name}
-                    </h1>
-                  )}
+                  <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+                    {project.name}
+                  </h1>
                   <div className="flex items-center gap-4 flex-wrap">
                     <span
                       className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
@@ -178,44 +143,24 @@ const ProjectDetailsPage = () => {
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  {isEditing ? (
-                    <>
-                      <FaTimes /> Cancel Edit
-                    </>
-                  ) : (
-                    <>
-                      <FaEdit /> Edit Project
-                    </>
-                  )}
-                </button>
+                {/* Only show edit button if user is manager */
+                project.managingUserId?.some(u => u._id === project.currentUserId) && (
+                   <button
+                    onClick={() => setShowEditModal(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                     <FaEdit /> Edit Project
+                  </button>
+                )}
               </div>
 
-              {/* Description */}
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
                   Description
                 </h2>
-                {isEditing ? (
-                  <textarea
-                    value={editedProject.description}
-                    onChange={(e) =>
-                      setEditedProject({
-                        ...editedProject,
-                        description: e.target.value,
-                      })
-                    }
-                    rows="4"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white"
-                  />
-                ) : (
-                  <p className="text-gray-700 dark:text-gray-300">
-                    {project.description || "No description provided"}
-                  </p>
-                )}
+                <p className="text-gray-700 dark:text-gray-300">
+                  {project.description || "No description provided"}
+                </p>
               </div>
 
               {/* Tags */}
@@ -255,22 +200,7 @@ const ProjectDetailsPage = () => {
                 </div>
               </div>
 
-              {isEditing && (
-                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-800">
-                  <button
-                    onClick={handleSaveChanges}
-                    className="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-                  >
-                    <FaCheck /> Save Changes
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
+
             </div>
 
             {/* Task Section */}
@@ -401,6 +331,13 @@ const ProjectDetailsPage = () => {
           }}
         />
       )}
+
+      {/* Edit Project Modal */}
+      <EditProjectModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        project={project}
+      />
     </div>
   );
 };

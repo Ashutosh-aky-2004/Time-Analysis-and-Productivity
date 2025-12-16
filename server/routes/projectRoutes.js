@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getProjectTasks,
   restoreProject,
+  updateProject,
 
 } from "../controllers/projectControllers.js";
 import { getProjectFullDetails } from "../controllers/projectDataControllers.js";
@@ -32,7 +33,9 @@ router.get("/:projectId/tasks", getProjectTasks);
 // project actions
 router.post("/add-project", addProject);
 router.patch("/delete-project/:projectId", deleteProject);
+router.patch("/delete-project/:projectId", deleteProject);
 router.patch("/restore-project/:projectId", restoreProject);
+router.put("/update-project/:projectId", updateProject);
 
 // Get all members of a project
 router.get("/:projectId/members", getProjectMembers);
