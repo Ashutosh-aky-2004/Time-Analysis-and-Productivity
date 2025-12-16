@@ -256,15 +256,26 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
               </div>
 
               <div className="pt-2 flex justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                   {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
-                   Delete
-                </button>
+                {(() => {
+                  const parentTask = project?.tasks?.find(t => t._id === parentTaskId);
+                  const currentUserId = String(project?.currentUserId);
+                  const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+                  const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                  const isTaskCreator = parentTask && String(parentTask.createdBy?._id || parentTask.createdBy) === currentUserId;
+                  const canDelete = isProjectCreator || isManager || isTaskCreator;
+
+                  return canDelete ? (
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                       {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+                       Delete
+                    </button>
+                  ) : <div></div>;
+                })()}
 
                 <div className="flex gap-3">
                   <button

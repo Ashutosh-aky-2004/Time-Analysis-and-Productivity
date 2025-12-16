@@ -289,19 +289,30 @@ const TaskList = () => {
                     >
                       <FaEdit />
                     </button>
-                    <button
-                      onClick={() => {
-                        handleDelete(task._id);
-                      }}
-                      className={`p-2 rounded-lg transition-colors ${
-                        isDark
-                          ? "hover:bg-gray-700 text-white hover:text-red-400"
-                          : "hover:bg-gray-100 text-red-600 hover:text-red-800"
-                      }`}
-                      title="Delete Task"
-                    >
-                      <FaTrash />
-                    </button>
+                    {(() => {
+                      const currentUserId = String(project?.currentUserId);
+                      const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+                      const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                      
+                      if(isProjectCreator || isManager) {
+                          return (
+                            <button
+                              onClick={() => {
+                                handleDelete(task._id);
+                              }}
+                              className={`p-2 rounded-lg transition-colors ${
+                                isDark
+                                  ? "hover:bg-gray-700 text-white hover:text-red-400"
+                                  : "hover:bg-gray-100 text-red-600 hover:text-red-800"
+                              }`}
+                              title="Delete Task"
+                            >
+                              <FaTrash />
+                            </button>
+                          )
+                      }
+                      return null;
+                    })()}
                   </div>
                 </div>
               </div>
@@ -334,22 +345,32 @@ const TaskList = () => {
 
 
 
-                  {/* Subtasks */}
+                      {/* Subtasks */}
                   <div className="mt-4">
                     <div className="flex items-center justify-between mb-2">
                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400 block">
                         Subtasks:
                       </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setParentTaskId(task._id);
-                          setShowAddSubtaskModal(true);
-                        }}
-                        className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
-                      >
-                        <FaPlus /> Add New
-                      </button>
+                      {(() => {
+                        const currentUserId = String(project?.currentUserId);
+                        const isProjectCreator = String(project?.projectStartedBy?._id) === currentUserId;
+                        const isManager = project?.managingUserId?.some((u) => String(u._id) === currentUserId);
+                        const isTaskCreator = String(task.createdBy?._id) === currentUserId;
+                        const canAddSubtask = isProjectCreator || isManager || isTaskCreator;
+
+                        return canAddSubtask && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setParentTaskId(task._id);
+                              setShowAddSubtaskModal(true);
+                            }}
+                            className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            <FaPlus /> Add New
+                          </button>
+                        );
+                      })()}
                     </div>
                   
                   {task.subtasks && task.subtasks.length > 0 && (
