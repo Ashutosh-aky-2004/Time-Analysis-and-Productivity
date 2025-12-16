@@ -408,17 +408,18 @@ const ProjectCard = ({ project, showArchived = false, currentUserId }) => {
                 Progress
               </p>
 
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full ${
-                    project.progress === "completed"
-                      ? "w-full bg-green-500 dark:bg-green-400"
-                      : "w-3/4 bg-blue-500 dark:bg-blue-400"
+                    project.progress === 100
+                      ? "bg-green-500 dark:bg-green-400"
+                      : "bg-blue-500 dark:bg-blue-400"
                   }`}
+                  style={{ width: `${project.progress || 0}%` }}
                 ></div>
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {project.progress || "in-progress"}
+                {project.progress || 0}% completed
               </p>
             </div>
           )}

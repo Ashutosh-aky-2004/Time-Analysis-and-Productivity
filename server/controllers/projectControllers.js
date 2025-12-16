@@ -88,6 +88,7 @@ export const getAllUserProjects = async (req, res) => {
     }
 
     // Find all projects where the user is a managing user, team member, or projectStartedBy
+    // Find all projects where the user is a managing user, team member, or projectStartedBy
     const projects = await Project.find({
       $or: [
         { managingUserId: userId },
@@ -97,12 +98,35 @@ export const getAllUserProjects = async (req, res) => {
     })
       .populate("teamMembers", "firstName lastName email _id")
       .populate("projectStartedBy", "firstName lastName email _id")
-      .populate("managingUserId", "firstName lastName email _id");
+      .populate("managingUserId", "firstName lastName email _id")
+      .lean();
+
+    // Calculate progress for each project based on tasks
+    const projectIds = projects.map((p) => p._id);
+    
+    const taskStats = await Task.aggregate([
+      { $match: { projectId: { $in: projectIds } } },
+      {
+        $group: {
+          _id: "$projectId",
+          total: { $sum: 1 },
+          completed: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] } },
+        },
+      },
+    ]);
+
+    const projectsWithStats = projects.map((p) => {
+      const stats = taskStats.find((s) => s._id.toString() === p._id.toString());
+      const total = stats ? stats.total : 0;
+      const completed = stats ? stats.completed : 0;
+      const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+      return { ...p, progress };
+    });
 
     res.status(200).json({
       success: true,
       message: "Project Fetched Successfully",
-      projects,
+      projects: projectsWithStats,
       currentUserId: req.user.id,
     });
   } catch (error) {

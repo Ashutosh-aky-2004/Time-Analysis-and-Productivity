@@ -84,18 +84,15 @@ const ProjectDetailsPage = () => {
     }
   };
 
-  const progress =
-    project.startDate && project.endDate
-      ? Math.min(
-          100,
-          Math.max(
-            0,
-            ((new Date() - new Date(project.startDate)) /
-              (new Date(project.endDate) - new Date(project.startDate))) *
-              100
-          )
-        )
-      : 0;
+  const calculateProjectProgress = () => {
+    if (!project.tasks || project.tasks.length === 0) return 0;
+    const completedTasks = project.tasks.filter(
+      (task) => task.status === "completed"
+    ).length;
+    return (completedTasks / project.tasks.length) * 100;
+  };
+
+  const progress = calculateProjectProgress();
   return (
     <div
       className={`min-h-screen ${
