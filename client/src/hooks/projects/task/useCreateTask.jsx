@@ -7,7 +7,6 @@ export const useCreateTask = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const { project, setProject } = useContext(ProjectContext);
   const API_URL = import.meta.env.VITE_API_URL;
 
   const createTask = async (taskPayload) => {
@@ -26,11 +25,7 @@ export const useCreateTask = () => {
 
       setSuccess(true);
       const newTask = res.data.data.task;
-      setProject((prevProject) => ({
-        ...prevProject,
-        tasks: [...(prevProject.tasks || []), newTask],
-      }));
-      return res.data;
+      return newTask;
     } catch (err) {
       const message = err?.response?.data?.message || "Failed to create task";
       setError(message);

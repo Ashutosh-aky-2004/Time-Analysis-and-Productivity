@@ -52,6 +52,10 @@ const ProjectDetailsPage = () => {
 
 
   const handleCreateTask = (newTask) => {
+    setProject((prev) => ({
+      ...prev,
+      tasks: [newTask, ...prev.tasks],
+    }));
     setSelectedTask(newTask);
     setShowTaskModal(false);
   };
