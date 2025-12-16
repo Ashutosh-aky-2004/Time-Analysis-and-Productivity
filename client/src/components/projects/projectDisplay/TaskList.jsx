@@ -31,6 +31,7 @@ const TaskList = () => {
   const [taskToEdit, setTaskToEdit] = useState(null);
   const [showEditSubtaskModal, setShowEditSubtaskModal] = useState(false);
   const [subtaskToEdit, setSubtaskToEdit] = useState(null);
+  const [parentTaskId, setParentTaskId] = useState(null);
 
   const [expandedTasks, setExpandedTasks] = useState({});
 
@@ -343,6 +344,7 @@ const TaskList = () => {
                             key={subtask._id}
                             onClick={() => {
                               setSubtaskToEdit(subtask);
+                              setParentTaskId(task._id);
                               setShowEditSubtaskModal(true);
                             }}
                             className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
@@ -425,8 +427,10 @@ const TaskList = () => {
           onClose={() => {
             setShowEditSubtaskModal(false);
             setSubtaskToEdit(null);
+            setParentTaskId(null);
           }}
           subtaskToEdit={subtaskToEdit}
+          parentTaskId={parentTaskId}
         />
       )}
     </>
