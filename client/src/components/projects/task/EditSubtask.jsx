@@ -4,13 +4,15 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import { useUpdateSubtask } from "../../../hooks/projects/task/useUpdateSubtask";
 import { useLogSubtaskHours } from "../../../hooks/projects/task/useLogSubtaskHours";
-import { FaClock, FaEdit, FaSave, FaSpinner } from "react-icons/fa";
+import { useDeleteSubtask } from "../../../hooks/projects/task/useDeleteSubtask";
+import { FaClock, FaEdit, FaSave, FaSpinner, FaTrash } from "react-icons/fa";
 
 const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
   const { isDark } = useContext(ThemeContext);
   const { project } = useContext(ProjectContext);
   const { updateSubtask, loading: updating } = useUpdateSubtask();
   const { logSubtaskHours, loading: logging } = useLogSubtaskHours();
+  const { deleteSubtask, loading: deleting } = useDeleteSubtask();
 
   const [activeTab, setActiveTab] = useState("details"); // 'details' or 'time'
 
@@ -94,6 +96,17 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
       onClose();
     } catch (error) {
       // Error is handled in hook
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this subtask? This action cannot be undone.")) {
+      try {
+        await deleteSubtask(parentTaskId, subtaskToEdit._id);
+        onClose();
+      } catch (error) {
+        // Error handled in hook
+      }
     }
   };
 
@@ -242,24 +255,36 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                 </select>
               </div>
 
-              <div className="pt-2 flex justify-end gap-3">
+              <div className="pt-2 flex justify-between gap-3">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isDark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                  }`}
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  Cancel
+                   {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+                   Delete
                 </button>
-                <button
-                  type="submit"
-                  disabled={updating}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {updating ? <FaSpinner className="animate-spin" /> : <FaSave />}
-                  Save Changes
-                </button>
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isDark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                    }`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updating}
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {updating ? <FaSpinner className="animate-spin" /> : <FaSave />}
+                    Save Changes
+                  </button>
+                </div>
               </div>
             </form>
           ) : (
