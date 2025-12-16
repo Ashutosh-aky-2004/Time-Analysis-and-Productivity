@@ -20,6 +20,7 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { getPriorityColor, getStatusColor } from "../../../constants/tasklist";
 import { useDeleteTask } from "../../../hooks/projects/task/useDeleteTask";
 import EditTask from "../task/EditTask";
+import EditSubtask from "../task/EditSubtask";
 
 const TaskList = () => {
   const { project, setProject } = useContext(ProjectContext);
@@ -28,6 +29,8 @@ const TaskList = () => {
   const { deleteTask, loading: deleting } = useDeleteTask();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
+  const [showEditSubtaskModal, setShowEditSubtaskModal] = useState(false);
+  const [subtaskToEdit, setSubtaskToEdit] = useState(null);
 
   const [expandedTasks, setExpandedTasks] = useState({});
 
@@ -326,6 +329,8 @@ const TaskList = () => {
                     </div>
                   )}
 
+
+
                   {/* Subtasks */}
                   {task.subtasks && task.subtasks.length > 0 && (
                     <div className="mt-4">
@@ -336,8 +341,14 @@ const TaskList = () => {
                         {task.subtasks.map((subtask) => (
                           <div
                             key={subtask._id}
-                            className={`flex items-center justify-between p-3 rounded-lg ${
-                              isDark ? "bg-gray-900/50" : "bg-gray-50"
+                            onClick={() => {
+                              setSubtaskToEdit(subtask);
+                              setShowEditSubtaskModal(true);
+                            }}
+                            className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
+                              isDark
+                                ? "bg-gray-900/50 border-gray-800 hover:border-gray-600 hover:bg-gray-800"
+                                : "bg-gray-50 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50"
                             }`}
                           >
                             <div className="flex items-center gap-3">
@@ -405,6 +416,17 @@ const TaskList = () => {
             setShowEditTaskModal(false);
             setTaskToEdit(null);
           }}
+        />
+      )}
+
+      {showEditSubtaskModal && subtaskToEdit && (
+        <EditSubtask
+          isOpen={showEditSubtaskModal}
+          onClose={() => {
+            setShowEditSubtaskModal(false);
+            setSubtaskToEdit(null);
+          }}
+          subtaskToEdit={subtaskToEdit}
         />
       )}
     </>
