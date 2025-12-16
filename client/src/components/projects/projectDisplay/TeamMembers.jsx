@@ -5,6 +5,8 @@ import ViewAllMembersModal from "./ViewAllMembersModal";
 import AddTeamMemberModal from "../members/AddTeamMemberModal";
 import { useSuspendMember } from "../../../hooks/projects/membersActions/useSuspendMember";
 import { useRevokeMember } from "../../../hooks/projects/membersActions/useRevokeMember";
+import { useSoftRemoveMember } from "../../../hooks/projects/membersActions/useSoftRemoveMember";
+import { useRestoreMember } from "../../../hooks/projects/membersActions/useRestoreMember";
 
 const MAX_VISIBLE = 4; //currently for the ui checking i have kept it as 1 later i will make it 4
 
@@ -21,8 +23,11 @@ const TeamMembers = () => {
     error: suspendError,
   } = useSuspendMember();
   const { revokeMember } = useRevokeMember();
+  const { softRemoveMember } = useSoftRemoveMember();
+  const { restoreMember } = useRestoreMember();
   const activeMembers = project.teamMembers || [];
   const suspendedMembers = project.suspendedMembers || [];
+  const removedMembers = project.removedMembers || [];
   const currentUserId = project.currentUserId;
 
   const isManager = project.managingUserId?.some(
@@ -39,16 +44,32 @@ const TeamMembers = () => {
     }
   };
 
-  const handleRemove = (id) => console.log("Remove:", id);
+  const handleRemove = async (memberId) => {
+    try {
+      await softRemoveMember(memberId);
+      setConfirmData(null);
+    } catch (err) {
+      console.error("Failed to remove member:", err);
+    }
+  };
 
   const handleRevoke = async (memberId) => {
-  try {
-    await revokeMember(memberId); 
-    setConfirmData(null); 
-  } catch (err) {
-    console.error("Failed to revoke member:", err);
-  }
-};
+    try {
+      await revokeMember(memberId); 
+      setConfirmData(null); 
+    } catch (err) {
+      console.error("Failed to revoke member:", err);
+    }
+  };
+
+  const handleRestore = async (memberId) => {
+    try {
+      await restoreMember(memberId);
+      setConfirmData(null);
+    } catch (err) {
+      console.error("Failed to restore member:", err);
+    }
+  };
 
 
   const openConfirm = (type, memberId) => {
@@ -63,6 +84,7 @@ const TeamMembers = () => {
     if (type === "suspend") handleSuspend(memberId);
     if (type === "remove") handleRemove(memberId);
     if (type === "revoke") handleRevoke(memberId);
+    if (type === "restore") handleRestore(memberId);
 
     setConfirmData(null);
   };
@@ -98,7 +120,13 @@ const TeamMembers = () => {
               <>
                 <button
                   onClick={() => openConfirm("suspend", member._id)}
-                  className="p-2 text-yellow-600 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-md"
+                  disabled={isSelf}
+                  title={isSelf ? "You cannot suspend yourself" : "Suspend"}
+                  className={`p-2 rounded-md ${
+                    isSelf
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-yellow-600 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
+                  }`}
                 >
                   <FaUserSlash />
                 </button>
@@ -126,6 +154,15 @@ const TeamMembers = () => {
                 <FaUndo />
               </button>
             )}
+            {type === "removed" && (
+              <button
+                onClick={() => openConfirm("restore", member._id)}
+                className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-md"
+                title="Restore Member"
+              >
+                <FaUndo />
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -135,10 +172,12 @@ const TeamMembers = () => {
   /* ---------------- MEMBERS TO SHOW ---------------- */
   const visibleActive = activeMembers.slice(0, MAX_VISIBLE);
   const visibleSuspended = suspendedMembers.slice(0, MAX_VISIBLE);
+  const visibleRemoved = removedMembers.slice(0, MAX_VISIBLE);
 
   const showViewAll =
     (activeTab === "active" && activeMembers.length > MAX_VISIBLE) ||
-    (activeTab === "suspended" && suspendedMembers.length > MAX_VISIBLE);
+    (activeTab === "suspended" && suspendedMembers.length > MAX_VISIBLE) ||
+    (activeTab === "removed" && removedMembers.length > MAX_VISIBLE);
 
   /* ---------------- UI ---------------- */
   return (
@@ -171,6 +210,17 @@ const TeamMembers = () => {
           >
             Suspended ({suspendedMembers.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab("removed")}
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === "removed"
+                ? "text-red-600 border-b-2 border-red-600"
+                : "text-gray-500"
+            }`}
+          >
+            Removed ({removedMembers.length})
+          </button>
         </div>
 
         {/* Preview Members */}
@@ -183,6 +233,11 @@ const TeamMembers = () => {
           {activeTab === "suspended" &&
             visibleSuspended.map((m) => (
               <MemberCard key={m._id} member={m} type="suspended" showActions />
+            ))}
+
+          {activeTab === "removed" &&
+            visibleRemoved.map((m) => (
+              <MemberCard key={m._id} member={m} type="removed" showActions />
             ))}
         </div>
 
@@ -215,7 +270,12 @@ const TeamMembers = () => {
               Project Members
             </h3>
 
-            {(activeTab === "active" ? activeMembers : suspendedMembers).map(
+            {(activeTab === "active"
+              ? activeMembers
+              : activeTab === "suspended"
+              ? suspendedMembers
+              : removedMembers
+            ).map((m) => (
               (m) => (
                 <MemberCard
                   key={m._id}
@@ -224,7 +284,7 @@ const TeamMembers = () => {
                   showActions={false} // 🔐 IMPORTANT
                 />
               )
-            )}
+            ))}
 
             <button
               onClick={() => setShowAllModal(false)}
@@ -269,12 +329,14 @@ const TeamMembers = () => {
         onClose={() => setShowAllModal(false)}
         members={activeMembers}
         suspendedMembers={suspendedMembers}
+        removedMembers={removedMembers}
         activeTab={activeTab}
         isManager={isManager}
         currentUserId={currentUserId}
         onSuspend={(id) => openConfirm("suspend", id)}
         onRemove={(id) => openConfirm("remove", id)}
         onRevoke={(id) => openConfirm("revoke", id)}
+        onRestore={(id) => openConfirm("restore", id)}
         onAddMember={() => setShowAddMemberModal(true)}
       />
       <AddTeamMemberModal 

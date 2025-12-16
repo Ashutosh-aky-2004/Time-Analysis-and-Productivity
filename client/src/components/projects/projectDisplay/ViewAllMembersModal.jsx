@@ -12,19 +12,26 @@ const ViewAllMembersModal = ({
   onClose,
   members = [],
   suspendedMembers = [],
+  removedMembers = [],
   activeTab,
   isManager,
   currentUserId,
   onSuspend,
   onRemove,
   onRevoke,
+  onRestore,
   onAddMember,
 }) => {
   const [search, setSearch] = useState("");
 
   if (!isOpen) return null;
 
-  const list = activeTab === "active" ? members : suspendedMembers;
+  const list =
+    activeTab === "active"
+      ? members
+      : activeTab === "suspended"
+      ? suspendedMembers
+      : removedMembers;
 
   const filtered = list.filter(
     (m) =>
@@ -39,7 +46,11 @@ const ViewAllMembersModal = ({
         {/* HEADER */}
         <div className="p-5 border-b dark:border-gray-700 flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-            {activeTab === "active" ? "Active Members" : "Suspended Members"}
+            {activeTab === "active"
+              ? "Active Members"
+              : activeTab === "suspended"
+              ? "Suspended Members"
+              : "Removed Members"}
           </h3>
           <button onClick={onClose} className="text-white">
             ✕
@@ -107,7 +118,13 @@ const ViewAllMembersModal = ({
                       <>
                         <button
                           onClick={() => onSuspend(member._id)}
-                          className="p-2 text-yellow-600 hover:bg-yellow-100 rounded"
+                          disabled={isSelf}
+                          title={isSelf ? "You cannot suspend yourself" : "Suspend"}
+                          className={`p-2 rounded ${
+                            isSelf
+                              ? "text-gray-400 cursor-not-allowed"
+                              : "text-yellow-600 hover:bg-yellow-100"
+                          }`}
                         >
                           <FaUserSlash />
                         </button>
@@ -134,6 +151,16 @@ const ViewAllMembersModal = ({
                       <button
                         onClick={() => onRevoke(member._id)}
                         className="p-2 text-green-600 hover:bg-green-100 rounded"
+                      >
+                        <FaUndo />
+                      </button>
+                    )}
+
+                    {activeTab === "removed" && (
+                      <button
+                        onClick={() => onRestore(member._id)} // using onRestore prop
+                        className="p-2 text-green-600 hover:bg-green-100 rounded"
+                        title="Restore"
                       >
                         <FaUndo />
                       </button>

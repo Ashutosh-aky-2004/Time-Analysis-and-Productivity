@@ -282,3 +282,62 @@ export const softRemoveProjectMember = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const restoreProjectMember = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { memberId } = req.body;
+    const currentUserId = req.user.id;
+
+    if (!memberId) {
+      return res.status(400).json({ message: "memberId is required" });
+    }
+
+    // Fetch project
+    const project = await Project.findById(projectId)
+      .populate("teamMembers", "_id firstName lastName email")
+      .populate("removedMembers", "_id firstName lastName email")
+      .populate("managingUserId", "_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Check if current user is manager
+    const isManager = project.managingUserId.some(
+      (u) => u._id.toString() === currentUserId.toString()
+    );
+    if (!isManager) {
+      return res
+        .status(403)
+        .json({ message: "Only managers can restore members" });
+    }
+
+    // Check if the member is actually removed
+    const removedIndex = project.removedMembers.findIndex(
+      (u) => u._id.toString() === memberId.toString()
+    );
+    if (removedIndex === -1) {
+      return res.status(400).json({ message: "User is not in removed list" });
+    }
+
+    // Move member from removedMembers to teamMembers
+    const restoredMember = project.removedMembers[removedIndex];
+    project.removedMembers.splice(removedIndex, 1);
+    
+    // Check if already in teamMembers (should shouldn't happen usually but good safety)
+    if (!project.teamMembers.some(m => m._id.toString() === memberId.toString())) {
+       project.teamMembers.push(restoredMember._id);
+    }
+
+    await project.save();
+
+    res.status(200).json({
+      message: "Member successfully restored to project",
+      restoredMember,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

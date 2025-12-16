@@ -14,6 +14,7 @@ import {
   getProjectMembers,
   revokeProjectMember,
   softRemoveProjectMember,
+  restoreProjectMember,
   suspendProjectMember,
 } from "../controllers/projectMembersController.js";
 
@@ -39,7 +40,7 @@ router.post("/:projectId/members", addProjectMember);
 router.put("/:projectId/members/suspend", suspendProjectMember);
 router.put("/:projectId/members/revoke", revokeProjectMember);
 router.put("/:projectId/members/remove", softRemoveProjectMember);
+router.put("/:projectId/members/restore", restoreProjectMember);
 
-// // Manager actions
 
 export default router;
