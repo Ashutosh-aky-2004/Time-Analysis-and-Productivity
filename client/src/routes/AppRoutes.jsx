@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import Profile from "../components/profile/Profile";
-import LandingPage from "../pages/LandingPage";
+import Dashboard from "../components/personalAnalysis/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import LandingPageProject from "../components/projects/LandingPageProject";
 import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDetailsPage";
@@ -22,14 +22,13 @@ const AppRoutes = () => {
 
         {/* Protected */}
         <Route
-          path="/u"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <LandingPage />
+              <Dashboard />
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
