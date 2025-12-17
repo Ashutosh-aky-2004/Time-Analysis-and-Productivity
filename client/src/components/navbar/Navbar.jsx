@@ -9,7 +9,7 @@ import {
 } from "react-icons/ai";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useNavbarDetails from "../../hooks/navbar/useNavbarDetails";
 import NavbarShimmer from "./NavbarShimmer";
 
@@ -22,6 +22,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
@@ -60,7 +61,16 @@ const Navbar = () => {
     { name: "Track Time", icon: <AiOutlineClockCircle />, link: "/track-time" },
     { name: "History", icon: <AiOutlineHistory />, link: "/history" },
     { name: "Analytics", icon: <AiOutlineBarChart />, link: "/analytics" },
+    { name: "Personal Analysis", icon: <AiOutlineBarChart />, link: "/personal-analysis", hideOnProjects: true },
   ];
+
+  // Filter menu items based on current route
+  const visibleMenuItems = menuItems.filter(item => {
+    if (item.hideOnProjects && (location.pathname.startsWith('/projects') || location.pathname.startsWith('/project-details'))) {
+      return false;
+    }
+    return true;
+  });
 
   const handleLogout = () => {
     const token = localStorage.removeItem("token");
@@ -83,7 +93,7 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
-            {menuItems.map((item) => (
+            {visibleMenuItems.map((item) => (
               <a
                 key={item.name}
                 href={item.link}
@@ -211,7 +221,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          {menuItems.map((item) => (
+          {visibleMenuItems.map((item) => (
             <a
               key={item.name}
               href={item.link}

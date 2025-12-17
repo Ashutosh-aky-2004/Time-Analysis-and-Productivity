@@ -11,6 +11,7 @@ import { UserProvider } from "../context/user/UserContext";
 import Navbar from "../components/navbar/Navbar";
 import ProjectAnalysisPage from "../components/projects/analysis/ProjectAnalysisPage";
 import { ProjectAnalysisProvider } from "../context/analysis/ProjectAnalysisContext";
+import PersonalAnalysisDashboard from "../components/personalAnalysis/dashboard/PersonalAnalysisDashboard";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,15 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/personal-analysis"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <PersonalAnalysisDashboard />
             </ProtectedRoute>
           }
         />
