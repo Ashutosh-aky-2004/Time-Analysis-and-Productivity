@@ -10,6 +10,8 @@ import projectRoutes from "./routes/projectRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 import protect from "./middleware/auth.js";
+import timeEntryRoutes from "./routes/personalAnalysis/timeEntryRoutes.js";
+import userTaskRoutes from "./routes/personalAnalysis/userTaskRoutes.js";
 
 const app = express();
 
@@ -29,6 +31,10 @@ app.use("/api/navbar",navbarRoutes);
 app.use("/profile",profileRoutes);
 app.use("/api/projects",projectRoutes);
 app.use("/api/tasks",taskRoutes);
+
+// personal routes
+app.use("/api/user-tasks",userTaskRoutes);
+app.use("/api/time-entries",timeEntryRoutes);
 
 app.get("/api/serverStatus", (req, res) => {
   res.send("Server is running...");
