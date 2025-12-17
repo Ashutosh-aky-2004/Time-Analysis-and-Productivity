@@ -1,14 +1,8 @@
 import React from "react";
-import { Play, Plus, Calendar, Clock } from "lucide-react";
+import { Plus, Calendar, Clock } from "lucide-react";
 
-const QuickActions = ({ onAddTask, onCheckIn }) => {
+const QuickActions = ({ onAddTask, onCheckIn, onLogTime }) => {
   const actions = [
-    {
-      title: "Start Tracking",
-      icon: <Play className="w-5 h-5" />,
-      color: "bg-blue-500 hover:bg-blue-600",
-      action: () => console.log("Start Tracking"),
-    },
     {
       title: "Add Task",
       icon: <Plus className="w-5 h-5" />,
@@ -25,7 +19,7 @@ const QuickActions = ({ onAddTask, onCheckIn }) => {
       title: "Log Time",
       icon: <Clock className="w-5 h-5" />,
       color: "bg-amber-500 hover:bg-amber-600",
-      action: () => console.log("Log Time"),
+      action: onLogTime,
     },
   ];
 
@@ -34,7 +28,7 @@ const QuickActions = ({ onAddTask, onCheckIn }) => {
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
         Quick Actions
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {actions.map((action, index) => (
           <button
             key={index}

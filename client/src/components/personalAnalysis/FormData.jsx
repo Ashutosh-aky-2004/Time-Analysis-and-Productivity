@@ -7,11 +7,13 @@ import Goals from "./formData/Goals";
 import CreateTaskModal from "./formData/CreateTaskModal";
 import DailyCheckInModal from "./formData/DailyCheckInModal";
 import DailyActivityLog from "./formData/DailyActivityLog";
+import LogTimeModal from "./formData/LogTimeModal";
 import { PersonalAnalysisProvider } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const FormData = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
+  const [isLogTimeModalOpen, setIsLogTimeModalOpen] = useState(false);
 
   return (
     <PersonalAnalysisProvider>
@@ -19,6 +21,7 @@ const FormData = () => {
         <QuickActions
           onAddTask={() => setIsModalOpen(true)}
           onCheckIn={() => setIsCheckInModalOpen(true)}
+          onLogTime={() => setIsLogTimeModalOpen(true)}
         />
         <div className="flex flex-col lg:flex-row gap-6">
           <RecentActivity />
@@ -42,6 +45,11 @@ const FormData = () => {
         <DailyCheckInModal
           isOpen={isCheckInModalOpen}
           onClose={() => setIsCheckInModalOpen(false)}
+        />
+
+        <LogTimeModal
+          isOpen={isLogTimeModalOpen}
+          onClose={() => setIsLogTimeModalOpen(false)}
         />
       </div>
     </PersonalAnalysisProvider>

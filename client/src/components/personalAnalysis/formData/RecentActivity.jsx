@@ -1,9 +1,17 @@
 import React from "react";
-import { Clock, CheckCircle, Phone, Code, Activity } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  Phone,
+  Code,
+  Activity,
+  Eye,
+  Edit2,
+} from "lucide-react";
 import useFetchRecentActivity from "../../../hooks/personalAnalysis/useFetchRecentActivity";
 
-const RecentActivity = () => {
-  const { activities, loading } = useFetchRecentActivity(5);
+const RecentActivity = ({ onViewAll, onEdit, onView }) => {
+  const { activities, loading } = useFetchRecentActivity(3);
 
   if (loading) {
     return (
@@ -72,7 +80,10 @@ const RecentActivity = () => {
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">
           Recent Activity
         </h2>
-        <button className="text-blue-500 hover:text-blue-400 text-sm font-medium transition-colors">
+        <button
+          onClick={onViewAll}
+          className="text-blue-500 hover:text-blue-400 text-sm font-medium transition-colors"
+        >
           View All
         </button>
       </div>
@@ -86,7 +97,10 @@ const RecentActivity = () => {
           activities.map((item) => {
             const style = getIconAndStyle(item.category, item.focusScore);
             return (
-              <div key={item.id} className="flex gap-4 items-start group">
+              <div
+                key={item.id}
+                className="flex gap-4 items-start group relative"
+              >
                 <div
                   className={`p-3 rounded-xl ${style.bg} flex-shrink-0 transition-transform group-hover:scale-110`}
                 >
@@ -94,7 +108,7 @@ const RecentActivity = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h3 className="text-gray-900 dark:text-gray-100 font-semibold truncate">
+                    <h3 className="text-gray-900 dark:text-gray-100 font-semibold truncate max-w-[150px] sm:max-w-[200px]">
                       {item.taskTitle || "Untitled Task"}
                     </h3>
                     <span
@@ -113,6 +127,22 @@ const RecentActivity = () => {
                       {item.category?.replace("_", " ") || "Uncategorized"}
                     </span>
                   </div>
+                </div>
+
+                {/* Actions - visible on hover or always on mobile */}
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-0 top-0 bg-white dark:bg-[#1e1e1e] pl-2 shadow-sm rounded-l-lg">
+                  <button
+                    onClick={() => onView && onView(item)}
+                    className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onEdit && onEdit(item)}
+                    className="p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             );

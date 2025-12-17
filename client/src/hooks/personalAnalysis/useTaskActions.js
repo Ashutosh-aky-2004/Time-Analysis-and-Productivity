@@ -89,11 +89,53 @@ const useTaskActions = () => {
     }
   }, []);
 
+  const logManualTime = useCallback(async (data) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/time-entries`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Time entry logged successfully");
+      return res.data.success;
+    } catch (err) {
+      console.error("Log manual time error:", err);
+      toast.error(err.response?.data?.message || "Failed to log time");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateTimeEntry = useCallback(async (entryId, data) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/time-entries/${entryId}`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Time entry updated successfully");
+      return true;
+    } catch (err) {
+      console.error("Update time entry error:", err);
+      toast.error(err.response?.data?.message || "Failed to update time entry");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     updateTaskStatus,
     startTrackingList,
     stopTrackingList,
     fetchActiveEntry,
+    logManualTime,
+    updateTimeEntry,
     loading,
   };
 };

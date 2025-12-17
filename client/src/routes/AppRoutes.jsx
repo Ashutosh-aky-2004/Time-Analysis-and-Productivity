@@ -43,8 +43,10 @@ const AppRoutes = () => {
           path="/personal-analysis"
           element={
             <ProtectedRoute>
-              
-              <div className="dark:bg-[#040711]"><Navbar/><FormData/></div>
+              <div className="dark:bg-[#040711]">
+                <Navbar />
+                <FormData />
+              </div>
             </ProtectedRoute>
           }
         />
@@ -53,7 +55,7 @@ const AppRoutes = () => {
           path="/projects"
           element={
             <ProtectedRoute>
-              <Navbar/>
+              <Navbar />
               <LandingPageProject />
             </ProtectedRoute>
           }
@@ -64,7 +66,7 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <ProjectProvider>
                 <UserProvider>
-                  <Navbar/>
+                  <Navbar />
                   <ProjectDetailsPage />
                 </UserProvider>
               </ProjectProvider>
@@ -75,10 +77,10 @@ const AppRoutes = () => {
           path="/project-details/:projectID/analysis"
           element={
             <ProtectedRoute>
-               <ProjectProvider>
+              <ProjectProvider>
                 <UserProvider>
                   <ProjectAnalysisProvider>
-                    <Navbar/>
+                    <Navbar />
                     <ProjectAnalysisPage />
                   </ProjectAnalysisProvider>
                 </UserProvider>
