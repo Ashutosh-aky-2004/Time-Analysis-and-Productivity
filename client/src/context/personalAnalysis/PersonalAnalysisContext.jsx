@@ -4,7 +4,9 @@ import useFetchPersonalTasks from "../../hooks/personalAnalysis/useFetchPersonal
 const PersonalAnalysisContext = createContext();
 
 export const PersonalAnalysisProvider = ({ children }) => {
-  const { tasks, loading, error, refetch } = useFetchPersonalTasks();
+  const { tasks, loading, error, refetch } = useFetchPersonalTasks({
+    limit: 1000,
+  });
 
   const refreshTasks = useCallback(() => {
     refetch();
