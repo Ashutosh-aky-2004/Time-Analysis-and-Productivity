@@ -6,16 +6,21 @@ import {
   Play,
   MoreVertical,
   Pencil,
+  Trash2,
+  Eye,
 } from "lucide-react";
 import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import CreateTaskModal from "./CreateTaskModal";
 import TaskCompletionModal from "./TaskCompletionModal";
+import ViewTaskModal from "./ViewTaskModal";
+import useDeletePersonalTask from "../../../hooks/personalAnalysis/useDeletePersonalTask";
 import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 
 const ActiveTasks = () => {
   // Fetch 'in_progress' and 'not_started' from Context
   const { tasks, loading, error, refreshTasks } = usePersonalAnalysis();
   const { startTrackingList, loading: actionLoading } = useTaskActions();
+  const { deleteTask, loading: deleteLoading } = useDeletePersonalTask();
 
   // State for edit modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -24,6 +29,10 @@ const ActiveTasks = () => {
   // State for completion modal
   const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
   const [taskToComplete, setTaskToComplete] = useState(null);
+
+  // State for view modal
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [taskToView, setTaskToView] = useState(null);
 
   const handleMarkComplete = (task) => {
     setTaskToComplete(task);
@@ -39,6 +48,20 @@ const ActiveTasks = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleViewClick = (task) => {
+    setTaskToView(task);
+    setIsViewModalOpen(true);
+  };
+
+  const handleDeleteClick = async (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      const success = await deleteTask(taskId);
+      if (success) {
+        refreshTasks();
+      }
+    }
+  };
+
   const handleModalClose = () => {
     setIsEditModalOpen(false);
     setTaskToEdit(null);
@@ -48,6 +71,11 @@ const ActiveTasks = () => {
   const handleCompletionClose = () => {
     setIsCompletionModalOpen(false);
     setTaskToComplete(null);
+  };
+
+  const handleViewClose = () => {
+    setIsViewModalOpen(false);
+    setTaskToView(null);
   };
 
   if (loading) {
@@ -115,16 +143,38 @@ const ActiveTasks = () => {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {task.title}
-                      </h3>
                       <button
-                        onClick={() => handleEditClick(task)}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-500 transition-all"
-                        title="Edit Task"
+                        onClick={() => handleViewClick(task)}
+                        className="text-left font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors hover:underline"
                       >
-                        <Pencil className="w-3.5 h-3.5" />
+                        {task.title}
                       </button>
+
+                      {/* Action Icons group */}
+                      <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                        <button
+                          onClick={() => handleViewClick(task)}
+                          className="p-1 text-gray-400 hover:text-blue-500 transition-all"
+                          title="View Details"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleEditClick(task)}
+                          className="p-1 text-gray-400 hover:text-amber-500 transition-all"
+                          title="Edit Task"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(task.id)}
+                          disabled={deleteLoading}
+                          className="p-1 text-gray-400 hover:text-red-500 transition-all"
+                          title="Delete Task"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -204,6 +254,13 @@ const ActiveTasks = () => {
         isOpen={isCompletionModalOpen}
         onClose={handleCompletionClose}
         task={taskToComplete}
+      />
+
+      {/* View Task Modal */}
+      <ViewTaskModal
+        isOpen={isViewModalOpen}
+        onClose={handleViewClose}
+        task={taskToView}
       />
     </>
   );
