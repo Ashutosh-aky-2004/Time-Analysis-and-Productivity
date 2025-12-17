@@ -1,12 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
+import useDailyCheckIn from "../../../hooks/personalAnalysis/useDailyCheckIn";
 
 const DailyCheckInModal = ({ isOpen, onClose }) => {
+  const { fetchTodayCheckIn, saveCheckIn, loading } = useDailyCheckIn();
+
   const [priorities, setPriorities] = useState([""]);
   const [energy, setEnergy] = useState(null);
   const [mood, setMood] = useState(null);
   const [stress, setStress] = useState(null);
   const [focus, setFocus] = useState([]);
+  const [motivation, setMotivation] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      const loadData = async () => {
+        const data = await fetchTodayCheckIn();
+        if (data) {
+          setPriorities(data.priorities?.length ? data.priorities : [""]);
+          setEnergy(data.energyLevel);
+          setMood(data.moodLevel);
+          setStress(data.stressLevel);
+          setFocus(data.focusAreas || []);
+          setMotivation(data.motivation || "");
+        }
+      };
+      loadData();
+    }
+  }, [isOpen, fetchTodayCheckIn]);
+
+  const handleSave = async () => {
+    const data = {
+      priorities: priorities.filter((p) => p.trim()),
+      energyLevel: energy,
+      moodLevel: mood,
+      stressLevel: stress,
+      focusAreas: focus,
+      motivation,
+    };
+
+    const success = await saveCheckIn(data);
+    if (success) {
+      onClose();
+    }
+  };
 
   const toggleFocus = (item) => {
     setFocus((prev) =>
@@ -146,6 +183,8 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
           </h3>
           <textarea
             rows={3}
+            value={motivation}
+            onChange={(e) => setMotivation(e.target.value)}
             placeholder="What’s motivating you today?"
             className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
@@ -153,8 +192,12 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
 
         {/* Actions */}
         <div className="flex flex-col md:flex-row gap-3">
-          <button className="flex-1 rounded-xl bg-blue-600 text-white py-2.5 font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">
-            Save Check‑in
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="flex-1 rounded-xl bg-blue-600 text-white py-2.5 font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Saving..." : "Save Check‑in"}
           </button>
           <button
             onClick={onClose}
