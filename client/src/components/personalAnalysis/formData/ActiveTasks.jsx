@@ -9,6 +9,7 @@ import {
   Trash2,
   Eye,
   List,
+  Plus,
 } from "lucide-react";
 import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import CreateTaskModal from "./CreateTaskModal";
@@ -122,8 +123,20 @@ const ActiveTasks = () => {
 
         <div className="space-y-4">
           {tasks.filter((t) => t.status !== "completed").length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-400 py-8">
-              No active tasks found.
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                No active tasks found.
+              </p>
+              <button
+                onClick={() => {
+                  setTaskToEdit(null);
+                  setIsEditModalOpen(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-lg shadow-blue-500/30"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Task</span>
+              </button>
             </div>
           ) : (
             tasks

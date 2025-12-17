@@ -120,7 +120,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
             name="taskTitle"
             value={formData.taskTitle}
             onChange={handleChange}
-            className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             placeholder="e.g., Complete Calculus Assignment"
           />
         </div>
@@ -136,7 +136,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
               value={formData.taskDescription}
               onChange={handleChange}
               rows="3"
-              className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+              className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
               placeholder="What needs to be done?"
             ></textarea>
           </div>
@@ -151,7 +151,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
               >
                 <option value="academic_studies">Academic Studies</option>
                 <option value="project_development">Project Development</option>
@@ -177,7 +177,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
                 name="priorityLevel"
                 value={formData.priorityLevel}
                 onChange={handleChange}
-                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -198,7 +198,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
                 name="estimatedDurationInMinutes"
                 value={formData.estimatedDurationInMinutes}
                 onChange={handleChange}
-                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               />
             </div>
             <div>
@@ -211,7 +211,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
                   name="deadlineDate"
                   value={formData.deadlineDate}
                   onChange={handleChange}
-                  className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
                 <Calendar className="absolute right-4 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
               </div>
@@ -230,7 +230,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
                 value={formData.tags}
                 onChange={handleChange}
                 placeholder="e.g., math, urgent, project"
-                className="flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               />
             </div>
           </div>
