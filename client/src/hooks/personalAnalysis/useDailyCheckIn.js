@@ -6,17 +6,21 @@ const useDailyCheckIn = () => {
   const [loading, setLoading] = useState(false);
   const [checkIn, setCheckIn] = useState(null);
 
-  const fetchTodayCheckIn = useCallback(async () => {
+  // Renamed to be more generic, though usage mainly targets "loading for a specific date"
+  const fetchCheckInByDate = useCallback(async (date = null) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
+      // Format date for query param if provided
+      const query = date ? `?date=${encodeURIComponent(date)}` : "";
+
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/daily-check-in/today`,
+        `${import.meta.env.VITE_API_URL}/api/daily-check-in/today${query}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (res.data.success && res.data.data) {
-        setCheckIn(res.data.data);
+      if (res.data.success) {
+        // Return null if data is null (no entry), otherwise return the data
         return res.data.data;
       }
       return null;
@@ -81,7 +85,7 @@ const useDailyCheckIn = () => {
   return {
     checkIn,
     loading,
-    fetchTodayCheckIn,
+    fetchCheckInByDate,
     saveCheckIn,
     fetchCheckInHistory,
   };

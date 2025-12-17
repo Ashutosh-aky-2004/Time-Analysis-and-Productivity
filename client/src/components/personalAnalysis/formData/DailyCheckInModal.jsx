@@ -4,8 +4,12 @@ import useDailyCheckIn from "../../../hooks/personalAnalysis/useDailyCheckIn";
 import DailyLogView from "./DailyLogView";
 
 const DailyCheckInModal = ({ isOpen, onClose }) => {
-  const { fetchTodayCheckIn, saveCheckIn, loading } = useDailyCheckIn();
+  const { fetchCheckInByDate, saveCheckIn, loading } = useDailyCheckIn();
   const [view, setView] = useState("checkin"); // 'checkin' or 'history'
+
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   const [priorities, setPriorities] = useState([""]);
   const [energy, setEnergy] = useState(null);
@@ -17,7 +21,8 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       const loadData = async () => {
-        const data = await fetchTodayCheckIn();
+        // Fetch data for the selected date
+        const data = await fetchCheckInByDate(selectedDate);
         if (data) {
           setPriorities(data.priorities?.length ? data.priorities : [""]);
           setEnergy(data.energyLevel);
@@ -25,14 +30,23 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
           setStress(data.stressLevel);
           setFocus(data.focusAreas || []);
           setMotivation(data.motivation || "");
+        } else {
+          // Reset form if no data found for date
+          setPriorities([""]);
+          setEnergy(null);
+          setMood(null);
+          setStress(null);
+          setFocus([]);
+          setMotivation("");
         }
       };
       loadData();
     }
-  }, [isOpen, fetchTodayCheckIn]);
+  }, [isOpen, selectedDate, fetchCheckInByDate]);
 
   const handleSave = async () => {
     const data = {
+      date: selectedDate, // Include selected date
       priorities: priorities.filter((p) => p.trim()),
       energyLevel: energy,
       moodLevel: mood,
@@ -107,13 +121,19 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
           ) : (
             <>
               <div className="text-center mb-6">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                <div className="inline-flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-xl border border-gray-100 dark:border-white/10">
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    max={new Date().toISOString().split("T")[0]}
+                    className="bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer"
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-2">
+                  {selectedDate === new Date().toISOString().split("T")[0]
+                    ? "Today"
+                    : "Backdating enty"}
                 </p>
               </div>
 

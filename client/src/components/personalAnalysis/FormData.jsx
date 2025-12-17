@@ -6,6 +6,7 @@ import ActiveTasks from "./formData/ActiveTasks";
 import Goals from "./formData/Goals";
 import CreateTaskModal from "./formData/CreateTaskModal";
 import DailyCheckInModal from "./formData/DailyCheckInModal";
+import DailyActivityLog from "./formData/DailyActivityLog";
 import { PersonalAnalysisProvider } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const FormData = () => {
@@ -14,7 +15,7 @@ const FormData = () => {
 
   return (
     <PersonalAnalysisProvider>
-      <div className="p-6 max-w-7xl mx-auto space-y-6 relative">
+      <div className="p-6 max-w-[1600px] mx-auto space-y-6 relative">
         <QuickActions
           onAddTask={() => setIsModalOpen(true)}
           onCheckIn={() => setIsCheckInModalOpen(true)}
@@ -23,8 +24,12 @@ const FormData = () => {
           <RecentActivity />
           <FocusTrends />
         </div>
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ActiveTasks />
+          <DailyActivityLog
+            onOpenCheckIn={() => setIsCheckInModalOpen(true)}
+            onOpenHistory={() => setIsCheckInModalOpen(true)}
+          />
           <Goals />
         </div>
 

@@ -79,10 +79,13 @@ export const createDailyCheckIn = async (req, res) => {
 export const getTodayCheckIn = async (req, res) => {
   try {
     const userId = req.user.id;
+    const { date } = req.query; // Support optional date param
 
-    const startOfDay = new Date();
+    const targetDate = date ? new Date(date) : new Date();
+
+    const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
+    const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
 
     const checkIn = await DailyCheckIn.findOne({
