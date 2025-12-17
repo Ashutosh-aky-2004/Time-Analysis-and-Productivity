@@ -1,8 +1,52 @@
-import React from 'react';
-import { X, Calendar, Clock, List, Tag } from 'lucide-react';
+import React, { useState } from 'react';
+import { List, Calendar } from 'lucide-react';
+import useCreatePersonalTask from '../../../hooks/personalAnalysis/useCreatePersonalTask';
 
 const CreateTaskModal = ({ isOpen, onClose }) => {
+    const { createTask, loading } = useCreatePersonalTask();
+    const [formData, setFormData] = useState({
+        taskTitle: '',
+        taskDescription: '',
+        category: 'academic_studies',
+        priorityLevel: 'medium',
+        estimatedDurationInMinutes: 60,
+        deadlineDate: '',
+        tags: ''
+    });
+
     if (!isOpen) return null;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async () => {
+        if (!formData.taskTitle) return;
+
+        try {
+            const taskData = {
+                ...formData,
+                tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                deadlineDate: formData.deadlineDate || null
+            };
+            
+            await createTask(taskData);
+            onClose();
+            // Reset form
+            setFormData({
+                taskTitle: '',
+                taskDescription: '',
+                category: 'academic_studies',
+                priorityLevel: 'medium',
+                estimatedDurationInMinutes: 60,
+                deadlineDate: '',
+                tags: ''
+            });
+        } catch (error) {
+            // Error handled by hook toast
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -27,6 +71,9 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Task Title *</label>
                      <input 
                         type="text" 
+                        name="taskTitle"
+                        value={formData.taskTitle}
+                        onChange={handleChange}
                         className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                         placeholder="e.g., Complete Calculus Assignment"
                      />
@@ -37,6 +84,9 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                         <textarea 
+                            name="taskDescription"
+                            value={formData.taskDescription}
+                            onChange={handleChange}
                             rows="3"
                             className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
                             placeholder="What needs to be done?"
@@ -47,19 +97,38 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
-                            <select className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer">
-                                <option>Academic Studies</option>
-                                <option>Project Development</option>
-                                <option>Personal</option>
+                            <select 
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="academic_studies">Academic Studies</option>
+                                <option value="project_development">Project Development</option>
+                                <option value="personal">Personal</option>
+                                <option value="assignment_work">Assignment Work</option>
+                                <option value="exam_preparation">Exam Preparation</option>
+                                <option value="research_work">Research Work</option>
+                                <option value="skill_learning">Skill Learning</option>
+                                <option value="personal_development">Personal Development</option>
+                                <option value="health_fitness">Health & Fitness</option>
+                                <option value="social_activities">Social Activities</option>
+                                <option value="administrative">Administrative</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Priority *</label>
-                            <select className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer">
-                                <option>Low</option>
-                                <option>Medium</option>
-                                <option>High</option>
-                                <option>Critical</option>
+                            <select 
+                                name="priorityLevel"
+                                value={formData.priorityLevel}
+                                onChange={handleChange}
+                                className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
                             </select>
                         </div>
                     </div>
@@ -70,7 +139,9 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estimated Time (minutes)</label>
                             <input 
                                 type="number" 
-                                defaultValue="60"
+                                name="estimatedDurationInMinutes"
+                                value={formData.estimatedDurationInMinutes}
+                                onChange={handleChange}
                                 className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             />
                         </div>
@@ -79,6 +150,9 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
                             <div className="relative">
                                 <input 
                                     type="datetime-local" 
+                                    name="deadlineDate"
+                                    value={formData.deadlineDate}
+                                    onChange={handleChange}
                                     className="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 />
                                 <Calendar className="absolute right-4 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -88,27 +162,32 @@ const CreateTaskModal = ({ isOpen, onClose }) => {
 
                     {/* Tags */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags (comma separated)</label>
                         <div className="flex gap-2">
                             <input 
                                 type="text" 
-                                placeholder="Add a tag"
+                                name="tags"
+                                value={formData.tags}
+                                onChange={handleChange}
+                                placeholder="e.g., math, urgent, project"
                                 className="flex-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             />
-                            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-lg font-medium transition-colors cursor-pointer">
-                                Add
-                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Footer Actions */}
                 <div className="flex gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-white/10">
-                    <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-                        Create Task
+                    <button 
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {loading ? 'Creating...' : 'Create Task'}
                     </button>
                     <button 
                         onClick={onClose}
+                        disabled={loading}
                         className="flex-1 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-semibold transition-all cursor-pointer"
                     >
                         Cancel
