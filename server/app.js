@@ -43,9 +43,19 @@ app.use("/api/time-entries", timeEntryRoutes);
 app.use("/api/daily-check-in", dailyCheckInRoutes);
 app.use("/api/personal-analysis", personalDashboardRoutes);
 
+/* ---------------- HEALTH CHECK ---------------- */
 app.get("/api/serverStatus", (req, res) => {
-  res.send("Server is running...");
+  res.send("TimeFlow Backend is running 🚀");
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+/* ---------------- SERVER START (LOCAL ONLY) ---------------- */
+if (process.env.NODE_ENV === "development") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () =>
+    console.log(`Server running locally on port ${PORT}`)
+  );
+}
+
+/* ---------------- EXPORT FOR VERCEL ---------------- */
+export default app;
+
