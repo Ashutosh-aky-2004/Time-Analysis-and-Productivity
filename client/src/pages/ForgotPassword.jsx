@@ -31,13 +31,35 @@ const ForgotPassword = () => {
       );
       const data = await response.json();
 
-      if (!response.ok) throw new Error(data.message);
+      setGeneratedOtp(data.otp);
 
-      // Backend now handles sending the email.
-      // If keys are missing in backend, it logs to server console.
+      // Send Email via EmailJS
+      const templateParams = {
+        to_email: email,
+        to_name: data.name || "User",
+        otp: data.otp,
+        message: `Your OTP for password reset is: ${data.otp}`,
+      };
 
-      toast.success(data.message || "OTP sent to your email");
-      setStep(2);
+      try {
+        // If the user has configured .env for these, we could use them:
+        if (import.meta.env.VITE_EMAILJS_SERVICE_ID) {
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+            templateParams,
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+          );
+        } else {
+          toast.info("EmailJS keys missing. OTP logged to console.");
+        }
+
+        toast.success("OTP sent to your email");
+        setStep(2);
+      } catch (emailError) {
+        console.error("EmailJS Error:", emailError);
+        toast.error("Failed to send email. Check console for details.");
+      }
     } catch (error) {
       toast.error(error.message || "Something went wrong");
     } finally {

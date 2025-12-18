@@ -24,57 +24,15 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    // Send Email via EmailJS REST API from Backend
-    const serviceId = process.env.EMAILJS_SERVICE_ID;
-    const templateId = process.env.EMAILJS_TEMPLATE_ID;
-    const publicKey = process.env.EMAILJS_PUBLIC_KEY;
-    // Private Key is optional for this endpoint if Public Key is used, but strictly speaking for backend calls typically we might use the private key signature if configured.
-    // For simplicity and standard EmailJS usage, we use the Public Key (User ID).
-
-    // We will attempt to send the email if keys are present
-    if (serviceId && templateId && publicKey) {
-      try {
-        const emailResponse = await fetch(
-          "https://api.emailjs.com/api/v1.0/email/send",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              service_id: serviceId,
-              template_id: templateId,
-              user_id: publicKey,
-              template_params: {
-                to_email: user.email,
-                to_name: user.firstName,
-                otp: otp,
-                message: `Your OTP for password reset is: ${otp}`,
-              },
-            }),
-          }
-        );
-
-        if (!emailResponse.ok) {
-          const text = await emailResponse.text();
-          console.error("EmailJS Send Failed:", text);
-          // We don't block the response, but we should probably alert errors in real prod
-        }
-      } catch (emailErr) {
-        console.error("Error sending email via EmailJS:", emailErr);
-      }
-    } else {
-      console.log("--------------------------------");
-      console.log("EMAILJS KEYS MISSING IN SERVER .ENV");
-      console.log(`OTP for ${user.email}: ${otp}`);
-      console.log("--------------------------------");
-    }
-
-    // Return success WITHOUT the OTP
+    // Return the unhashed OTP to the client to send via EmailJS
+    // NOTE: This exposes the OTP to the client (Network Tab), but matches the requested flow:
+    // Frontend -> EmailJS, Backend -> Generate OTP.
     res.status(200).json({
       success: true,
-      message: "OTP sent to your email",
+      message: "OTP generated",
+      otp,
       email: user.email,
+      name: user.firstName,
     });
   } catch (error) {
     console.error(error);
