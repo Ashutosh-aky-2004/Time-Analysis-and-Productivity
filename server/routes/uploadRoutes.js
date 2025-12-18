@@ -4,20 +4,41 @@ import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // POST /profile/upload
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "profile_pics",
-      width: 300,
-      height: 300,
-      crop: "thumb",
-      gravity: "face",
-    });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-    fs.unlinkSync(req.file.path); // remove temp file
+    // Upload via stream
+    const uploadStream = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "profile_pics",
+            width: 300,
+            height: 300,
+            crop: "thumb",
+            gravity: "face",
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+        stream.write(buffer);
+        stream.end();
+      });
+    };
+
+    const result = await uploadStream(req.file.buffer);
 
     res.json({ url: result.secure_url });
   } catch (err) {
