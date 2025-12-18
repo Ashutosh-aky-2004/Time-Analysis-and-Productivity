@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiMail, FiLock, FiKey } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -14,6 +14,20 @@ const ForgotPassword = () => {
   const [generatedOtp, setGeneratedOtp] = useState(""); // Provide a fallback or handle securely
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+  const [otpExpiryTimer, setOtpExpiryTimer] = useState(0);
+
+  // Timer Logic
+  useEffect(() => {
+    let interval;
+    if (step === 2) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
+        setOtpExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [step]);
 
   const sendOtp = async (e) => {
     e.preventDefault();
@@ -56,6 +70,8 @@ const ForgotPassword = () => {
 
         toast.success("OTP sent to your email");
         setStep(2);
+        setResendTimer(60); // 1 minute
+        setOtpExpiryTimer(300); // 5 minutes
       } catch (emailError) {
         console.error("EmailJS Error:", emailError);
         toast.error("Failed to send email. Check console for details.");
@@ -195,10 +211,19 @@ const ForgotPassword = () => {
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                 Enter OTP
               </h1>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
+              <p className="text-slate-600 dark:text-slate-300 mb-2">
                 We sent a code to{" "}
                 <span className="font-semibold text-red-500">{email}</span>
               </p>
+
+              <div className="mb-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-700 dark:text-blue-300 text-center">
+                OTP valid for:{" "}
+                <span className="font-bold">
+                  {Math.floor(otpExpiryTimer / 60)}:
+                  {(otpExpiryTimer % 60).toString().padStart(2, "0")}
+                </span>
+              </div>
+
               <div className="relative">
                 <FiKey className="absolute left-3 top-3.5 text-slate-400" />
                 <input
@@ -213,7 +238,7 @@ const ForgotPassword = () => {
               </div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || otpExpiryTimer === 0}
                 className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-70 flex justify-center items-center"
               >
                 {loading ? (
@@ -222,6 +247,28 @@ const ForgotPassword = () => {
                   "Verify OTP"
                 )}
               </button>
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Did not receive OTP?
+                </p>
+                {resendTimer > 0 ? (
+                  <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">
+                    Resend in{" "}
+                    <span className="font-semibold">{resendTimer}s</span>
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={sendOtp}
+                    disabled={loading}
+                    className="mt-1 text-red-500 hover:underline font-semibold text-sm disabled:opacity-50"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+
               <button
                 type="button"
                 onClick={() => setStep(1)}
