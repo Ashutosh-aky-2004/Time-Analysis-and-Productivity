@@ -104,7 +104,7 @@ const PersonalAnalysisDashboard = () => {
 
         {/* Time Range Filters */}
         <div
-          className={`rounded-xl p-6 mb-6 ${
+          className={`rounded-xl p-6 mb-6 print:hidden ${
             isDark
               ? "bg-gray-800 border border-gray-700"
               : "bg-white border border-gray-200"
@@ -137,7 +137,7 @@ const PersonalAnalysisDashboard = () => {
 
         {/* Advanced Filters */}
         <div
-          className={`rounded-xl overflow-hidden ${
+          className={`rounded-xl overflow-hidden print:hidden ${
             isDark
               ? "bg-gray-800 border border-gray-700"
               : "bg-white border border-gray-200"
@@ -359,7 +359,7 @@ const PersonalAnalysisDashboard = () => {
         )}
 
         {/* Export Analytics Report */}
-        <div className="mt-6">
+        <div className="mt-6 print:hidden">
           <ExportAnalyticsReport data={dashboardStats} />
         </div>
       </div>

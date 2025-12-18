@@ -5,7 +5,9 @@ import { PersonalAnalysisProvider } from "../../context/personalAnalysis/Persona
 const dashboard = () => {
   return (
     <PersonalAnalysisProvider>
-      <Navbar />
+      <div className="print:hidden">
+        <Navbar />
+      </div>
       <PersonalAnalysisDashboard />
     </PersonalAnalysisProvider>
   );
