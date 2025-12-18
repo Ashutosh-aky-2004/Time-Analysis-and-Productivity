@@ -13,7 +13,6 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
-import Navbar from "../navbar/Navbar";
 
 const TAB_LIST = [
   { id: "profile", label: "Profile", icon: FiUser },
@@ -43,12 +42,7 @@ export default function SettingsPage() {
   }, [profileData]);
 
   if (loading || !profile) {
-    return (
-      <>
-        <Navbar />
-        <ProfileShimmer />
-      </>
-    );
+    return <ProfileShimmer />;
   }
 
   const updateField = (field, value) => {
@@ -99,7 +93,6 @@ export default function SettingsPage() {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-[85vh] bg-[#f0f5fa] dark:bg-[#1B1A19] text-gray-900 dark:text-gray-100 flex items-center justify-center p-4">
         <div className="w-full max-w-6xl mx-auto space-y-4 sm:space-y-6">
           {/* Page Header */}

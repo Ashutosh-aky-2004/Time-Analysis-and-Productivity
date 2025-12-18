@@ -39,13 +39,23 @@ export const ShimmerListItem = () => (
 
 // 3. Shimmer Table Row - Useful for user tables, data grids
 export const ShimmerTableRow = () => (
-  <div className="flex items-center space-x-4 py-4 px-6 border-b border-slate-100 dark:border-slate-700/50">
-    <ShimmerBase className="h-4 w-1/6" />
-    <ShimmerBase className="h-4 w-1/4" />
-    <ShimmerBase className="h-4 w-1/6" />
-    <ShimmerBase className="h-4 w-1/6" />
-    <ShimmerBase className="h-8 w-20 rounded-full ml-auto" />
-  </div>
+  <tr className="border-b border-slate-100 dark:border-slate-700/50 animate-pulse">
+    <td className="py-4 px-4">
+      <ShimmerBase className="h-4 w-24 bg-slate-200 dark:bg-slate-700" />
+    </td>
+    <td className="py-4 px-4">
+      <ShimmerBase className="h-4 w-16 bg-slate-200 dark:bg-slate-700" />
+    </td>
+    <td className="py-4 px-4">
+      <ShimmerBase className="h-4 w-12 bg-slate-200 dark:bg-slate-700" />
+    </td>
+    <td className="py-4 px-4">
+      <ShimmerBase className="h-4 w-16 bg-slate-200 dark:bg-slate-700" />
+    </td>
+    <td className="py-4 px-4">
+      <ShimmerBase className="h-8 w-16 rounded-full bg-slate-200 dark:bg-slate-700" />
+    </td>
+  </tr>
 );
 
 // 4. Shimmer Chart - Useful for the dashboard analysis charts
