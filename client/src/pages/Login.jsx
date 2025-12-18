@@ -53,7 +53,9 @@ const Login = () => {
         <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/70"></div>
         <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 text-white">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold tracking-wide">TimeFlow</h1>
+            <h1 className="text-2xl font-bold tracking-wide">
+              Productivity Tracker
+            </h1>
             <Link
               to="/"
               className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-sm transition"
@@ -111,7 +113,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold"
+              className="w-full mt-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
