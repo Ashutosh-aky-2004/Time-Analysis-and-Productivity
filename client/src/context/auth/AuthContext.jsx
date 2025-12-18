@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     error,
     login,
     logout,
-    fetchUser // Expose if manual refresh needed
+    fetchUser, // Expose if manual refresh needed
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

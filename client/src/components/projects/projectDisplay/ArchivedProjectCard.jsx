@@ -1,10 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { FiEye, FiTrash2, FiFlag, FiTag, FiArchive, FiRotateCcw, FiCalendar, FiUsers, FiClock } from "react-icons/fi";
+import {
+  FiEye,
+  FiTrash2,
+  FiFlag,
+  FiTag,
+  FiArchive,
+  FiRotateCcw,
+  FiCalendar,
+  FiUsers,
+  FiClock,
+} from "react-icons/fi";
 import { BsFolder } from "react-icons/bs";
 import { formatDateTime, formatDuration } from "../../../constants";
-import { restoreProject, hardDeleteProject } from "../../../redux/projects/projectThunks";
+import {
+  restoreProject,
+  hardDeleteProject,
+} from "../../../redux/projects/projectThunks";
 
 const ArchivedProjectCard = ({ project }) => {
   const dispatch = useDispatch();
@@ -18,7 +31,11 @@ const ArchivedProjectCard = ({ project }) => {
 
   const handlePermanentDelete = (e) => {
     e.stopPropagation();
-    if (window.confirm(`⚠️ WARNING: This will PERMANENTLY delete "${project.name}"!\n\nThis action cannot be undone. Are you sure?`)) {
+    if (
+      window.confirm(
+        `⚠️ WARNING: This will PERMANENTLY delete "${project.name}"!\n\nThis action cannot be undone. Are you sure?`
+      )
+    ) {
       dispatch(hardDeleteProject(project._id));
     }
   };
@@ -26,12 +43,12 @@ const ArchivedProjectCard = ({ project }) => {
   // Format archived duration
   const getArchivedDuration = () => {
     if (!project.updatedAt) return "Recently";
-    
+
     const archivedDate = new Date(project.updatedAt);
     const now = new Date();
     const diffMs = now - archivedDate;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -90,15 +107,20 @@ const ArchivedProjectCard = ({ project }) => {
             <FiArchive className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </div>
           <div>
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Archived</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Archived
+            </span>
             <span className="text-xs text-gray-500 dark:text-gray-500 ml-2">
               {getArchivedDuration()}
             </span>
           </div>
         </div>
-        
+
         <div className="text-xs text-gray-500 dark:text-gray-400">
-          Archived on {project.updatedAt ? formatDateTime(project.updatedAt) : "Unknown date"}
+          Archived on{" "}
+          {project.updatedAt
+            ? formatDateTime(project.updatedAt)
+            : "Unknown date"}
         </div>
       </div>
 
@@ -120,12 +142,20 @@ const ArchivedProjectCard = ({ project }) => {
             {/* Original status and priority (for reference) */}
             <div className="flex flex-wrap gap-2 mb-2">
               {project.status && (
-                <span className={`text-xs font-medium ${getStatusColor(project.status)}`}>
+                <span
+                  className={`text-xs font-medium ${getStatusColor(
+                    project.status
+                  )}`}
+                >
                   Formerly: {project.status}
                 </span>
               )}
               {project.priority && (
-                <span className={`text-xs font-medium flex items-center gap-1 ${getPriorityColor(project.priority)}`}>
+                <span
+                  className={`text-xs font-medium flex items-center gap-1 ${getPriorityColor(
+                    project.priority
+                  )}`}
+                >
                   <FiFlag className="w-3 h-3" />
                   {project.priority} priority
                 </span>
@@ -184,7 +214,9 @@ const ArchivedProjectCard = ({ project }) => {
               <FiClock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Duration</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Duration
+              </p>
               <p className="font-semibold text-gray-700 dark:text-gray-300">
                 {formatDuration(project.totalDuration)}
               </p>
@@ -197,7 +229,9 @@ const ArchivedProjectCard = ({ project }) => {
               <FiUsers className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Team Size</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Team Size
+              </p>
               <p className="font-semibold text-gray-700 dark:text-gray-300">
                 {project.teamMembers?.length || 0} members
               </p>
@@ -210,9 +244,13 @@ const ArchivedProjectCard = ({ project }) => {
               <FiCalendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Created</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Created
+              </p>
               <p className="font-semibold text-gray-700 dark:text-gray-300">
-                {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : "N/A"}
+                {project.createdAt
+                  ? new Date(project.createdAt).toLocaleDateString()
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -223,7 +261,9 @@ const ArchivedProjectCard = ({ project }) => {
               <BsFolder className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Tasks</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Tasks
+              </p>
               <p className="font-semibold text-gray-700 dark:text-gray-300">
                 {project.tasks?.length || 0} tasks
               </p>
@@ -235,7 +275,10 @@ const ArchivedProjectCard = ({ project }) => {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-gray-300 dark:border-gray-700">
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          Project ID: <span className="font-mono text-xs">{project._id?.substring(0, 8)}...</span>
+          Project ID:{" "}
+          <span className="font-mono text-xs">
+            {project._id?.substring(0, 8)}...
+          </span>
         </div>
 
         <div className="flex gap-2">
@@ -259,7 +302,8 @@ const ArchivedProjectCard = ({ project }) => {
 
       {/* Warning message for permanent delete */}
       <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs text-red-700 dark:text-red-400">
-        ⚠️ Permanent deletion will remove this project and all associated data forever.
+        ⚠️ Permanent deletion will remove this project and all associated data
+        forever.
       </div>
     </div>
   );

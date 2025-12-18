@@ -22,7 +22,7 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
   // Get project team members for assignee dropdown
   const managers = project?.managingUserId || [];
   const team = project?.teamMembers || [];
-  
+
   const allMembers = [...managers, ...team].filter(
     (member, index, self) =>
       index === self.findIndex((m) => (m._id || m) === (member._id || member))
@@ -89,7 +89,11 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-1 ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -108,7 +112,11 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
             </div>
 
             <div>
-              <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-1 ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
                 Description
               </label>
               <textarea
@@ -127,7 +135,11 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-1 ${
+                    isDark ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   Estimated Hours
                 </label>
                 <input
@@ -146,7 +158,11 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-1 ${
+                    isDark ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   Assign To
                 </label>
                 <select
@@ -162,7 +178,7 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
                   <option value="">Unassigned</option>
                   {allMembers.map((member) => (
                     <option key={member._id} value={member._id}>
-                       {member.firstName} {member.lastName}
+                      {member.firstName} {member.lastName}
                     </option>
                   ))}
                 </select>
@@ -174,7 +190,9 @@ const AddSubtask = ({ isOpen, onClose, parentTaskId }) => {
                 type="button"
                 onClick={onClose}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isDark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  isDark
+                    ? "bg-gray-700 hover:bg-gray-600 text-white"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-800"
                 }`}
               >
                 Cancel

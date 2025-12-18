@@ -1,7 +1,6 @@
 import generateToken from "../helper/generateToken.js";
 import User from "../modal/User.js";
 
-
 export const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -34,7 +33,6 @@ export const signup = async (req, res) => {
         projects: newUser.projects,
       },
     });
-
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -68,7 +66,7 @@ export const login = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(user._id);
-    
+
     res.status(200).json({
       success: true,
       message: "Login successful.",

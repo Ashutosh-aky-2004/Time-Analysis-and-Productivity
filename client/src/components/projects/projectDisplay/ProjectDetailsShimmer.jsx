@@ -30,10 +30,7 @@ const ProjectDetailsShimmer = () => {
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 space-y-4">
               <div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
               {[1, 2, 3].map((_, idx) => (
-                <div
-                  key={idx}
-                  className="flex gap-3 items-start animate-pulse"
-                >
+                <div key={idx} className="flex gap-3 items-start animate-pulse">
                   <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>

@@ -1,10 +1,10 @@
 import express from "express";
-import { 
+import {
   deleteProfilePic,
-  getProfileInfo, 
-  updatePassword, 
-  updatePersonalDetails, 
-  updateProfileAvatar
+  getProfileInfo,
+  updatePassword,
+  updatePersonalDetails,
+  updateProfileAvatar,
 } from "../controllers/profileControllers.js";
 import uploadRoutes from "./uploadRoutes.js";
 
@@ -18,6 +18,6 @@ router.put("/update-avatar", updateProfileAvatar);
 router.get("/details", getProfileInfo);
 router.put("/update-profile-data-personal-details", updatePersonalDetails);
 router.put("/update-password", updatePassword);
-router.delete("/remove-avatar",deleteProfilePic)
+router.delete("/remove-avatar", deleteProfilePic);
 
 export default router;

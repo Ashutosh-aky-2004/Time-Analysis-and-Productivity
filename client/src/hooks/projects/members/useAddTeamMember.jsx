@@ -51,7 +51,10 @@ export const useAddTeamMember = () => {
     } catch (err) {
       console.error("Add team member error:", err);
       // Handle axios error or standard error
-      const message = err.response?.data?.message || err.message || "Failed to add team member";
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to add team member";
       setError(message);
       throw err;
     } finally {

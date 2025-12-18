@@ -10,15 +10,18 @@ export const useProjectAnalysis = (projectId) => {
     // Placeholder for fetching data
     const fetchAnalysis = async () => {
       if (!projectId) return;
-      
+
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setAnalysisData(response.data.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch analysis");

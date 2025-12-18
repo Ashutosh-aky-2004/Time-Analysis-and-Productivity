@@ -24,7 +24,6 @@ export default function ChangePasswordForm() {
   const passwordsMatch = newPass === confirmPass && newPass.length > 0;
   const isFormValid = passwordsMatch && strength >= 4 && currentPass.length > 0;
 
-
   const themeClasses = {
     background: isDark ? "bg-[#323232]" : "bg-white",
     border: isDark ? "border-gray-700" : "border-gray-200",
@@ -54,7 +53,9 @@ export default function ChangePasswordForm() {
     >
       <div className="flex items-center mb-2">
         <FiLock
-          className={`text-2xl mr-3 ${isDark ? "text-red-400" : "text-red-500"}`}
+          className={`text-2xl mr-3 ${
+            isDark ? "text-red-400" : "text-red-500"
+          }`}
         />
         <h2 className={`text-2xl font-semibold ${themeClasses.text.primary}`}>
           Change Password
@@ -67,7 +68,9 @@ export default function ChangePasswordForm() {
 
       {/* Current Password */}
       <div className="mb-6">
-        <label className={`block font-semibold mb-3 ${themeClasses.text.primary}`}>
+        <label
+          className={`block font-semibold mb-3 ${themeClasses.text.primary}`}
+        >
           Current Password *
         </label>
         <input
@@ -81,7 +84,9 @@ export default function ChangePasswordForm() {
 
       {/* New Password */}
       <div className="mb-6">
-        <label className={`block font-semibold mb-3 ${themeClasses.text.primary}`}>
+        <label
+          className={`block font-semibold mb-3 ${themeClasses.text.primary}`}
+        >
           New Password *
         </label>
         <div className="relative">
@@ -104,7 +109,9 @@ export default function ChangePasswordForm() {
 
       {/* Confirm Password */}
       <div className="mb-6">
-        <label className={`block font-semibold mb-3 ${themeClasses.text.primary}`}>
+        <label
+          className={`block font-semibold mb-3 ${themeClasses.text.primary}`}
+        >
           Confirm Password *
         </label>
         <input
@@ -135,13 +142,19 @@ export default function ChangePasswordForm() {
 
       {/* Password Strength */}
       <div className="mb-6">
-        <p className={`font-semibold mb-3 ${themeClasses.text.primary}`}>Password Strength:</p>
+        <p className={`font-semibold mb-3 ${themeClasses.text.primary}`}>
+          Password Strength:
+        </p>
         <div className="flex gap-2 mb-3">
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
               className={`h-3 flex-1 rounded-xl transition-all duration-300 ${
-                i <= strength ? strengthColors[strength] : isDark ? "bg-gray-700" : "bg-gray-200"
+                i <= strength
+                  ? strengthColors[strength]
+                  : isDark
+                  ? "bg-gray-700"
+                  : "bg-gray-200"
               }`}
             ></div>
           ))}
@@ -158,10 +171,14 @@ export default function ChangePasswordForm() {
           </div>
           <div
             className={`flex items-center text-sm ${
-              requirements.upper && requirements.lower ? "text-green-600" : themeClasses.text.muted
+              requirements.upper && requirements.lower
+                ? "text-green-600"
+                : themeClasses.text.muted
             }`}
           >
-            <span className="mr-2">{requirements.upper && requirements.lower ? "✓" : "○"}</span>
+            <span className="mr-2">
+              {requirements.upper && requirements.lower ? "✓" : "○"}
+            </span>
             Upper & lowercase letters
           </div>
           <div

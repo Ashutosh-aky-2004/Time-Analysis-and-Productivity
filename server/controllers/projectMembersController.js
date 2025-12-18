@@ -236,35 +236,40 @@ export const softRemoveProjectMember = async (req, res) => {
     const memberIndex = project.teamMembers.findIndex(
       (u) => u._id.toString() === memberId.toString()
     );
-    
+
     if (memberIndex === -1) {
       // Also check if member is already in removedMembers (soft-removed)
       const isAlreadyRemoved = project.removedMembers.some(
         (id) => id.toString() === memberId.toString()
       );
-      
+
       if (isAlreadyRemoved) {
-        return res.status(400).json({ message: "User is already removed from the project" });
+        return res
+          .status(400)
+          .json({ message: "User is already removed from the project" });
       }
-      
-      return res.status(400).json({ message: "User is not a member of this project" });
+
+      return res
+        .status(400)
+        .json({ message: "User is not a member of this project" });
     }
 
     // Prevent removing a manager (optional - you can remove this check if managers can be removed)
     const isMemberAlsoManager = project.managingUserId.some(
       (u) => u._id.toString() === memberId.toString()
     );
-    
+
     if (isMemberAlsoManager) {
-      return res.status(400).json({ 
-        message: "Cannot remove a manager from the project. Please assign a new manager first." 
+      return res.status(400).json({
+        message:
+          "Cannot remove a manager from the project. Please assign a new manager first.",
       });
     }
 
     // Remove member from teamMembers and add to removedMembers (soft remove)
     const removedMember = project.teamMembers[memberIndex];
     project.teamMembers.splice(memberIndex, 1);
-    
+
     // Add to removedMembers array
     if (!project.removedMembers.includes(removedMember._id)) {
       project.removedMembers.push(removedMember._id);
@@ -324,10 +329,12 @@ export const restoreProjectMember = async (req, res) => {
     // Move member from removedMembers to teamMembers
     const restoredMember = project.removedMembers[removedIndex];
     project.removedMembers.splice(removedIndex, 1);
-    
+
     // Check if already in teamMembers (should shouldn't happen usually but good safety)
-    if (!project.teamMembers.some(m => m._id.toString() === memberId.toString())) {
-       project.teamMembers.push(restoredMember._id);
+    if (
+      !project.teamMembers.some((m) => m._id.toString() === memberId.toString())
+    ) {
+      project.teamMembers.push(restoredMember._id);
     }
 
     await project.save();

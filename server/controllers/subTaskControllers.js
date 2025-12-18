@@ -461,7 +461,6 @@ export const deleteSubtask = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error deleting subtask",
-
     });
   }
 };
@@ -511,17 +510,17 @@ export const logSubtaskHours = async (req, res) => {
     // 4. Get Project for permission check
     const project = await Project.findById(task.projectId);
     if (!project) {
-        return res.status(404).json({
-            success: false,
-            message: "Project not found",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
     }
 
     // 5. Check permissions
     // Assigned user, Project creator, or Project managers can log hours
     const isAssigned =
       subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
-    
+
     const isCreator = project.projectStartedBy.toString() === userId.toString();
     const isManager = project.managingUserId.some((manager) =>
       manager._id
@@ -532,7 +531,8 @@ export const logSubtaskHours = async (req, res) => {
     if (!isAssigned && !isCreator && !isManager) {
       return res.status(403).json({
         success: false,
-        message: "Only the assigned user, project creator, or managers can log hours",
+        message:
+          "Only the assigned user, project creator, or managers can log hours",
       });
     }
 

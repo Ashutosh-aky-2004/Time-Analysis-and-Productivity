@@ -18,9 +18,13 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
   // Flatten current team members IDs for easy checking
   const currentMemberIds = useMemo(() => {
     if (!project) return new Set();
-    const managers = project.managingUserId?.map(m => m._id) || [];
-    const team = project.teamMembers?.map(m => m._id) || [];
-    const combined = [...managers, ...team, project.projectStartedBy?._id].filter(Boolean);
+    const managers = project.managingUserId?.map((m) => m._id) || [];
+    const team = project.teamMembers?.map((m) => m._id) || [];
+    const combined = [
+      ...managers,
+      ...team,
+      project.projectStartedBy?._id,
+    ].filter(Boolean);
     return new Set(combined);
   }, [project]);
 
@@ -84,18 +88,32 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Search */}
-        <div className={`p-4 border-b ${isDark ? "border-gray-700" : "border-gray-100"}`}>
-          <div className={`flex items-center px-4 py-2 rounded-lg border ${
-            isDark ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"
-          }`}>
-            <AiOutlineSearch className={`w-5 h-5 mr-3 ${isDark ? "text-gray-400" : "text-gray-500"}`}/>
+        <div
+          className={`p-4 border-b ${
+            isDark ? "border-gray-700" : "border-gray-100"
+          }`}
+        >
+          <div
+            className={`flex items-center px-4 py-2 rounded-lg border ${
+              isDark
+                ? "bg-gray-700 border-gray-600"
+                : "bg-gray-50 border-gray-200"
+            }`}
+          >
+            <AiOutlineSearch
+              className={`w-5 h-5 mr-3 ${
+                isDark ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <input
               type="text"
               placeholder="Search by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full bg-transparent outline-none ${
-                isDark ? "text-white placeholder-gray-400" : "text-gray-900 placeholder-gray-500"
+                isDark
+                  ? "text-white placeholder-gray-400"
+                  : "text-gray-900 placeholder-gray-500"
               }`}
             />
           </div>
@@ -108,7 +126,11 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
               <FaSpinner className="animate-spin text-blue-500 w-8 h-8" />
             </div>
           ) : filteredUsers.length === 0 ? (
-            <div className={`text-center py-10 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+            <div
+              className={`text-center py-10 ${
+                isDark ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
               No users found matching "{searchTerm}"
             </div>
           ) : (
@@ -125,29 +147,51 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
-                        isDark ? "bg-blue-600" : "bg-blue-500"
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
+                          isDark ? "bg-blue-600" : "bg-blue-500"
+                        }`}
+                      >
                         {user.avatar ? (
-                          <img src={user.avatar} alt="avatar" className="w-full h-full rounded-full object-cover" />
+                          <img
+                            src={user.avatar}
+                            alt="avatar"
+                            className="w-full h-full rounded-full object-cover"
+                          />
                         ) : (
-                          (user.firstName?.[0] || user.email?.[0] || "?").toUpperCase()
+                          (
+                            user.firstName?.[0] ||
+                            user.email?.[0] ||
+                            "?"
+                          ).toUpperCase()
                         )}
                       </div>
                       <div>
-                        <h3 className={`font-medium ${isDark ? "text-white" : "text-gray-900"}`}>
+                        <h3
+                          className={`font-medium ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
                           {user.firstName} {user.lastName}
                         </h3>
-                        <p className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                        <p
+                          className={`text-xs ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
                           {user.email}
                         </p>
                       </div>
                     </div>
 
                     {isMember ? (
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
-                        isDark ? "bg-green-900/30 text-green-400" : "bg-green-50 text-green-600"
-                      }`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                          isDark
+                            ? "bg-green-900/30 text-green-400"
+                            : "bg-green-50 text-green-600"
+                        }`}
+                      >
                         <FaCheck className="w-3 h-3" /> Member
                       </span>
                     ) : (
@@ -155,12 +199,16 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
                         onClick={() => handleAddUser(user)}
                         disabled={adding || isAddingThisUser}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${
-                          isDark 
-                            ? "bg-blue-600 hover:bg-blue-500 text-white disabled:bg-blue-800 disabled:text-gray-400" 
+                          isDark
+                            ? "bg-blue-600 hover:bg-blue-500 text-white disabled:bg-blue-800 disabled:text-gray-400"
                             : "bg-blue-100 hover:bg-blue-200 text-blue-700 disabled:bg-gray-100 disabled:text-gray-400"
                         }`}
                       >
-                        {isAddingThisUser ? <FaSpinner className="animate-spin" /> : <FaUserPlus />}
+                        {isAddingThisUser ? (
+                          <FaSpinner className="animate-spin" />
+                        ) : (
+                          <FaUserPlus />
+                        )}
                         {isAddingThisUser ? "Adding..." : "Add"}
                       </button>
                     )}

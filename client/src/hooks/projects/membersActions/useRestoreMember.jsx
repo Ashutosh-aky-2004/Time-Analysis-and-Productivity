@@ -30,7 +30,9 @@ export const useRestoreMember = () => {
       // Update project context to reflect changes
       const updatedProject = {
         ...project,
-        removedMembers: project.removedMembers.filter((m) => m._id !== memberId),
+        removedMembers: project.removedMembers.filter(
+          (m) => m._id !== memberId
+        ),
         teamMembers: [...(project.teamMembers || []), restoredMember],
       };
       setProject(updatedProject);

@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 
 const ProjectAnalysisContext = createContext();
 
-export const useProjectAnalysisContext = () => useContext(ProjectAnalysisContext);
+export const useProjectAnalysisContext = () =>
+  useContext(ProjectAnalysisContext);
 
 export const ProjectAnalysisProvider = ({ children }) => {
   const { projectID: projectId } = useParams(); // Get projectId from the route (aliased from projectID)
@@ -14,21 +15,24 @@ export const ProjectAnalysisProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchAnalysis = async () => {
-        // If no projectId, we cannot fetch. 
-        // Depending on where this Provider is placed, projectId might be undefined if outside the route.
-        // In AppRoutes, it is inside /project-details/:projectId/analysis so it should be fine.
+      // If no projectId, we cannot fetch.
+      // Depending on where this Provider is placed, projectId might be undefined if outside the route.
+      // In AppRoutes, it is inside /project-details/:projectId/analysis so it should be fine.
       if (!projectId) return;
 
       setLoading(true);
       setError(null);
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`, {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`,
+          {
             withCredentials: true,
-             headers: {
-                Authorization: `Bearer ${token}`,
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-        });
+          }
+        );
         setAnalysisData(response.data.data);
       } catch (err) {
         console.error("Error fetching analysis:", err);
@@ -46,7 +50,9 @@ export const ProjectAnalysisProvider = ({ children }) => {
     error,
     analysisData,
     projectId, // expose projectId if needed
-    refetch: () => { /* optional refetch logic */ }
+    refetch: () => {
+      /* optional refetch logic */
+    },
   };
 
   return (

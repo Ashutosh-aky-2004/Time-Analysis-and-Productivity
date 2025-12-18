@@ -119,7 +119,9 @@ const ViewAllMembersModal = ({
                         <button
                           onClick={() => onSuspend(member._id)}
                           disabled={isSelf}
-                          title={isSelf ? "You cannot suspend yourself" : "Suspend"}
+                          title={
+                            isSelf ? "You cannot suspend yourself" : "Suspend"
+                          }
                           className={`p-2 rounded ${
                             isSelf
                               ? "text-gray-400 cursor-not-allowed"

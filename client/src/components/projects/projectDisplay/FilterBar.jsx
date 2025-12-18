@@ -265,4 +265,3 @@ const FilterBar = ({ onCreateProject }) => {
 };
 
 export default FilterBar;
-

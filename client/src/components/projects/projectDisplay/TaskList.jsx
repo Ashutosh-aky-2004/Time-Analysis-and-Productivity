@@ -124,12 +124,20 @@ const TaskList = () => {
           const progress = calculateProgress(task);
           const isExpanded = expandedTasks[task._id];
           const currentUserId = String(project?.currentUserId);
-          const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
-          const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
-          const isTaskCreator = String(task.createdBy?._id || task.createdBy) === currentUserId;
-          const isTaskAssigned = String(task.assignedTo?._id || task.assignedTo) === currentUserId;
-          
-          const canEditTask = isProjectCreator || isManager || isTaskCreator || isTaskAssigned;
+          const isProjectCreator =
+            String(
+              project?.projectStartedBy?._id || project?.projectStartedBy
+            ) === currentUserId;
+          const isManager = project?.managingUserId?.some(
+            (u) => String(u._id || u) === currentUserId
+          );
+          const isTaskCreator =
+            String(task.createdBy?._id || task.createdBy) === currentUserId;
+          const isTaskAssigned =
+            String(task.assignedTo?._id || task.assignedTo) === currentUserId;
+
+          const canEditTask =
+            isProjectCreator || isManager || isTaskCreator || isTaskAssigned;
           const canAddSubtask = isProjectCreator || isManager || isTaskCreator;
 
           return (
@@ -283,39 +291,39 @@ const TaskList = () => {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          setTaskToEdit(task);
-                          setShowEditTaskModal(true);
-                        }}
-                        className={`p-2 rounded-lg transition-colors ${
-                          isDark
-                            ? "hover:bg-gray-700 text-blue-400 hover:text-blue-300"
-                            : "hover:bg-gray-100 text-blue-600 hover:text-blue-800"
-                        }`}
-                        title="View/Edit Task"
-                      >
-                        <FaEdit />
-                      </button>
+                    <button
+                      onClick={() => {
+                        setTaskToEdit(task);
+                        setShowEditTaskModal(true);
+                      }}
+                      className={`p-2 rounded-lg transition-colors ${
+                        isDark
+                          ? "hover:bg-gray-700 text-blue-400 hover:text-blue-300"
+                          : "hover:bg-gray-100 text-blue-600 hover:text-blue-800"
+                      }`}
+                      title="View/Edit Task"
+                    >
+                      <FaEdit />
+                    </button>
                     {(() => {
                       const canDeleteTask = isProjectCreator || isManager;
-                      
-                      if(canDeleteTask) {
-                          return (
-                            <button
-                              onClick={() => {
-                                handleDelete(task._id);
-                              }}
-                              className={`p-2 rounded-lg transition-colors ${
-                                isDark
-                                  ? "hover:bg-gray-700 text-white hover:text-red-400"
-                                  : "hover:bg-gray-100 text-red-600 hover:text-red-800"
-                              }`}
-                              title="Delete Task"
-                            >
-                              <FaTrash />
-                            </button>
-                          )
+
+                      if (canDeleteTask) {
+                        return (
+                          <button
+                            onClick={() => {
+                              handleDelete(task._id);
+                            }}
+                            className={`p-2 rounded-lg transition-colors ${
+                              isDark
+                                ? "hover:bg-gray-700 text-white hover:text-red-400"
+                                : "hover:bg-gray-100 text-red-600 hover:text-red-800"
+                            }`}
+                            title="Delete Task"
+                          >
+                            <FaTrash />
+                          </button>
+                        );
                       }
                       return null;
                     })()}
@@ -349,12 +357,10 @@ const TaskList = () => {
                     </div>
                   )}
 
-
-
-                      {/* Subtasks */}
+                  {/* Subtasks */}
                   <div className="mt-4">
                     <div className="flex items-center justify-between mb-2">
-                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400 block">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 block">
                         Subtasks:
                       </span>
                       {(() => {
@@ -366,7 +372,11 @@ const TaskList = () => {
                               setShowAddSubtaskModal(true);
                             }}
                             disabled={!canAddSubtask}
-                            title={canAddSubtask ? "Add Subtask" : "You do not have permission to add subtasks"}
+                            title={
+                              canAddSubtask
+                                ? "Add Subtask"
+                                : "You do not have permission to add subtasks"
+                            }
                             className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline disabled:text-gray-400 dark:disabled:text-gray-600"
                           >
                             <FaPlus /> Add New
@@ -374,79 +384,89 @@ const TaskList = () => {
                         );
                       })()}
                     </div>
-                  
-                  {task.subtasks && task.subtasks.length > 0 && (
-                    <div className="mt-2">
-                      <div className="space-y-2">
-                        {task.subtasks.map((subtask, subIndex) => {
-                          const isSubtaskAssignee = String(subtask.assignedTo?._id || subtask.assignedTo) === currentUserId;
-                          const canEditSubtask = isProjectCreator || isManager || isTaskCreator || isSubtaskAssignee;
 
-                          return (
-                          <div
-                            key={subtask._id || subIndex}
-                            onClick={() => {
-                                setSubtaskToEdit(subtask);
-                                setParentTaskId(task._id);
-                                setShowEditSubtaskModal(true);
-                            }}
-                            className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
-                              isDark
-                                ? "bg-gray-900/50 border-gray-800 hover:border-gray-600 hover:bg-gray-800"
-                                : "bg-gray-50 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
+                    {task.subtasks && task.subtasks.length > 0 && (
+                      <div className="mt-2">
+                        <div className="space-y-2">
+                          {task.subtasks.map((subtask, subIndex) => {
+                            const isSubtaskAssignee =
+                              String(
+                                subtask.assignedTo?._id || subtask.assignedTo
+                              ) === currentUserId;
+                            const canEditSubtask =
+                              isProjectCreator ||
+                              isManager ||
+                              isTaskCreator ||
+                              isSubtaskAssignee;
+
+                            return (
                               <div
-                                className={`w-4 h-4 rounded border flex items-center justify-center ${
-                                  subtask.status === "completed"
-                                    ? "bg-green-500 border-green-500"
-                                    : isDark
-                                    ? "border-gray-600"
-                                    : "border-gray-400"
+                                key={subtask._id || subIndex}
+                                onClick={() => {
+                                  setSubtaskToEdit(subtask);
+                                  setParentTaskId(task._id);
+                                  setShowEditSubtaskModal(true);
+                                }}
+                                className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
+                                  isDark
+                                    ? "bg-gray-900/50 border-gray-800 hover:border-gray-600 hover:bg-gray-800"
+                                    : "bg-gray-50 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50"
                                 }`}
                               >
-                                {subtask.status === "completed" && (
-                                  <FaCheckCircle className="text-white text-xs" />
-                                )}
-                              </div>
-                              <div>
-                                <span
-                                  className={`text-sm ${
-                                    isDark ? "text-gray-300" : "text-gray-700"
-                                  } ${
-                                    subtask.status === "completed"
-                                      ? "line-through opacity-60"
-                                      : ""
-                                  }`}
-                                >
-                                  {subtask.title}
-                                </span>
-                                {subtask.description && (
-                                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {subtask.description}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
+                                <div className="flex items-center gap-3">
+                                  <div
+                                    className={`w-4 h-4 rounded border flex items-center justify-center ${
+                                      subtask.status === "completed"
+                                        ? "bg-green-500 border-green-500"
+                                        : isDark
+                                        ? "border-gray-600"
+                                        : "border-gray-400"
+                                    }`}
+                                  >
+                                    {subtask.status === "completed" && (
+                                      <FaCheckCircle className="text-white text-xs" />
+                                    )}
+                                  </div>
+                                  <div>
+                                    <span
+                                      className={`text-sm ${
+                                        isDark
+                                          ? "text-gray-300"
+                                          : "text-gray-700"
+                                      } ${
+                                        subtask.status === "completed"
+                                          ? "line-through opacity-60"
+                                          : ""
+                                      }`}
+                                    >
+                                      {subtask.title}
+                                    </span>
+                                    {subtask.description && (
+                                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {subtask.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
 
-                            <div className="flex items-center gap-3">
-                              {subtask.estimatedHours > 0 && (
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                  {subtask.estimatedHours}h
-                                </span>
-                              )}
-                              {subtask.loggedHours > 0 && (
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                  ({subtask.loggedHours}h logged)
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )})}
+                                <div className="flex items-center gap-3">
+                                  {subtask.estimatedHours > 0 && (
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                      {subtask.estimatedHours}h
+                                    </span>
+                                  )}
+                                  {subtask.loggedHours > 0 && (
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                      ({subtask.loggedHours}h logged)
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                 </div>
               )}

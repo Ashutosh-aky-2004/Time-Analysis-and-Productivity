@@ -17,7 +17,6 @@ import Navbar from "../navbar/Navbar";
 
 const TAB_LIST = [
   { id: "profile", label: "Profile", icon: FiUser },
-  { id: "productivity", label: "Productivity", icon: FiTarget },
   { id: "password", label: "Password", icon: FiShield },
 ];
 

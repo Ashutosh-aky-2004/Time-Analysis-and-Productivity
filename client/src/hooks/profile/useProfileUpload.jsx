@@ -56,9 +56,12 @@ export default function useProfileUpload() {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`${import.meta.env.VITE_API_URL}/profile/remove-avatar`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/profile/remove-avatar`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success("Profile photo removed");
       return true;
@@ -72,5 +75,5 @@ export default function useProfileUpload() {
     }
   };
 
-  return { url, loading, error, uploadProfilePic ,removeProfilePic};
+  return { url, loading, error, uploadProfilePic, removeProfilePic };
 }

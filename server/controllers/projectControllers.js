@@ -103,20 +103,24 @@ export const getAllUserProjects = async (req, res) => {
 
     // Calculate progress for each project based on tasks
     const projectIds = projects.map((p) => p._id);
-    
+
     const taskStats = await Task.aggregate([
       { $match: { projectId: { $in: projectIds } } },
       {
         $group: {
           _id: "$projectId",
           total: { $sum: 1 },
-          completed: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] } },
+          completed: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
         },
       },
     ]);
 
     const projectsWithStats = projects.map((p) => {
-      const stats = taskStats.find((s) => s._id.toString() === p._id.toString());
+      const stats = taskStats.find(
+        (s) => s._id.toString() === p._id.toString()
+      );
       const total = stats ? stats.total : 0;
       const completed = stats ? stats.completed : 0;
       const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -241,7 +245,9 @@ export const getProjectTasks = async (req, res) => {
 // get all the user detail for the create task modal here the data will be use to assign the task to the user
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("_id firstName email lastName avatar");
+    const users = await User.find().select(
+      "_id firstName email lastName avatar"
+    );
 
     res.status(200).json({
       success: true,
@@ -260,7 +266,17 @@ export const getAllUsers = async (req, res) => {
 export const updateProject = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const { name, description, color, tags, priority, status, startDate, endDate, managingUserId } = req.body;
+    const {
+      name,
+      description,
+      color,
+      tags,
+      priority,
+      status,
+      startDate,
+      endDate,
+      managingUserId,
+    } = req.body;
 
     // Find and update
     let project = await Project.findById(projectId);

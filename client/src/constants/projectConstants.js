@@ -97,15 +97,15 @@ export const getBorderColor = (isArchived, status) => {
 // Check if user is a manager (has permission to archive/restore)
 export const isUserManager = (project, currentUserId) => {
   if (!currentUserId || !project) return false;
-  
+
   // Check if user is in managingUserId array
   const isInManagingUsers = project.managingUserId?.some(
-    manager => manager._id === currentUserId
+    (manager) => manager._id === currentUserId
   );
-  
+
   // Check if user is the project starter
   const isProjectStarter = project.projectStartedBy?._id === currentUserId;
-  
+
   return isInManagingUsers || isProjectStarter;
 };
 
@@ -124,19 +124,21 @@ export const getManagerName = (project) => {
 // Get user's role in project
 export const getUserRole = (project, currentUserId) => {
   if (!currentUserId || !project) return "viewer";
-  
-  if (project.managingUserId?.some(manager => manager._id === currentUserId)) {
+
+  if (
+    project.managingUserId?.some((manager) => manager._id === currentUserId)
+  ) {
     return "manager";
   }
-  
+
   if (project.projectStartedBy?._id === currentUserId) {
     return "creator";
   }
-  
-  if (project.teamMembers?.some(member => member._id === currentUserId)) {
+
+  if (project.teamMembers?.some((member) => member._id === currentUserId)) {
     return "member";
   }
-  
+
   return "viewer";
 };
 
@@ -170,4 +172,3 @@ export const getPriorityButtonStyle = (priority, isActive) => {
     }
   }
 };
-

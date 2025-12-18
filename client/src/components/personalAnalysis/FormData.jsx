@@ -48,7 +48,7 @@ const FormDataContent = () => {
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 relative">
+    <div className="p-6 w-[80%] mx-auto space-y-6 relative">
       <QuickActions
         onAddTask={() => setIsModalOpen(true)}
         onCheckIn={() => setIsCheckInModalOpen(true)}
@@ -58,12 +58,16 @@ const FormDataContent = () => {
         }}
       />
       <div className="flex flex-col lg:flex-row gap-6">
-        <RecentActivity
-          onViewAll={() => setIsActivityHistoryOpen(true)}
-          onEdit={handleEditTimeLog}
-          onView={handleViewTimeLog}
-        />
-        <FocusTrends data={dashboardStats?.focusTrends} />
+        <div className="flex-1 min-w-0">
+          <RecentActivity
+            onViewAll={() => setIsActivityHistoryOpen(true)}
+            onEdit={handleEditTimeLog}
+            onView={handleViewTimeLog}
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <FocusTrends data={dashboardStats?.focusTrends} />
+        </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <ActiveTasks />

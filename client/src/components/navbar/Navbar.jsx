@@ -12,6 +12,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/auth/AuthContext";
 import NavbarShimmer from "./NavbarShimmer";
+import { LuFolderKanban } from "react-icons/lu";
 
 const Navbar = () => {
   const { user: details, loading, logout } = useAuth(); // Use AuthContext
@@ -19,23 +20,21 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const profileRef = useRef(null);
-  
-  // Note: isLoggedIn logic is now handled by presence of `details` or checking localstorage in context, 
-  // but for Navbar visual state, we can rely on `details` being present.
-  const isLoggedIn = !!details || !!localStorage.getItem("token"); 
-  
+
+  const isLoggedIn = !!details || !!localStorage.getItem("token");
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
-  
+
   useEffect(() => {
-     // Basic check to redirect if no token found on mount (preserving existing behavior)
-     const token = localStorage.getItem("token");
-     if (!token && location.pathname !== '/login') {
-         // navigate("/login"); // Optional: logic might belong in ProtectedRoute
-     }
+    // Basic check to redirect if no token found on mount (preserving existing behavior)
+    const token = localStorage.getItem("token");
+    if (!token && location.pathname !== "/login") {
+      // navigate("/login");
+    }
   }, [location, navigate]);
 
   const handleLogout = () => {
@@ -59,16 +58,23 @@ const Navbar = () => {
 
   const menuItems = [
     { name: "Dashboard", icon: <AiOutlineDashboard />, link: "/dashboard" },
-    { name: "Track Time", icon: <AiOutlineClockCircle />, link: "/track-time" },
-    { name: "History", icon: <AiOutlineHistory />, link: "/history" },
-    { name: "Analytics", icon: <AiOutlineBarChart />, link: "/analytics" },
-    { name: "Personal Analysis", icon: <AiOutlineBarChart />, link: "/personal-analysis", hideOnProjects: true },
+    { name: "Projects", icon: <LuFolderKanban />, link: "/projects" },
+    {
+      name: "Personal Analysis",
+      icon: <AiOutlineBarChart />,
+      link: "/personal-analysis",
+      hideOnProjects: true,
+    },
   ];
 
   // Filter menu items based on current route
-  const visibleMenuItems = menuItems.filter(item => {
-    if (item.hideOnProjects && (location.pathname.startsWith('/projects') || location.pathname.startsWith('/project-details'))) {
-      return false;
+  const visibleMenuItems = menuItems.filter((item) => {
+    if (
+      item.hideOnProjects &&
+      (location.pathname.startsWith("/projects") ||
+        location.pathname.startsWith("/project-details"))
+    ) {
+      return true;
     }
     return true;
   });
@@ -81,7 +87,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="shrink-0 font-bold text-xl text-blue-500 dark:text-blue-400">
-            ProductivityTracker
+            Productivity Tracker
           </div>
 
           {/* Desktop Menu */}
@@ -127,9 +133,7 @@ const Navbar = () => {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="font-semibold">
-                      U
-                    </span>
+                    <span className="font-semibold">U</span>
                   )}
                 </button>
 
@@ -158,15 +162,6 @@ const Navbar = () => {
                     >
                       <AiOutlineUser className="mr-3" />
                       Profile
-                    </a>
-
-                    <a
-                      href="/productivity-goals"
-                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <AiOutlineBarChart className="mr-3" />
-                      Productivity Goals
                     </a>
 
                     <div className="border-t dark:border-gray-700 my-1"></div>

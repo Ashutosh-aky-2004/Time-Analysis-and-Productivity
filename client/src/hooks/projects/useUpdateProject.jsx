@@ -25,10 +25,9 @@ export const useUpdateProject = () => {
       );
 
       if (res.data.success) {
-         setProject(res.data.project); // Update context with full populated project
-         return res.data.project;
+        setProject(res.data.project); // Update context with full populated project
+        return res.data.project;
       }
-      
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Failed to update project");

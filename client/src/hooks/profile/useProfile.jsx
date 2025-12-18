@@ -9,7 +9,7 @@ export function useProfile() {
   const [loading, setLoading] = useState(true);
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
@@ -29,9 +29,13 @@ export function useProfile() {
 
   const updateProfile = async (payload) => {
     try {
-      const res = await axios.put(`${API_URL}/profile/update-profile-data-personal-details`, payload, {
-        headers: getAuthHeaders(),
-      });
+      const res = await axios.put(
+        `${API_URL}/profile/update-profile-data-personal-details`,
+        payload,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
       setData(res.data);
       toast.success("Profile updated successfully");
     } catch (err) {

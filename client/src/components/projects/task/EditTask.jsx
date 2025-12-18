@@ -98,158 +98,171 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
         {/* Body */}
         <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
           {(() => {
-              const currentUserId = String(project?.currentUserId);
-              const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
-              const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
-              const isTaskCreator = String(selectedTask.createdBy?._id || selectedTask.createdBy) === currentUserId;
-              const isAssigned = String(selectedTask.assignedTo?._id || selectedTask.assignedTo) === currentUserId;
-              
-              const canUpdate = isProjectCreator || isManager || isTaskCreator || isAssigned;
+            const currentUserId = String(project?.currentUserId);
+            const isProjectCreator =
+              String(
+                project?.projectStartedBy?._id || project?.projectStartedBy
+              ) === currentUserId;
+            const isManager = project?.managingUserId?.some(
+              (u) => String(u._id || u) === currentUserId
+            );
+            const isTaskCreator =
+              String(selectedTask.createdBy?._id || selectedTask.createdBy) ===
+              currentUserId;
+            const isAssigned =
+              String(
+                selectedTask.assignedTo?._id || selectedTask.assignedTo
+              ) === currentUserId;
 
-              return (
-                <>
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-              Title
-            </label>
-            <input
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              disabled={!canUpdate}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-          </div>
+            const canUpdate =
+              isProjectCreator || isManager || isTaskCreator || isAssigned;
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              disabled={!canUpdate}
-              rows={3}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-          </div>
+            return (
+              <>
+                {/* Title */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                    Title
+                  </label>
+                  <input
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    disabled={!canUpdate}
+                    className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
 
-          {/* Priority + Status */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Priority
-              </label>
-              <select
-                name="priority"
-                value={formData.priority}
-                onChange={handleChange}
-                disabled={!canUpdate}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="critical">Critical</option>
-              </select>
-            </div>
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    disabled={!canUpdate}
+                    rows={3}
+                    className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Status
-              </label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                disabled={!canUpdate}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <option value="todo">Todo</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-          </div>
+                {/* Priority + Status */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      Priority
+                    </label>
+                    <select
+                      name="priority"
+                      value={formData.priority}
+                      onChange={handleChange}
+                      disabled={!canUpdate}
+                      className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="critical">Critical</option>
+                    </select>
+                  </div>
 
-          {/* Hours */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Estimated Hours
-              </label>
-              <input
-                type="number"
-                name="estimatedHours"
-                value={formData.estimatedHours}
-                onChange={handleChange}
-                disabled={!canUpdate}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-              />
-            </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      Status
+                    </label>
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleChange}
+                      disabled={!canUpdate}
+                      className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <option value="todo">Todo</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                Logged Hours
-              </label>
-              <input
-                type="number"
-                name="loggedHours"
-                value={formData.loggedHours}
-                onChange={handleChange}
-                disabled={!canUpdate}
-                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-              />
-            </div>
-          </div>
+                {/* Hours */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      Estimated Hours
+                    </label>
+                    <input
+                      type="number"
+                      name="estimatedHours"
+                      value={formData.estimatedHours}
+                      onChange={handleChange}
+                      disabled={!canUpdate}
+                      className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                    />
+                  </div>
 
-          {/* Work Description */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-              Work Description / Notes
-            </label>
-            <textarea
-              name="workDescription"
-              value={formData.workDescription}
-              onChange={handleChange}
-              disabled={!canUpdate}
-              rows={2}
-              className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-            />
-          </div>
-        
-        {/* Footer */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t dark:border-gray-700 mt-6 -mx-6 -mb-6 bg-gray-50 dark:bg-gray-900/50 rounded-b-2xl">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            {canUpdate ? "Cancel" : "Close"}
-          </button>
-          
-          {canUpdate && (
-          <button
-            onClick={handleSave}
-            disabled={updatingTask || updatingStatus}
-            className={`px-5 py-2 rounded-lg flex items-center gap-2 text-white
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      Logged Hours
+                    </label>
+                    <input
+                      type="number"
+                      name="loggedHours"
+                      value={formData.loggedHours}
+                      onChange={handleChange}
+                      disabled={!canUpdate}
+                      className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+
+                {/* Work Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                    Work Description / Notes
+                  </label>
+                  <textarea
+                    name="workDescription"
+                    value={formData.workDescription}
+                    onChange={handleChange}
+                    disabled={!canUpdate}
+                    rows={2}
+                    className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Footer */}
+                <div className="flex justify-end gap-3 px-6 py-4 border-t dark:border-gray-700 mt-6 -mx-6 -mb-6 bg-gray-50 dark:bg-gray-900/50 rounded-b-2xl">
+                  <button
+                    onClick={onClose}
+                    className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {canUpdate ? "Cancel" : "Close"}
+                  </button>
+
+                  {canUpdate && (
+                    <button
+                      onClick={handleSave}
+                      disabled={updatingTask || updatingStatus}
+                      className={`px-5 py-2 rounded-lg flex items-center gap-2 text-white
     ${
       updatingTask || updatingStatus
         ? "bg-blue-400 cursor-not-allowed"
         : "bg-blue-600 hover:bg-blue-700"
     }
   `}
-          >
-            <FaSave />
-            {updatingTask || updatingStatus ? "Saving..." : "Save Changes"}
-          </button>
-          )}
-        </div>
-        </>
-        );
-      })()}
+                    >
+                      <FaSave />
+                      {updatingTask || updatingStatus
+                        ? "Saving..."
+                        : "Save Changes"}
+                    </button>
+                  )}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
     </div>

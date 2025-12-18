@@ -408,7 +408,7 @@ const ProjectCard = ({ project, showArchived = false, currentUserId }) => {
                 Progress
               </p>
 
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full ${
                     project.progress === 100

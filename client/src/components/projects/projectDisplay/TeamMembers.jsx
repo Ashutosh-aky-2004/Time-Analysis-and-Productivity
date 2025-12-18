@@ -16,7 +16,7 @@ const TeamMembers = () => {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [confirmData, setConfirmData] = useState(null);
 
-  const { project,setProject } = useContext(ProjectContext);
+  const { project, setProject } = useContext(ProjectContext);
   const {
     suspendMember,
     loading: suspending,
@@ -55,8 +55,8 @@ const TeamMembers = () => {
 
   const handleRevoke = async (memberId) => {
     try {
-      await revokeMember(memberId); 
-      setConfirmData(null); 
+      await revokeMember(memberId);
+      setConfirmData(null);
     } catch (err) {
       console.error("Failed to revoke member:", err);
     }
@@ -70,7 +70,6 @@ const TeamMembers = () => {
       console.error("Failed to restore member:", err);
     }
   };
-
 
   const openConfirm = (type, memberId) => {
     setConfirmData({ type, memberId });
@@ -279,7 +278,7 @@ const TeamMembers = () => {
 
         {/* Add Member → manager only */}
         {isManager && (
-          <button 
+          <button
             onClick={() => setShowAddMemberModal(true)}
             className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           >
@@ -301,15 +300,13 @@ const TeamMembers = () => {
               : activeTab === "suspended"
               ? suspendedMembers
               : removedMembers
-            ).map((m) => (
-              (m) => (
-                <MemberCard
-                  key={m._id}
-                  member={m}
-                  type={activeTab}
-                  showActions={false} // 🔐 IMPORTANT
-                />
-              )
+            ).map((m) => (m) => (
+              <MemberCard
+                key={m._id}
+                member={m}
+                type={activeTab}
+                showActions={false} // 🔐 IMPORTANT
+              />
             ))}
 
             <button
@@ -365,7 +362,7 @@ const TeamMembers = () => {
         onRestore={(id) => openConfirm("restore", id)}
         onAddMember={() => setShowAddMemberModal(true)}
       />
-      <AddTeamMemberModal 
+      <AddTeamMemberModal
         isOpen={showAddMemberModal}
         onClose={() => setShowAddMemberModal(false)}
       />

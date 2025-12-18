@@ -18,37 +18,36 @@ const ProjectCards = () => {
         (project) =>
           project.name.toLowerCase().includes(searchTerm) ||
           project.description?.toLowerCase().includes(searchTerm) ||
-          (project.tags?.some(tag => 
-            tag.toLowerCase().includes(searchTerm)
-          )) ||
+          project.tags?.some((tag) => tag.toLowerCase().includes(searchTerm)) ||
           // Search in manager names
-          (project.managingUserId?.some(manager => 
-            manager?.firstName?.toLowerCase().includes(searchTerm) ||
-            manager?.lastName?.toLowerCase().includes(searchTerm) ||
-            manager?.email?.toLowerCase().includes(searchTerm)
-          ))
+          project.managingUserId?.some(
+            (manager) =>
+              manager?.firstName?.toLowerCase().includes(searchTerm) ||
+              manager?.lastName?.toLowerCase().includes(searchTerm) ||
+              manager?.email?.toLowerCase().includes(searchTerm)
+          )
       );
     }
 
     // 2. Status filter - UPDATED to match your schema
     if (filters.status !== "all") {
       result = result.filter(
-        (project) => project.status?.toLowerCase() === filters.status.toLowerCase()
+        (project) =>
+          project.status?.toLowerCase() === filters.status.toLowerCase()
       );
     }
 
     // 3. Priority filter - NEW
     if (filters.priority !== "all") {
       result = result.filter(
-        (project) => project.priority?.toLowerCase() === filters.priority.toLowerCase()
+        (project) =>
+          project.priority?.toLowerCase() === filters.priority.toLowerCase()
       );
     }
 
     // 4. Tag filter (if you implement it)
     if (filters.tag) {
-      result = result.filter(
-        (project) => project.tags?.includes(filters.tag)
-      );
+      result = result.filter((project) => project.tags?.includes(filters.tag));
     }
 
     // 5. Sorting
@@ -67,7 +66,9 @@ const ProjectCards = () => {
         case "priority":
           // Custom priority order: critical > high > medium > low
           const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-          return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+          return (
+            (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0)
+          );
         default:
           return 0;
       }
@@ -93,9 +94,9 @@ const ProjectCards = () => {
   return (
     <div className="space-y-6">
       {filteredProjects.map((project) => (
-        <ProjectCard 
-          key={project._id || project.id} 
-          project={project} 
+        <ProjectCard
+          key={project._id || project.id}
+          project={project}
           currentUserId={currentUserId}
         />
       ))}
