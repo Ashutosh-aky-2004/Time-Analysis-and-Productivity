@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { ShimmerTableRow } from "../../shimmer/Shimmer";
 
 const DetailedCategoryBreakdown = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
@@ -137,73 +138,75 @@ const DetailedCategoryBreakdown = ({ data, loading }) => {
             </tr>
           </thead>
           <tbody>
-            {sortedCategories.map((category, index) => (
-              <tr
-                key={index}
-                className={`border-b transition-colors ${
-                  isDark
-                    ? "border-gray-700 hover:bg-gray-750"
-                    : "border-gray-100 hover:bg-gray-50"
-                }`}
-              >
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: category.color }}
-                    />
-                    <span
-                      className={`font-medium ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {category.name}
-                    </span>
-                  </div>
-                </td>
-                <td
-                  className={`py-4 px-4 ${
-                    isDark ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  {category.totalTime}h
-                </td>
-                <td
-                  className={`py-4 px-4 ${
-                    isDark ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  {category.sessions}
-                </td>
-                <td
-                  className={`py-4 px-4 ${
-                    isDark ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  {category.avgDuration}h
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-300"
-                        style={{
-                          width: `${category.percentage}%`,
-                          backgroundColor: category.color,
-                        }}
-                      />
-                    </div>
-                    <span
-                      className={`text-sm font-medium min-w-[40px] ${
+            {loading
+              ? [...Array(5)].map((_, i) => <ShimmerTableRow key={i} />)
+              : sortedCategories.map((category, index) => (
+                  <tr
+                    key={index}
+                    className={`border-b transition-colors ${
+                      isDark
+                        ? "border-gray-700 hover:bg-gray-750"
+                        : "border-gray-100 hover:bg-gray-50"
+                    }`}
+                  >
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: category.color }}
+                        />
+                        <span
+                          className={`font-medium ${
+                            isDark ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {category.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td
+                      className={`py-4 px-4 ${
                         isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      {category.percentage}%
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {category.totalTime}h
+                    </td>
+                    <td
+                      className={`py-4 px-4 ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {category.sessions}
+                    </td>
+                    <td
+                      className={`py-4 px-4 ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {category.avgDuration}h
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-300"
+                            style={{
+                              width: `${category.percentage}%`,
+                              backgroundColor: category.color,
+                            }}
+                          />
+                        </div>
+                        <span
+                          className={`text-sm font-medium min-w-[40px] ${
+                            isDark ? "text-gray-300" : "text-gray-700"
+                          }`}
+                        >
+                          {category.percentage}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

@@ -9,7 +9,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const FocusTrends = ({ data }) => {
+import { ShimmerChart } from "../../shimmer/Shimmer";
+
+const FocusTrends = ({ data, loading }) => {
+  if (loading) return <ShimmerChart />;
+
   const chartData = data || [
     { day: "Mon", focus: 0 },
     { day: "Tue", focus: 0 },

@@ -10,9 +10,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { ShimmerChart } from "../../shimmer/Shimmer";
 
 const ProductivityTrendChart = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
+
+  if (loading) {
+    return <ShimmerChart />;
+  }
 
   const chartData = data || [];
 

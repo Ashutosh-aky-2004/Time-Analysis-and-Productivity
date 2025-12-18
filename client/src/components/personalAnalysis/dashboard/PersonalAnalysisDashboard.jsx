@@ -15,6 +15,7 @@ import CategoryComparisonChart from "./CategoryComparisonChart";
 import DetailedCategoryBreakdown from "./DetailedCategoryBreakdown";
 import ExportAnalyticsReport from "./ExportAnalyticsReport";
 import FocusTrends from "../formData/FocusTrends";
+import { ShimmerChart } from "../../shimmer/Shimmer";
 
 const PersonalAnalysisDashboard = () => {
   const { isDark } = useContext(ThemeContext);

@@ -13,6 +13,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/auth/AuthContext";
 import NavbarShimmer from "./NavbarShimmer";
 import { LuFolderKanban } from "react-icons/lu";
+import { ShimmerBase } from "../shimmer/Shimmer";
 
 const Navbar = () => {
   const { user: details, loading, logout } = useAuth(); // Use AuthContext
@@ -271,13 +272,15 @@ const Navbar = () => {
 
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-200">
-                {details
-                  ? details.firstName + " " + details.lastName
-                  : "Loading..."}
+                {details ? (
+                  details.firstName + " " + details.lastName
+                ) : (
+                  <ShimmerBase className="w-24 h-4" />
+                )}
               </p>
 
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {details ? details.email : "Loading..."}
+                {details ? details.email : <ShimmerBase className="w-32 h-3" />}
               </p>
             </div>
           </div>

@@ -10,9 +10,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { ShimmerChart } from "../../shimmer/Shimmer";
 
 const CategoryComparisonChart = ({ data, loading, rangeLabel }) => {
   const { isDark } = useContext(ThemeContext);
+
+  if (loading) {
+    return <ShimmerChart />;
+  }
 
   const chartData = data || [];
 

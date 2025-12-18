@@ -8,9 +8,14 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
+import { ShimmerChart } from "../../shimmer/Shimmer";
 
 const TimeAllocationChart = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
+
+  if (loading) {
+    return <ShimmerChart />;
+  }
 
   const chartData = data || [];
 

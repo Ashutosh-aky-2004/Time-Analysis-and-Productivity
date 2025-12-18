@@ -1,15 +1,26 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { FiClock, FiTrendingUp, FiTarget, FiZap } from "react-icons/fi";
+import { ShimmerCard } from "../../shimmer/Shimmer";
 
 const StatsCards = ({ stats, loading }) => {
   const { isDark } = useContext(ThemeContext);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        {[...Array(3)].map((_, i) => (
+          <ShimmerCard key={i} />
+        ))}
+      </div>
+    );
+  }
 
   const statItems = [
     {
       id: 1,
       title: "Total Tracked Time",
-      value: loading ? "..." : stats?.totalHours || "0",
+      value: stats?.totalHours || "0",
       unit: "hours",
       trend: "+0.0%", // We can calculate trend if we fetch previous period
       trendUp: true,
@@ -19,7 +30,7 @@ const StatsCards = ({ stats, loading }) => {
     {
       id: 2,
       title: "Productivity Score",
-      value: loading ? "..." : stats?.productivityScore || "0",
+      value: stats?.productivityScore || "0",
       unit: "%",
       trend: "+0.0%",
       trendUp: true,
@@ -29,7 +40,7 @@ const StatsCards = ({ stats, loading }) => {
     {
       id: 4,
       title: "Efficiency Rate",
-      value: loading ? "..." : stats?.efficiencyRate || "0",
+      value: stats?.efficiencyRate || "0",
       unit: "%",
       trend: "0.0%",
       trendUp: true,

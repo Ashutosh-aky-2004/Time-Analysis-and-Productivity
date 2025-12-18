@@ -3,6 +3,7 @@ import FilterBar from "./projectDisplay/FilterBar";
 import ProjectCards from "./projectDisplay/ProjectCards";
 import { useProjects } from "../../hooks/projects/useProjects";
 import CreateProjectModal from "./projectDisplay/CreateProjectModal";
+import { ShimmerCard } from "../shimmer/Shimmer";
 
 const LandingPageProject = () => {
   const { projects, loading, error } = useProjects();
@@ -11,7 +12,16 @@ const LandingPageProject = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading && <p>Loading projects...</p>}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <ShimmerCard />
+            <ShimmerCard />
+            <ShimmerCard />
+            <ShimmerCard />
+            <ShimmerCard />
+            <ShimmerCard />
+          </div>
+        )}
         {error && <p className="text-red-500">Error: {error}</p>}
 
         {!loading && !error && (
