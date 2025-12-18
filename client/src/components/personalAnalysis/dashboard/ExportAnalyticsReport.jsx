@@ -44,7 +44,6 @@ const ExportAnalyticsReport = ({ data }) => {
       csvContent += `Productivity Score,${
         data.stats?.productivityScore || 0
       }\n`;
-      csvContent += `Goal Achievement,${data.stats?.goalAchievement || 0}\n`;
       csvContent += `Efficiency Rate,${data.stats?.efficiencyRate || 0}\n\n`;
 
       // Time Allocation Section

@@ -27,16 +27,6 @@ const StatsCards = ({ stats, loading }) => {
       iconBg: "bg-green-500",
     },
     {
-      id: 3,
-      title: "Goal Achievement",
-      value: loading ? "..." : stats?.goalAchievement || "0",
-      unit: "%",
-      trend: "+0.0%",
-      trendUp: true,
-      icon: FiTarget,
-      iconBg: "bg-purple-500",
-    },
-    {
       id: 4,
       title: "Efficiency Rate",
       value: loading ? "..." : stats?.efficiencyRate || "0",
@@ -49,7 +39,7 @@ const StatsCards = ({ stats, loading }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
       {statItems.map((stat) => {
         const Icon = stat.icon;
 

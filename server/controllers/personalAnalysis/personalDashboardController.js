@@ -115,22 +115,9 @@ export const getDashboardStats = async (req, res) => {
     const avgFocus = productivityAgg[0]?.avgFocus || 0;
     const productivityScore = Math.round((avgFocus / 5) * 100);
 
-    // 3. Goal Achievement
-    const goals = await ProductivityGoal.find({
-      userId,
-      goalStatus: {
-        $in: ["active", "completed", "ahead_of_schedule", "behind_schedule"],
-      },
-    });
-
-    let goalAchievement = 0;
-    if (goals.length > 0) {
-      const totalCompletion = goals.reduce(
-        (sum, goal) => sum + (goal.progressData?.completionPercentage || 0),
-        0
-      );
-      goalAchievement = Math.round(totalCompletion / goals.length);
-    }
+    // 3. Goal Achievement (Removed as per requirement)
+    // const goals = await ProductivityGoal.find({...});
+    // ...
 
     // 4. Efficiency Rate
     const efficiencyAgg = await UserTask.aggregate([
@@ -330,7 +317,6 @@ export const getDashboardStats = async (req, res) => {
       stats: {
         totalHours,
         productivityScore,
-        goalAchievement,
         efficiencyRate,
         hasData: totalTimeAgg.length > 0, // Flag for empty state
       },
