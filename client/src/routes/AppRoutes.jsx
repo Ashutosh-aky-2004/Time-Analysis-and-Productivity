@@ -24,9 +24,8 @@ const AppRoutes = () => {
           path="/login"
           element={
             <>
-              <Navbar>
-                <Login />
-              </Navbar>
+              <Navbar />
+              <Login />
             </>
           }
         />
@@ -34,9 +33,8 @@ const AppRoutes = () => {
           path="/signup"
           element={
             <>
-              <Navbar>
-                <SignUp />
-              </Navbar>
+              <Navbar />
+              <SignUp />
             </>
           }
         />
@@ -44,9 +42,8 @@ const AppRoutes = () => {
           path="/forgot-password"
           element={
             <>
-              <Navbar>
-                <ForgotPassword />
-              </Navbar>
+              <Navbar />
+              <ForgotPassword />
             </>
           }
         />
