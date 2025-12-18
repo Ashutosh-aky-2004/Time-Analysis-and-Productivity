@@ -42,7 +42,14 @@ export default function SettingsPage() {
     }
   }, [profileData]);
 
-  if (loading || !profile) return <ProfileShimmer />;
+  if (loading || !profile) {
+    return (
+      <>
+        <Navbar />
+        <ProfileShimmer />
+      </>
+    );
+  }
 
   const updateField = (field, value) => {
     if (field === "email") return;

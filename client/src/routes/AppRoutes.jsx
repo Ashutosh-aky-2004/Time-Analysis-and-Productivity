@@ -20,9 +20,36 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/login"
+          element={
+            <>
+              <Navbar>
+                <Login />
+              </Navbar>
+            </>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <>
+              <Navbar>
+                <SignUp />
+              </Navbar>
+            </>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <>
+              <Navbar>
+                <ForgotPassword />
+              </Navbar>
+            </>
+          }
+        />
 
         {/* Protected */}
         <Route

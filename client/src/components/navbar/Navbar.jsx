@@ -9,7 +9,7 @@ import {
 } from "react-icons/ai";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../context/auth/AuthContext";
 import NavbarShimmer from "./NavbarShimmer";
 import { LuFolderKanban } from "react-icons/lu";
@@ -87,9 +87,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <div className="shrink-0 font-bold text-xl text-blue-500 dark:text-blue-400">
-            Productivity Tracker
-          </div>
+          <Link to="/">Productivity Tracker</Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
@@ -100,9 +98,9 @@ const Navbar = () => {
                   : location.pathname.startsWith(item.link);
 
               return (
-                <a
+                <Link
                   key={item.name}
-                  href={item.link}
+                  to={item.link}
                   className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors duration-200 ${
                     isActive
                       ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
@@ -111,7 +109,7 @@ const Navbar = () => {
                 >
                   {item.icon}
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
 
@@ -167,24 +165,24 @@ const Navbar = () => {
                       )}
                     </div>
 
-                    <a
-                      href="/profile"
+                    <Link
+                      to="/profile"
                       className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <AiOutlineUser className="mr-3" />
                       Profile
-                    </a>
+                    </Link>
 
                     <div className="border-t dark:border-gray-700 my-1"></div>
 
-                    <a
+                    <Link
                       className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                       onClick={handleLogout}
                     >
                       <FaTimes className="mr-3" />
                       Logout
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -228,9 +226,9 @@ const Navbar = () => {
                 : location.pathname.startsWith(item.link);
 
             return (
-              <a
+              <Link
                 key={item.name}
-                href={item.link}
+                to={item.link}
                 className={`flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700 transition-colors duration-200 ${
                   isActive
                     ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
@@ -242,17 +240,17 @@ const Navbar = () => {
                 <span className={`ml-3 ${isActive ? "font-medium" : ""}`}>
                   {item.name}
                 </span>
-              </a>
+              </Link>
             );
           })}
-          <a
-            href="/profile"
+          <Link
+            to="/profile"
             className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={() => setIsProfileOpen(false)}
           >
             <AiOutlineUser className="mr-3" />
             Profile
-          </a>
+          </Link>
           {/* Profile Section in Mobile Menu */}
           <div className="px-4 py-3 flex items-center">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-white mr-3">
