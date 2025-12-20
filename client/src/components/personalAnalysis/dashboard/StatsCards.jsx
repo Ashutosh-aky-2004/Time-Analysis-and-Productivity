@@ -22,8 +22,12 @@ const StatsCards = ({ stats, loading }) => {
       title: "Total Tracked Time",
       value: stats?.totalHours || "0",
       unit: "hours",
-      trend: "+0.0%", // We can calculate trend if we fetch previous period
-      trendUp: true,
+      trend: stats?.totalTimeTrend
+        ? `${Number(stats.totalTimeTrend) > 0 ? "+" : ""}${
+            stats.totalTimeTrend
+          }%`
+        : "+0.0%",
+      trendUp: Number(stats?.totalTimeTrend || 0) >= 0,
       icon: FiClock,
       iconBg: "bg-blue-500",
     },
@@ -32,8 +36,12 @@ const StatsCards = ({ stats, loading }) => {
       title: "Productivity Score",
       value: stats?.productivityScore || "0",
       unit: "%",
-      trend: "+0.0%",
-      trendUp: true,
+      trend: stats?.productivityScoreTrend
+        ? `${Number(stats.productivityScoreTrend) > 0 ? "+" : ""}${
+            stats.productivityScoreTrend
+          }%`
+        : "+0.0%",
+      trendUp: Number(stats?.productivityScoreTrend || 0) >= 0,
       icon: FiTrendingUp,
       iconBg: "bg-green-500",
     },
@@ -42,8 +50,12 @@ const StatsCards = ({ stats, loading }) => {
       title: "Efficiency Rate",
       value: stats?.efficiencyRate || "0",
       unit: "%",
-      trend: "0.0%",
-      trendUp: true,
+      trend: stats?.efficiencyRateTrend
+        ? `${Number(stats.efficiencyRateTrend) > 0 ? "+" : ""}${
+            stats.efficiencyRateTrend
+          }%`
+        : "0.0%",
+      trendUp: Number(stats?.efficiencyRateTrend || 0) >= 0,
       icon: FiZap,
       iconBg: "bg-orange-500",
     },

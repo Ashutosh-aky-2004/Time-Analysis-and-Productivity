@@ -48,11 +48,9 @@ export const getDashboardStats = async (req, res) => {
     } else if (timeRange === "custom") {
       const { startDate: qStart, endDate: qEnd } = req.query;
       if (!qStart || !qEnd) {
-        return res
-          .status(400)
-          .json({
-            message: "Start date and end date are required for custom range",
-          });
+        return res.status(400).json({
+          message: "Start date and end date are required for custom range",
+        });
       }
       startDate = new Date(qStart);
       startDate.setHours(0, 0, 0, 0);
@@ -119,6 +117,30 @@ export const getDashboardStats = async (req, res) => {
     const totalMinutes = totalTimeAgg[0]?.totalMinutes || 0;
     const totalHours = (totalMinutes / 60).toFixed(1);
 
+    // Previous Total Time for Trend
+    const prevTotalTimeAgg = await TimeEntry.aggregate([
+      {
+        $match: {
+          userId: userIdObj,
+          startTimestamp: { $gte: previousStartDate, $lte: previousEndDate },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalMinutes: { $sum: "$durationInMinutes" },
+        },
+      },
+    ]);
+    const prevTotalMinutes = prevTotalTimeAgg[0]?.totalMinutes || 0;
+    const totalTimeTrend = prevTotalMinutes
+      ? (((totalMinutes - prevTotalMinutes) / prevTotalMinutes) * 100).toFixed(
+          1
+        )
+      : totalMinutes > 0
+      ? "100.0"
+      : "0.0";
+
     // 2. Productivity Score (Avg Focus Score 1-5 mapped to 0-100)
     const productivityAgg = await TimeEntry.aggregate([
       {
@@ -139,6 +161,34 @@ export const getDashboardStats = async (req, res) => {
     const avgFocus = productivityAgg[0]?.avgFocus || 0;
     const productivityScore = Math.round((avgFocus / 5) * 100);
 
+    // Previous Productivity for Trend
+    const prevProductivityAgg = await TimeEntry.aggregate([
+      {
+        $match: {
+          userId: userIdObj,
+          startTimestamp: { $gte: previousStartDate, $lte: previousEndDate },
+          focusScore: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          avgFocus: { $avg: "$focusScore" },
+        },
+      },
+    ]);
+    const prevAvgFocus = prevProductivityAgg[0]?.avgFocus || 0;
+    const prevProductivityScore = Math.round((prevAvgFocus / 5) * 100);
+    const productivityScoreTrend = prevProductivityScore
+      ? (
+          ((productivityScore - prevProductivityScore) /
+            prevProductivityScore) *
+          100
+        ).toFixed(1)
+      : productivityScore > 0
+      ? "100.0"
+      : "0.0";
+
     // 3. Efficiency Rate
     const efficiencyAgg = await UserTask.aggregate([
       {
@@ -156,6 +206,37 @@ export const getDashboardStats = async (req, res) => {
       },
     ]);
     const efficiencyRate = Math.round(efficiencyAgg[0]?.avgEfficiency || 0);
+
+    // Previous Efficiency for Trend
+    const prevEfficiencyAgg = await UserTask.aggregate([
+      {
+        $match: {
+          userId: userIdObj,
+          "metadata.lastActivityAt": {
+            $gte: previousStartDate,
+            $lte: previousEndDate,
+          },
+          "productivityMetrics.completionEfficiency": { $gt: 0 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          avgEfficiency: { $avg: "$productivityMetrics.completionEfficiency" },
+        },
+      },
+    ]);
+    const prevEfficiencyRate = Math.round(
+      prevEfficiencyAgg[0]?.avgEfficiency || 0
+    );
+    const efficiencyRateTrend = prevEfficiencyRate
+      ? (
+          ((efficiencyRate - prevEfficiencyRate) / prevEfficiencyRate) *
+          100
+        ).toFixed(1)
+      : efficiencyRate > 0
+      ? "100.0"
+      : "0.0";
 
     // 4. Time Allocation by Category
     const categoryAllocation = await TimeEntry.aggregate([
@@ -374,6 +455,9 @@ export const getDashboardStats = async (req, res) => {
         totalHours,
         productivityScore,
         efficiencyRate,
+        totalTimeTrend,
+        productivityScoreTrend,
+        efficiencyRateTrend,
         hasData: totalTimeAgg.length > 0,
       },
       timeAllocation: allocationDataWithPercent,

@@ -119,7 +119,7 @@ const Navbar = () => {
                   className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors duration-200 ${
                     isActive
                       ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                      : "hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      : "hover:text-blue-500 dark:hover:text-blue-300 hover:bg-gray-50 dark:hover:bg-white/10"
                   }`}
                 >
                   {item.icon}
@@ -134,7 +134,7 @@ const Navbar = () => {
               {location.pathname !== "/" && (
                 <button
                   onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-purple-800/99 hover:bg-gray-200 dark:hover:bg-purple-500 transition-colors duration-200"
                   aria-label="Toggle theme"
                 >
                   {isDark ? (
@@ -227,7 +227,7 @@ const Navbar = () => {
             {location.pathname !== "/" && (
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="p-2 rounded-lg bg-gray-100 dark:bg-purple-800 hover:bg-gray-200 dark:hover:bg-purple-700 transition-colors duration-200"
                 aria-label="Toggle theme"
               >
                 {isDark ? (
