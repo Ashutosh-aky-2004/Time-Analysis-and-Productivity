@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
+  const { login: authLogin } = useAuth();
 
   const signup = async ({ firstName, lastName, email, password }) => {
     setLoading(true);
@@ -22,6 +24,10 @@ const useSignup = () => {
         toast.error(data.message);
       } else {
         toast.success(data.message);
+        // Auto Login
+        if (data.data && data.data.token) {
+          await authLogin(data.data.token, data.data.user);
+        }
       }
     } catch (err) {
       toast.error("Signup failed. Try again later.");

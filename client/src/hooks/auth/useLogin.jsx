@@ -30,7 +30,7 @@ const useLogin = () => {
       }
 
       // Use context login to update state immediately
-      authLogin(data.data.token);
+      await authLogin(data.data.token, data.data.user);
 
       toast.success("Login successful");
       setLoading(false);

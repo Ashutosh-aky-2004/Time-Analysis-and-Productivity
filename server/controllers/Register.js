@@ -22,15 +22,20 @@ export const signup = async (req, res) => {
     // Create user (pre-save hook hashes password automatically)
     const newUser = await User.create({ firstName, lastName, email, password });
 
+    const token = generateToken(newUser._id.toString());
+
     res.status(201).json({
       success: true,
-      message: "Signup successful. Please login to continue.",
-      user: {
-        id: newUser._id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        projects: newUser.projects,
+      message: "Signup successful.",
+      data: {
+        user: {
+          id: newUser._id,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          projects: newUser.projects,
+        },
+        token,
       },
     });
   } catch (error) {
@@ -65,7 +70,7 @@ export const login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = generateToken(user._id);
+    const token = generateToken(user._id.toString());
 
     res.status(200).json({
       success: true,
@@ -102,7 +107,7 @@ export const googleLogin = async (req, res) => {
 
     if (user) {
       // User exists, generate token
-      const token = generateToken(user._id);
+      const token = generateToken(user._id.toString());
 
       return res.status(200).json({
         success: true,
@@ -134,7 +139,7 @@ export const googleLogin = async (req, res) => {
         avatar: avatar || "",
       });
 
-      const token = generateToken(newUser._id);
+      const token = generateToken(newUser._id.toString());
 
       return res.status(201).json({
         success: true,

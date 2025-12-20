@@ -3,10 +3,12 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const useGoogleLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
 
   const googleLogin = async () => {
     setLoading(true);
@@ -43,8 +45,8 @@ const useGoogleLogin = () => {
         throw new Error(data.message || "Google login failed on server");
       }
 
-      // Save token
-      localStorage.setItem("token", data.data.token);
+      // Save token and update context immediately
+      await authLogin(data.data.token, data.data.user);
 
       toast.success("Login successful");
       navigate("/dashboard");

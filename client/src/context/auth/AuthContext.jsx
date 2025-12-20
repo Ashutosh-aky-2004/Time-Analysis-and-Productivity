@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -13,8 +14,15 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const fetchUser = async () => {
+    // Debug: Trace fetchUser
+    console.log("AuthContext: fetchUser called");
+    setLoading(true); // Ensure loading state reflects refresh
     try {
       const token = localStorage.getItem("token");
+      console.log(
+        "AuthContext: Token from storage:",
+        token ? "Exists" : "Null"
+      );
       if (!token) {
         setLoading(false);
         setUser(null);
@@ -30,15 +38,19 @@ export const AuthProvider = ({ children }) => {
         }
       );
 
+      console.log("AuthContext: fetchUser response status:", res.status);
       if (res.status === 200) {
+        console.log("AuthContext: fetchUser success", res.data.data);
         setUser(res.data.data);
         setError(null);
       }
     } catch (err) {
-      console.error("Error fetching user details:", err);
+      console.error("AuthContext: Error fetching user details:", err);
       // If 401, maybe clear token? For now just set error.
       setError(err.message);
       setUser(null);
+      // Notify user of sync failure for debugging
+      // toast.error(`Sync Error: ${err.response?.data?.message || err.message}`);
     } finally {
       setLoading(false);
     }
@@ -48,12 +60,25 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  const login = (token) => {
+  const login = async (token, userData = null) => {
+    console.log(
+      "AuthContext: Login called with token:",
+      token ? "Yes" : "No",
+      "UserData:",
+      userData ? "Yes" : "No"
+    );
     localStorage.setItem("token", token);
-    fetchUser();
+
+    if (userData) {
+      setUser(userData);
+      setError(null);
+    } else {
+      await fetchUser();
+    }
   };
 
   const logout = () => {
+    console.log("AuthContext: Logout called");
     localStorage.clear(); // Clear all data as requested
     setUser(null);
   };
