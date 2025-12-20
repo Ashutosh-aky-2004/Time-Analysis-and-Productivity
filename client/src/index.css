@@ -232,6 +232,10 @@
     color: #3b82f6;
 }
 
+.login-button {
+ background: linear-gradient(to right, #2563eb, #9333ea);   
+}
+
 .submit-button {
     position: relative;
     width: 100%;

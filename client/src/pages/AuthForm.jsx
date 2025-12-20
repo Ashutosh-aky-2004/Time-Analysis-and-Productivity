@@ -74,7 +74,7 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container -mt-8">
       <div className={`auth-wrapper ${isSignup ? "toggled" : ""}`}>
         {/* Background shapes */}
         <div className="background-shape"></div>

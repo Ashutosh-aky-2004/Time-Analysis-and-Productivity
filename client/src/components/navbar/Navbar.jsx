@@ -37,8 +37,9 @@ const Navbar = () => {
       // navigate("/login");
     }
 
-    // Force dark mode on home page
-    if (location.pathname === "/" && !isDark) {
+    // Force dark mode on specified pages
+    const darkPages = ["/", "/login", "/signup", "/forgot-password"];
+    if (darkPages.includes(location.pathname) && !isDark) {
       toggleTheme();
     }
   }, [location, navigate, isDark, toggleTheme]);
@@ -131,7 +132,9 @@ const Navbar = () => {
             {/* Theme Toggle, Timer and Profile */}
             <div className="flex items-center space-x-4">
               {/* Theme Toggle Button */}
-              {location.pathname !== "/" && (
+              {!["/", "/login", "/signup", "/forgot-password"].includes(
+                location.pathname
+              ) && (
                 <button
                   onClick={toggleTheme}
                   className="p-2 rounded-lg bg-gray-100 dark:bg-purple-800/99 hover:bg-gray-200 dark:hover:bg-purple-500 transition-colors duration-200"
@@ -212,7 +215,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/signup"
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors login-button"
                   >
                     Sign Up
                   </Link>
@@ -224,7 +227,9 @@ const Navbar = () => {
           {/* Mobile Menu Button with Theme Toggle */}
           <div className="md:hidden flex items-center space-x-4">
             {/* Theme Toggle for Mobile */}
-            {location.pathname !== "/" && (
+            {!["/", "/login", "/signup", "/forgot-password"].includes(
+              location.pathname
+            ) && (
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-purple-800 hover:bg-gray-200 dark:hover:bg-purple-700 transition-colors duration-200"

@@ -143,7 +143,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container -mt-9">
       <div className="auth-wrapper" style={{ minHeight: "500px" }}>
         {/* Background shapes */}
         <div className="background-shape"></div>
