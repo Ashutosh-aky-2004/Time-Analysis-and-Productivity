@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -6,6 +6,9 @@ import useLogin from "../hooks/auth/useLogin";
 import useSignup from "../hooks/auth/useSignup";
 import useGoogleLogin from "../hooks/auth/useGoogleLogin";
 import { toast } from "react-toastify";
+import Galaxy from "./Galaxy";
+
+const MemoizedGalaxy = memo(Galaxy);
 
 export default function AuthForm() {
   const location = useLocation();
@@ -74,8 +77,23 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="app-container -mt-8">
-      <div className={`auth-wrapper ${isSignup ? "toggled" : ""}`}>
+    <div
+      className="app-container -mt-9"
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        backgroundColor: "#020617",
+      }}
+    >
+      {/* Galaxy Background */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        <MemoizedGalaxy />
+      </div>
+
+      <div
+        className={`auth-wrapper ${isSignup ? "toggled" : ""}`}
+        style={{ zIndex: 10, position: "relative" }}
+      >
         {/* Background shapes */}
         <div className="background-shape"></div>
         <div className="secondary-shape"></div>
@@ -167,7 +185,7 @@ export default function AuthForm() {
                 value={signupUsername}
                 onChange={(e) => setSignupUsername(e.target.value)}
               />
-              <label>Username</label>
+              <label>First Name</label>
               <FaUser className="input-icon" />
             </div>
 

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiMail, FiLock, FiKey } from "react-icons/fi";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
+import Galaxy from "./Galaxy";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -143,8 +144,19 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="app-container -mt-9">
-      <div className="auth-wrapper" style={{ minHeight: "500px" }}>
+    <div
+      className="app-container -mt-9"
+      style={{ position: "relative", overflow: "hidden" }}
+    >
+      {/* Galaxy Background */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        <Galaxy />
+      </div>
+
+      <div
+        className="auth-wrapper"
+        style={{ minHeight: "500px", zIndex: 10, position: "relative" }}
+      >
         {/* Background shapes */}
         <div className="background-shape"></div>
         <div className="secondary-shape"></div>
