@@ -107,28 +107,61 @@ const ProductivityHomepage = () => {
 
   const stats = [
     {
-      number: "10K+",
-      label: "Active Users",
-      icon: Users,
+      number: "Daily",
+      label: "Time Tracking",
+      icon: Clock,
       color: "text-blue-400",
     },
     {
-      number: "500K+",
-      label: "Hours Tracked",
-      icon: Clock,
+      number: "Smart",
+      label: "Work Analysis",
+      icon: Target,
       color: "text-green-400",
     },
     {
-      number: "99.9%",
-      label: "Uptime",
-      icon: Shield,
+      number: "Focused",
+      label: "Productivity Insights",
+      icon: Users,
       color: "text-purple-400",
     },
     {
-      number: "4.8/5",
-      label: "User Rating",
+      number: "Visual",
+      label: "Analytics Dashboard",
       icon: Award,
       color: "text-yellow-400",
+    },
+  ];
+
+  const projectFeatures = [
+    {
+      icon: Zap,
+      title: "Instant Insights",
+      desc: "Real-time productivity analytics",
+    },
+    {
+      icon: Target,
+      title: "Goal Tracking",
+      desc: "Monitor your daily and weekly goals",
+    },
+    {
+      icon: FileText,
+      title: "Detailed Reports",
+      desc: "Export your data anytime",
+    },
+    {
+      icon: Filter,
+      title: "Advanced Filters",
+      desc: "Custom date range analysis",
+    },
+    {
+      icon: Shield,
+      title: "Secure & Private",
+      desc: "Your data is always protected",
+    },
+    {
+      icon: Activity,
+      title: "Live Dashboard",
+      desc: "Track progress in real-time",
     },
   ];
 
@@ -260,7 +293,7 @@ const ProductivityHomepage = () => {
                 href="/login"
                 className="block w-full text-center px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium transition"
               >
-                Get Started Free
+                Get Started
               </a>
             </div>
           </div>
@@ -328,7 +361,7 @@ const ProductivityHomepage = () => {
             <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full backdrop-blur-sm animate-fadeIn group hover:scale-105 transition-transform">
               <Sparkles className="w-4 h-4 text-blue-400 group-hover:rotate-180 transition-transform duration-500" />
               <span className="text-sm bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent font-medium">
-                AI-Powered Productivity • 47% Efficiency Gain
+                Data-Driven Productivity • Actionable Time Insights
               </span>
             </div>
 
@@ -351,8 +384,8 @@ const ProductivityHomepage = () => {
 
             {/* Subtitle */}
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed animate-fadeIn">
-              The ultimate AI-powered productivity platform. Track, analyze, and
-              optimize your workflow with intelligent insights and beautiful
+              The ultimate productivity platform. Track, analyze, and optimize
+              your workflow with intelligent insights and beautiful
               visualizations.
             </p>
 
@@ -364,7 +397,7 @@ const ProductivityHomepage = () => {
               >
                 <span className="flex items-center space-x-2">
                   <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                  <span>Start Free Trial</span>
+                  <span>Get Started</span>
                 </span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
               </a>
@@ -683,38 +716,7 @@ const ProductivityHomepage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Zap,
-                title: "Instant Insights",
-                desc: "Real-time productivity analytics",
-              },
-              {
-                icon: Bell,
-                title: "Smart Reminders",
-                desc: "Stay on track with notifications",
-              },
-              {
-                icon: FileText,
-                title: "Detailed Reports",
-                desc: "Export your data anytime",
-              },
-              {
-                icon: Filter,
-                title: "Advanced Filters",
-                desc: "Custom date range analysis",
-              },
-              {
-                icon: Shield,
-                title: "Secure & Private",
-                desc: "Your data is always protected",
-              },
-              {
-                icon: Activity,
-                title: "Live Dashboard",
-                desc: "Track progress in real-time",
-              },
-            ].map((item, i) => (
+            {projectFeatures.map((item, i) => (
               <div
                 key={i}
                 className="flex items-start space-x-4 p-6 bg-slate-800/30 rounded-xl hover:bg-slate-800/50 transition border border-slate-700/50"
