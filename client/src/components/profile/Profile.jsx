@@ -181,12 +181,6 @@ export default function SettingsPage() {
                   Joined {profile.joinDate}
                 </span>
               </div>
-              <div className="flex items-center gap-2 justify-center sm:justify-start">
-                <FiClock />
-                <span className="font-semibold text-[#597FE7] dark:text-red-400 whitespace-nowrap">
-                  {profile.hoursTracked} hours tracked
-                </span>
-              </div>
             </div>
           </div>
 
@@ -320,45 +314,8 @@ export default function SettingsPage() {
                         className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-gray-100 dark:bg-gray-800 dark:text-gray-300 cursor-not-allowed"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold mb-2">
-                        Role
-                      </label>
-                      <select
-                        value={profile.role}
-                        onChange={(e) => updateField("role", e.target.value)}
-                        disabled={!editing}
-                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <option>Working Professional</option>
-                        <option>Student</option>
-                        <option>Freelancer</option>
-                        <option>Entrepreneur</option>
-                        <option>Manager</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold mb-2">
-                        Default category
-                      </label>
-                      <select
-                        value={profile.defaultCategory}
-                        onChange={(e) =>
-                          updateField("defaultCategory", e.target.value)
-                        }
-                        disabled={!editing}
-                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <option>Work</option>
-                        <option>Study</option>
-                        <option>Exercise</option>
-                        <option>Personal</option>
-                        <option>Creative</option>
-                      </select>
-                    </div>
                   </div>
                   {/* Save and Edit button */}
-
                   <div className="flex items-center justify-center sm:justify-end lg:justify-end lg:col-span-2 gap-3">
                     <button
                       disabled={!editing}

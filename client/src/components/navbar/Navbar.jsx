@@ -127,65 +127,80 @@ const Navbar = () => {
                   <FiMoon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                 )}
               </button>
-              {/* Profile Dropdown - Click to open */}
 
-              <div className="relative" ref={profileRef}>
-                <button
-                  onClick={toggleProfile}
-                  className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white hover:bg-purple-700 transition-colors duration-200"
-                >
-                  {loading ? (
-                    <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 animate-pulse rounded-full"></div>
-                  ) : details?.avatar ? (
-                    <img
-                      src={details.avatar}
-                      alt="Avatar"
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="font-semibold">U</span>
-                  )}
-                </button>
+              {/* Profile Dropdown or Login/Signup */}
+              {loading ? (
+                <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-700 animate-pulse"></div>
+              ) : details ? (
+                <div className="relative" ref={profileRef}>
+                  <button
+                    onClick={toggleProfile}
+                    className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white hover:bg-purple-700 transition-colors duration-200"
+                  >
+                    {details.avatar ? (
+                      <img
+                        src={details.avatar}
+                        alt="Avatar"
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-semibold">
+                        {details.firstName?.[0]?.toUpperCase() || "U"}
+                      </span>
+                    )}
+                  </button>
 
-                <div
-                  className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700 transition-all duration-200 ${
-                    isProfileOpen
-                      ? "opacity-100 visible translate-y-0"
-                      : "opacity-0 invisible -translate-y-2"
-                  }`}
-                >
-                  <div className="py-1">
-                    <div className="px-4 py-2 border-b dark:border-gray-700">
-                      {loading ? (
-                        <div className="h-4 w-24 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
-                      ) : (
+                  <div
+                    className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700 transition-all duration-200 ${
+                      isProfileOpen
+                        ? "opacity-100 visible translate-y-0"
+                        : "opacity-0 invisible -translate-y-2"
+                    }`}
+                  >
+                    <div className="py-1">
+                      <div className="px-4 py-2 border-b dark:border-gray-700">
                         <p className="font-medium">
                           {details?.firstName} {details?.lastName}
                         </p>
-                      )}
+                      </div>
+
+                      <Link
+                        to="/profile"
+                        className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <AiOutlineUser className="mr-3" />
+                        Profile
+                      </Link>
+
+                      <div className="border-t dark:border-gray-700 my-1"></div>
+
+                      <button
+                        className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-left"
+                        onClick={handleLogout}
+                      >
+                        <FaTimes className="mr-3" />
+                        Logout
+                      </button>
                     </div>
-
-                    <Link
-                      to="/profile"
-                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <AiOutlineUser className="mr-3" />
-                      Profile
-                    </Link>
-
-                    <div className="border-t dark:border-gray-700 my-1"></div>
-
-                    <button
-                      className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-left"
-                      onClick={handleLogout}
-                    >
-                      <FaTimes className="mr-3" />
-                      Logout
-                    </button>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
@@ -243,45 +258,69 @@ const Navbar = () => {
               </Link>
             );
           })}
-          <Link
-            to="/profile"
-            className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => setIsProfileOpen(false)}
-          >
-            <AiOutlineUser className="mr-3" />
-            Profile
-          </Link>
-          {/* Profile Section in Mobile Menu */}
-          <div className="px-4 py-3 flex items-center">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-white mr-3">
-              {details && details.avatar ? (
-                <img
-                  src={details.avatar}
-                  alt="User Avatar"
-                  className="w-full h-full object-cover"
-                />
-              ) : details ? (
-                details.firstName[0].toUpperCase() +
-                details.lastName[0].toUpperCase()
-              ) : (
-                "PT"
-              )}
-            </div>
+          {details ? (
+            <>
+              <Link
+                to="/profile"
+                className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setIsProfileOpen(false)}
+              >
+                <AiOutlineUser className="mr-3" />
+                Profile
+              </Link>
+              <div className="px-4 py-3 flex items-center">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-white mr-3">
+                  {details.avatar ? (
+                    <img
+                      src={details.avatar}
+                      alt="User Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    details.firstName[0].toUpperCase() +
+                    details.lastName[0].toUpperCase()
+                  )}
+                </div>
 
-            <div>
-              <p className="font-medium text-gray-800 dark:text-gray-200">
-                {details ? (
-                  details.firstName + " " + details.lastName
-                ) : (
-                  <ShimmerBase className="w-24 h-4" />
-                )}
-              </p>
+                <div>
+                  <p className="font-medium text-gray-800 dark:text-gray-200">
+                    {details.firstName + " " + details.lastName}
+                  </p>
 
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {details ? details.email : <ShimmerBase className="w-32 h-3" />}
-              </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {details.email}
+                  </p>
+                </div>
+              </div>
+              <button
+                className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-t dark:border-gray-700"
+                onClick={() => {
+                  setIsOpen(false);
+                  handleLogout();
+                }}
+              >
+                <FaTimes className="mr-3" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <div className="p-4 flex flex-col space-y-2">
+              <Link
+                to="/login"
+                className="w-full text-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign Up
+              </Link>
             </div>
-          </div>
+          )}
         </div>
       )}
     </nav>

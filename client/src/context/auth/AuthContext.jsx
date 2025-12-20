@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.clear(); // Clear all data as requested
     setUser(null);
   };
 

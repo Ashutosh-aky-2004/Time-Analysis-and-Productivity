@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false);
+  const { login: authLogin } = useAuth(); // Get login from context
 
   const login = async ({ email, password }) => {
     setLoading(true);
@@ -27,7 +29,8 @@ const useLogin = () => {
         return;
       }
 
-      localStorage.setItem("token", data.data.token); // jwt token
+      // Use context login to update state immediately
+      authLogin(data.data.token);
 
       toast.success("Login successful");
       setLoading(false);
