@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiMail, FiLock, FiKey } from "react-icons/fi";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
-import loginPage from "../assets/loginPage.png";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -11,7 +10,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState(""); // Provide a fallback or handle securely
+  const [generatedOtp, setGeneratedOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
@@ -58,7 +57,6 @@ const ForgotPassword = () => {
       };
 
       try {
-        // If the user has configured .env for these, we could use them:
         if (import.meta.env.VITE_EMAILJS_SERVICE_ID) {
           await emailjs.send(
             import.meta.env.VITE_EMAILJS_SERVICE_ID,
@@ -68,6 +66,7 @@ const ForgotPassword = () => {
           );
         } else {
           toast.info("EmailJS keys missing. OTP logged to console.");
+          console.log("OTP:", data.otp);
         }
 
         toast.success("OTP sent to your email");
@@ -134,6 +133,7 @@ const ForgotPassword = () => {
       if (!response.ok) throw new Error(data.message);
 
       toast.success("Password reset successful. Please login.");
+      // Navigate to login which is now AuthForm
       navigate("/login");
     } catch (error) {
       toast.error(error.message || "Failed to reset password");
@@ -143,189 +143,213 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex flex-col md:flex-row transition-colors duration-300">
-      {/* IMAGE SIDE */}
-      <div className="relative w-full md:w-1/2 h-72 md:h-auto">
-        <img
-          src={loginPage}
-          alt="hero"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/70"></div>
-        <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 text-white">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold tracking-wide">
-              Productivity Tracker
-            </h1>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-sm transition"
-            >
-              <FiArrowLeft /> Back to Login
-            </Link>
-          </div>
-          <div className="flex flex-col items-start gap-4">
-            <h2 className="text-3xl sm:text-4xl font-semibold leading-tight max-w-md">
-              Recover access to your account
-            </h2>
-          </div>
-        </div>
-      </div>
+    <div className="app-container">
+      <div className="auth-wrapper" style={{ minHeight: "500px" }}>
+        {/* Background shapes */}
+        <div className="background-shape"></div>
+        <div className="secondary-shape"></div>
 
-      {/* FORM SIDE */}
-      <div className="flex-1 dark:bg-slate-800 sm:px-10 flex justify-center items-center bg-[#e2595960]">
-        <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl">
-          {step === 1 && (
-            <form onSubmit={sendOtp} className="fade-in">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Forgot Password
-              </h1>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
-                Enter your email to receive an OTP.
-              </p>
-              <div className="relative">
-                <FiMail className="absolute left-3 top-3.5 text-slate-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full pl-10 p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border border-transparent focus:border-red-400 outline-none transition-all"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
-              >
-                {loading ? (
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "Send OTP"
-                )}
-              </button>
-            </form>
-          )}
-
-          {step === 2 && (
-            <form onSubmit={verifyOtpInput} className="fade-in">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Enter OTP
-              </h1>
-              <p className="text-slate-600 dark:text-slate-300 mb-2">
-                We sent a code to{" "}
-                <span className="font-semibold text-red-500">{email}</span>
-              </p>
-
-              <div className="mb-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-700 dark:text-blue-300 text-center">
-                OTP valid for:{" "}
-                <span className="font-bold">
-                  {Math.floor(otpExpiryTimer / 60)}:
-                  {(otpExpiryTimer % 60).toString().padStart(2, "0")}
-                </span>
-              </div>
-
-              <div className="relative">
-                <FiKey className="absolute left-3 top-3.5 text-slate-400" />
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter 6-digit OTP"
-                  maxLength={6}
-                  className="w-full pl-10 p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border border-transparent focus:border-red-400 outline-none transition-all tracking-widest text-lg"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading || otpExpiryTimer === 0}
-                className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-70 flex justify-center items-center"
-              >
-                {loading ? (
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "Verify OTP"
-                )}
-              </button>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Did not receive OTP?
+        {/* Forgot Password Panel - Centered */}
+        <div
+          className="credentials-panel"
+          style={{ width: "100%", padding: "0 50px", left: 0 }}
+        >
+          <div className="auth-form-content">
+            {step === 1 && (
+              <>
+                <h2 className="slide-element">Recover Account</h2>
+                <p
+                  className="slide-element"
+                  style={{
+                    color: "#9ca3af",
+                    marginBottom: "20px",
+                    textAlign: "center",
+                  }}
+                >
+                  Enter your email to receive an OTP.
                 </p>
-                {resendTimer > 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">
-                    Resend in{" "}
-                    <span className="font-semibold">{resendTimer}s</span>
-                  </p>
-                ) : (
+
+                <form onSubmit={sendOtp} style={{ width: "100%" }}>
+                  <div className="field-wrapper slide-element">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <label>Email Address</label>
+                    <FiMail className="input-icon" />
+                  </div>
+
+                  <div
+                    className="slide-element"
+                    style={{
+                      marginTop: "25px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button className="submit-button" disabled={loading}>
+                      {loading ? "Sending..." : "Send OTP"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <h2 className="slide-element">Verify OTP</h2>
+                <p
+                  className="slide-element"
+                  style={{
+                    color: "#9ca3af",
+                    marginBottom: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  Code sent to <span style={{ color: "#3b82f6" }}>{email}</span>
+                </p>
+
+                <div
+                  className="slide-element"
+                  style={{
+                    marginBottom: "20px",
+                    color: "#64748b",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Valid for:{" "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {Math.floor(otpExpiryTimer / 60)}:
+                    {(otpExpiryTimer % 60).toString().padStart(2, "0")}
+                  </span>
+                </div>
+
+                <form onSubmit={verifyOtpInput} style={{ width: "100%" }}>
+                  <div className="field-wrapper slide-element">
+                    <input
+                      type="text"
+                      required
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      style={{ letterSpacing: "0.5em", textAlign: "center" }}
+                    />
+                    <label
+                      style={{
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      ENTER OTP
+                    </label>
+                    <FiKey className="input-icon" />
+                  </div>
+
+                  <div
+                    className="slide-element"
+                    style={{
+                      marginTop: "25px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button className="submit-button" disabled={loading}>
+                      {loading ? "Verifying..." : "Verify OTP"}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="switch-link slide-element">
+                  {resendTimer > 0 ? (
+                    <p>Resend in {resendTimer}s</p>
+                  ) : (
+                    <button type="button" onClick={sendOtp} disabled={loading}>
+                      Resend OTP
+                    </button>
+                  )}
+                  <br />
                   <button
                     type="button"
-                    onClick={sendOtp}
-                    disabled={loading}
-                    className="mt-1 text-red-500 hover:underline font-semibold text-sm disabled:opacity-50"
+                    onClick={() => setStep(1)}
+                    style={{
+                      marginTop: "10px",
+                      fontSize: "0.85rem",
+                      color: "#94a3b8",
+                    }}
                   >
-                    Resend OTP
+                    Change Email
                   </button>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-full mt-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm"
-              >
-                Change Email
-              </button>
-            </form>
-          )}
-
-          {step === 3 && (
-            <form onSubmit={resetUserPassword} className="fade-in">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Reset Password
-              </h1>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
-                Create a new secure password.
-              </p>
-              <div className="space-y-4">
-                <div className="relative">
-                  <FiLock className="absolute left-3 top-3.5 text-slate-400" />
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="New Password"
-                    className="w-full pl-10 p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border border-transparent focus:border-red-400 outline-none transition-all"
-                    required
-                  />
                 </div>
-                <div className="relative">
-                  <FiLock className="absolute left-3 top-3.5 text-slate-400" />
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm New Password"
-                    className="w-full pl-10 p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border border-transparent focus:border-red-400 outline-none transition-all"
-                    required
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-70 flex justify-center items-center"
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <h2 className="slide-element">Reset Password</h2>
+
+                <form onSubmit={resetUserPassword} style={{ width: "100%" }}>
+                  <div className="field-wrapper slide-element">
+                    <input
+                      type="password"
+                      required
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <label>New Password</label>
+                    <FiLock className="input-icon" />
+                  </div>
+
+                  <div className="field-wrapper slide-element">
+                    <input
+                      type="password"
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <label>Confirm Password</label>
+                    <FiLock className="input-icon" />
+                  </div>
+
+                  <div
+                    className="slide-element"
+                    style={{
+                      marginTop: "25px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button className="submit-button" disabled={loading}>
+                      {loading ? "Resetting..." : "Reset Password"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            <div className="switch-link slide-element">
+              <Link
+                to="/login"
+                style={{
+                  textDecoration: "none",
+                  color: "#60a5fa",
+                  fontWeight: "bold",
+                }}
               >
-                {loading ? (
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "Reset Password"
-                )}
-              </button>
-            </form>
-          )}
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "5px",
+                  }}
+                >
+                  <FiArrowLeft /> Back to Login
+                </span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
