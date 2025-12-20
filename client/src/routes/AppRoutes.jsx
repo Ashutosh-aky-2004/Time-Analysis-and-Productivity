@@ -14,12 +14,23 @@ import { ProjectAnalysisProvider } from "../context/analysis/ProjectAnalysisCont
 import FormData from "../components/personalAnalysis/FormData";
 import MainLayout from "../components/layout/MainLayout";
 import NotFound from "../pages/NotFound";
+import ProductivityHomepage from "../components/welcomePage/ProductivityHomePage";
+import Navbar from "../components/navbar/Navbar";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* Root Layout for ALL routes */}
+        <Route
+          path="/"
+          element={
+            <>
+              <Navbar />
+              <ProductivityHomepage />
+            </>
+          }
+        />
         <Route element={<MainLayout />}>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />

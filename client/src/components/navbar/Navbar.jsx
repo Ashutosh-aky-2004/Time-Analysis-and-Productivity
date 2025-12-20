@@ -14,6 +14,7 @@ import { useAuth } from "../../context/auth/AuthContext";
 import NavbarShimmer from "./NavbarShimmer";
 import { LuFolderKanban } from "react-icons/lu";
 import { ShimmerBase } from "../shimmer/Shimmer";
+import { Brain } from "lucide-react";
 
 const Navbar = () => {
   const { user: details, loading, logout } = useAuth(); // Use AuthContext
@@ -31,12 +32,16 @@ const Navbar = () => {
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
   useEffect(() => {
-    // Basic check to redirect if no token found on mount (preserving existing behavior)
     const token = localStorage.getItem("token");
     if (!token && location.pathname !== "/login") {
       // navigate("/login");
     }
-  }, [location, navigate]);
+
+    // Force dark mode on home page
+    if (location.pathname === "/" && !isDark) {
+      toggleTheme();
+    }
+  }, [location, navigate, isDark, toggleTheme]);
 
   const handleLogout = () => {
     logout();
@@ -83,11 +88,21 @@ const Navbar = () => {
     return <NavbarShimmer />;
   }
   return (
-    <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md transition-colors duration-200">
+    <nav className="sticky top-0 z-50 bg-white dark:bg-[#321764] text-gray-800 dark:text-white shadow-md transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/">Productivity Tracker</Link>
+          <div className="relative cursor-pointer">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-30 animate-pulse"></div>
+            <div className="flex items-center space-x-2 cursor-pointer">
+              <Link to={"/"}>
+                <Brain className="w-8 h-8 text-blue-400 relative" />
+              </Link>
+              <Link to="/" className="text-xl font-bold cursor-pointer">
+                Productivity Tracker
+              </Link>
+            </div>
+          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
@@ -116,17 +131,19 @@ const Navbar = () => {
             {/* Theme Toggle, Timer and Profile */}
             <div className="flex items-center space-x-4">
               {/* Theme Toggle Button */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-                aria-label="Toggle theme"
-              >
-                {isDark ? (
-                  <FiSun className="w-5 h-5 text-yellow-500" />
-                ) : (
-                  <FiMoon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                )}
-              </button>
+              {location.pathname !== "/" && (
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                  aria-label="Toggle theme"
+                >
+                  {isDark ? (
+                    <FiSun className="w-5 h-5 text-yellow-500" />
+                  ) : (
+                    <FiMoon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                  )}
+                </button>
+              )}
 
               {/* Profile Dropdown or Login/Signup */}
               {loading ? (
@@ -207,17 +224,19 @@ const Navbar = () => {
           {/* Mobile Menu Button with Theme Toggle */}
           <div className="md:hidden flex items-center space-x-4">
             {/* Theme Toggle for Mobile */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-              aria-label="Toggle theme"
-            >
-              {isDark ? (
-                <FiSun className="w-5 h-5 text-yellow-500" />
-              ) : (
-                <FiMoon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-              )}
-            </button>
+            {location.pathname !== "/" && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                aria-label="Toggle theme"
+              >
+                {isDark ? (
+                  <FiSun className="w-5 h-5 text-yellow-500" />
+                ) : (
+                  <FiMoon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                )}
+              </button>
+            )}
 
             {/* Mobile Menu Button */}
             <button
