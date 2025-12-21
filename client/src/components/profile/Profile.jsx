@@ -3,6 +3,7 @@ import { useProfile } from "../../hooks/profile/useProfile";
 import ProfileShimmer from "../profile/ProfileShimmer";
 import useProfileUpload from "../../hooks/profile/useProfileUpload";
 import SecurityTab from "./SecurityTab";
+import { useAuth } from "../../context/auth/AuthContext";
 import {
   FiUser,
   FiTarget,
@@ -21,6 +22,7 @@ const TAB_LIST = [
 
 export default function SettingsPage() {
   const { data: profileData, loading, updateProfile } = useProfile();
+  const { fetchUser } = useAuth();
   const {
     uploadProfilePic,
     loading: uploading,
@@ -50,7 +52,7 @@ export default function SettingsPage() {
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
-  const saveProfile = () => {
+  const saveProfile = async () => {
     const payload = {
       firstName: profile.firstName,
       lastName: profile.lastName,
@@ -59,7 +61,8 @@ export default function SettingsPage() {
     };
 
     setEditing(false);
-    updateProfile(payload);
+    await updateProfile(payload);
+    await fetchUser();
   };
 
   const handleFileClick = () => {
@@ -78,6 +81,7 @@ export default function SettingsPage() {
     const uploadedUrl = await uploadProfilePic(file);
     if (uploadedUrl) {
       setPhoto(uploadedUrl); // Use the actual uploaded URL
+      await fetchUser();
     } else {
       setPhoto(profileData?.avatar || null);
       URL.revokeObjectURL(previewUrl); // Clean up the preview URL
@@ -88,6 +92,7 @@ export default function SettingsPage() {
     const success = await removeProfilePic();
     if (success) {
       setPhoto("");
+      await fetchUser();
     }
   };
 

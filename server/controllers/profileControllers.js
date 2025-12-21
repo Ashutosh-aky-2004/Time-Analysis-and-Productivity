@@ -58,10 +58,10 @@ export const updatePersonalDetails = async (req, res) => {
     }
 
     const updateData = {};
-    if (firstName) updateData.firstName = firstName;
-    if (lastName) updateData.lastName = lastName;
-    if (phoneNumber) updateData.phoneNumber = phoneNumber;
-    if (bio) updateData.bio = bio;
+    if (firstName !== undefined) updateData.firstName = firstName;
+    if (lastName !== undefined) updateData.lastName = lastName;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+    if (bio !== undefined) updateData.bio = bio;
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
