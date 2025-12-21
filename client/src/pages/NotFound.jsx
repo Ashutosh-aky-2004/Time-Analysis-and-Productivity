@@ -1,30 +1,49 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import Galaxy from "./Galaxy";
 
 const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 text-center">
-      <h1 className="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-4 animate-pulse">
-        404
-      </h1>
-      <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-400 mb-6">
-        Page Not Found
-      </h2>
-      <p className="text-gray-400 text-lg mb-8 max-w-md">
-        Oops! The page you are looking for might have been removed, had its name
-        changed, or is temporarily unavailable.
-      </p>
+    <div className="relative w-full h-screen bg-[#030014] overflow-hidden flex items-center justify-center">
+      {/* Galaxy Background */}
+      <div className="absolute inset-0 z-0">
+        <Galaxy
+          starSpeed={0.5}
+          density={1.5}
+          glowIntensity={0.5}
+          mouseInteraction={true}
+        />
+      </div>
 
-      <button
-        onClick={() => navigate("/")}
-        className="group relative inline-flex items-center gap-2 px-8 py-3 bg-[#1a1f2e] text-white rounded-xl hover:bg-[#252b3b] transition-all duration-300 border border-gray-800 hover:border-gray-700 shadow-lg hover:shadow-blue-500/10"
-      >
-        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
-        <span>Back to Home</span>
-      </button>
+      {/* Content */}
+      <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
+        <h1 className="text-[150px] md:text-[200px] leading-none font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-pulse select-none filter drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]">
+          404
+        </h1>
+
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight drop-shadow-lg">
+          Time Slot Not Found
+        </h2>
+
+        <p className="text-gray-300 text-lg md:text-xl mb-10 max-w-lg mx-auto leading-relaxed drop-shadow-md">
+          It seems you've wandered into a timeline that doesn't exist. Let's get
+          you back to tracking your productivity.
+        </p>
+
+        <button
+          onClick={() => navigate("/")}
+          className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-all duration-300 border border-white/20 hover:border-white/40 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)]"
+        >
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
+          <span className="font-medium text-lg">Return to Focus</span>
+        </button>
+      </div>
+
+      {/* Overlay Gradient for better text readability if needed */}
+      <div className="absolute inset-0 z-0 bg-radial-gradient from-transparent to-[#030014]/50 pointer-events-none" />
     </div>
   );
 };
