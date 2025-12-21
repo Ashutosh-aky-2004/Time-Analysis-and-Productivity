@@ -16,6 +16,8 @@ import NotFound from "../pages/NotFound";
 import ProductivityHomepage from "../components/welcomePage/ProductivityHomePage";
 import Navbar from "../components/navbar/Navbar";
 
+import Footer from "../components/layout/Footer";
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -27,6 +29,7 @@ const AppRoutes = () => {
             <>
               <Navbar />
               <ProductivityHomepage />
+              <Footer />
             </>
           }
         />
